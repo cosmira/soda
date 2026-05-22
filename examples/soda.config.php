@@ -3,34 +3,46 @@
 declare(strict_types=1);
 
 /**
- * Скопируйте в корень как `soda.php` или используйте `php soda init`.
+ * Copy to project root as `soda.php` or run `php soda init`.
+ *
+ * Two styles are supported:
+ *
+ * ─── New (recommended) ───────────────────────────────────────────────────────
+ *   return Soda::configure()
+ *       ->withPlugins([new MyRule()]);
+ *
+ * ─── Classic callable ────────────────────────────────────────────────────────
+ *   return function (SodaConfig $config): void {
+ *       $config->structural()->maxMethodLength(80);
+ *   };
  *
  * @see docs/SODA_PHP_CONFIG.md
+ * @see docs/ADDING_A_QUALITY_RULE.md
  */
 
-use Bunnivo\Soda\Config\SodaConfig;
-use Bunnivo\Soda\Config\SodaConfigurator;
+use Bunnivo\Soda\Config\Soda;
 
-class SodaRules extends SodaConfigurator
-{
-    protected function configure(SodaConfig $config): void
-    {
-        $config->structural()
-            ->maxMethodLength(100)
-            ->maxClassLength(800)
-            ->maxArguments(3);
+$soda = Soda::configure();
 
-        $config->complexity()
-            ->maxCyclomaticComplexity(15)
-            ->maxControlNesting(3);
+$soda->structural()
+    ->maxMethodLength(100)
+    ->maxClassLength(800)
+    ->maxArguments(3);
 
-        $config->breathing()
-            ->minCodeBreathingScore(25);
+$soda->complexity()
+    ->maxCyclomaticComplexity(15)
+    ->maxControlNesting(3);
 
-        if (($_ENV['CI'] ?? false) === true || ($_ENV['CI'] ?? '') === 'true') {
-            $config->complexity()->maxCyclomaticComplexity(10);
-        }
-    }
+$soda->breathing()
+    ->minCodeBreathingScore(25);
+
+// Tighten in CI
+if (($_ENV['CI'] ?? '') === 'true') {
+    $soda->complexity()->maxCyclomaticComplexity(10);
 }
 
-return SodaConfigurator::entry(SodaRules::class);
+return $soda->withPlugins([
+    // Add your rules or plugins here:
+    // new UselessVariableRule(),
+    // new MyPlugin(),
+]);
