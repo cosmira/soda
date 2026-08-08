@@ -27,14 +27,18 @@ final class InitCommand extends Command
     {
         $defaults = QualityConfig::default()->rules;
         $overrides = [
-            'max_method_length'         => 120,
+            'max_method_length'         => 100,
             'max_class_length'          => 500,
             'max_arguments'             => 16,
             'max_methods_per_class'     => 21,
-            'max_file_loc'              => 400,
+            'max_file_loc'              => 700,
+            'max_line_length'           => 100,
             'max_cyclomatic_complexity' => 26,
             'max_control_nesting'       => 4,
             'min_code_breathing_score'  => 40,
+            'variable_name_length'      => 16,
+            'method_name_length'        => 32,
+            'class_name_length'         => 32,
         ];
 
         $rules = [

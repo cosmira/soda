@@ -26,4 +26,25 @@ final class BreathingPerceptualIndices
             'col' => ColCalculator::calculate($lineBlock),
         ];
     }
+
+
+    /**
+     * Example good comment
+     */
+    public function foo()
+    {
+        // ..
+    }
+
+    // Bad comment
+    public function bar()
+    {
+        // ..
+    }
+
+    /** Bad comment */
+    public function baz()
+    {
+
+    }
 }

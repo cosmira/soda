@@ -6,7 +6,7 @@ namespace Bunnivo\Soda\Quality\Rule;
 
 use Bunnivo\Soda\Quality\EvaluationContext;
 use Bunnivo\Soda\Quality\Report\Violation;
-use Bunnivo\Soda\Quality\RuleBreathing\BreathingThresholdViolationCollector;
+use Bunnivo\Soda\Quality\RuleReadability\BreathingThresholdViolationCollector;
 use Illuminate\Support\Collection;
 
 final class BreathingChecker implements RuleChecker

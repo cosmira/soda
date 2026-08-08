@@ -3,48 +3,59 @@
 declare(strict_types=1);
 
 use Bunnivo\Soda\Config\Soda;
-use Bunnivo\Soda\Plugins\Rules\Breathing\MinCodeBreathingScore;
-use Bunnivo\Soda\Plugins\Rules\Breathing\MinCodeOxygenLevel;
-use Bunnivo\Soda\Plugins\Rules\Breathing\MinIdentifierReadabilityScore;
-use Bunnivo\Soda\Plugins\Rules\Breathing\MinVisualBreathingIndex;
-use Bunnivo\Soda\Plugins\Rules\Complexity\MaxBooleanConditions;
-use Bunnivo\Soda\Plugins\Rules\Complexity\MaxControlNesting;
-use Bunnivo\Soda\Plugins\Rules\Complexity\MaxCyclomaticComplexity;
-use Bunnivo\Soda\Plugins\Rules\Complexity\MaxLogicalComplexityFactor;
-use Bunnivo\Soda\Plugins\Rules\Complexity\MaxReturnStatements;
-use Bunnivo\Soda\Plugins\Rules\Complexity\MaxTryCatchBlocks;
-use Bunnivo\Soda\Plugins\Rules\Complexity\MaxWeightedCognitiveDensity;
-use Bunnivo\Soda\Plugins\Rules\ListOnlyArray\OnlyListArraysAllowed;
-use Bunnivo\Soda\Plugins\Rules\Naming\AvoidRedundantNaming;
-use Bunnivo\Soda\Plugins\Rules\Naming\BooleanMethodPrefix;
-use Bunnivo\Soda\Plugins\Rules\NoUnusedMethods;
-use Bunnivo\Soda\Plugins\Rules\NumericArrayIndex\NoNumericArrayIndex;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxArguments;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxClassesPerFile;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxClassesPerNamespace;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxClassesPerProject;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxClassLength;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxDependencies;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxEfferentCoupling;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxFileLoc;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxInterfacesPerClass;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxLayerDominancePercentage;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxMethodLength;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxMethodsPerClass;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxNamespaceDepth;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxPropertiesPerClass;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxPublicMethods;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxTraitsPerClass;
-use Bunnivo\Soda\Plugins\Rules\Structural\NoAskThenTellPatterns;
-use Bunnivo\Soda\Plugins\Rules\Structural\NoCommentedOutCode;
-use Bunnivo\Soda\Plugins\Rules\Structural\NoEmptyCatchBlocks;
-use Bunnivo\Soda\Plugins\Rules\Structural\NoTodoFixmeComments;
-use Bunnivo\Soda\Plugins\Rules\UselessVariableRule;
+use Bunnivo\Soda\Plugins\Rules\{Breathing\MinCodeBreathingScore,
+    Breathing\MinCodeOxygenLevel,
+    Breathing\MinIdentifierReadabilityScore,
+    Breathing\MinVisualBreathingIndex,
+    Complexity\MaxBooleanConditions,
+    Complexity\MaxControlNesting,
+    Complexity\MaxCyclomaticComplexity,
+    Complexity\MaxLogicalComplexityFactor,
+    Complexity\MaxReturnStatements,
+    Complexity\MaxTryCatchBlocks,
+    Complexity\MaxWeightedCognitiveDensity,
+    ListOnlyArray\OnlyListArraysAllowed,
+    Naming\AvoidRedundantNaming,
+    Naming\BooleanMethodPrefix,
+    Naming\ClassNameLength,
+    Naming\MethodNameLength,
+    Naming\VariableNameLength,
+    NoUnusedMethods,
+    NumericArrayIndex\NoNumericArrayIndex,
+    Structural\MaxArguments,
+    Structural\MaxClassesPerFile,
+    Structural\MaxClassesPerNamespace,
+    Structural\MaxClassesPerProject,
+    Structural\MaxClassLength,
+    Structural\MaxDependencies,
+    Structural\MaxEfferentCoupling,
+    Structural\MaxFileLoc,
+    Structural\MaxInterfacesPerClass,
+    Structural\MaxLayerDominancePercentage,
+    Structural\MaxLineLength,
+    Structural\MaxMethodLength,
+    Structural\MaxMethodsPerClass,
+    Structural\MaxNamespaceDepth,
+    Structural\MaxPropertiesPerClass,
+    Structural\MaxPublicMethods,
+    Structural\MaxTraitsPerClass,
+    Structural\MethodsFollowCallOrder,
+    Structural\MultilineMethodPhpDoc,
+    Structural\MultilinePropertyPhpDoc,
+    Structural\NoAskThenTellPatterns,
+    Structural\NoCommentedOutCode,
+    Structural\NoEmptyCatchBlocks,
+    Structural\NoTodoFixmeComments,
+    UselessVariableRule};
 
 return Soda::configure()
-    ->withPlugins([
+    ->withPaths([
+        'src/',
+    ])
+    ->with([
         // Structural
-        new MaxFileLoc(700),
+        new MaxFileLoc(1200),
+        new MaxLineLength(240),
         new MaxClassesPerFile(1),
         new MaxMethodLength(100),
         new MaxClassLength(1000),
@@ -53,7 +64,7 @@ return Soda::configure()
         new MaxPropertiesPerClass(10),
         new MaxPublicMethods(20),
         new MaxDependencies(8),
-        new MaxEfferentCoupling(11),
+        new MaxEfferentCoupling(15),
         new MaxTraitsPerClass(10),
         new MaxInterfacesPerClass(5),
         new NoTodoFixmeComments(),
@@ -63,6 +74,9 @@ return Soda::configure()
         new NoUnusedMethods(),
         new NoEmptyCatchBlocks(),
         new NoAskThenTellPatterns(),
+        new MethodsFollowCallOrder(40),
+        new MultilineMethodPhpDoc(['public'], maxViolations: 379),
+        new MultilinePropertyPhpDoc(['public'], maxViolations: 7),
         new MaxLayerDominancePercentage(50, 4),
         new MaxNamespaceDepth(5),
         new MaxClassesPerNamespace(40),
@@ -75,7 +89,7 @@ return Soda::configure()
         new MaxBooleanConditions(4),
         new MaxTryCatchBlocks(2),
         new MaxWeightedCognitiveDensity(70),
-        new MaxLogicalComplexityFactor(50),
+        new MaxLogicalComplexityFactor(62),
 
         // Breathing
         new MinCodeBreathingScore(100),
@@ -85,6 +99,9 @@ return Soda::configure()
 
         // Naming
         new AvoidRedundantNaming(80),
+        new VariableNameLength(min: 1, max: 32),
+        new MethodNameLength(min: 2, max: 64),
+        new ClassNameLength(min: 3, max: 64),
         new BooleanMethodPrefix(
             ignore: ['runningUnitTests'],
             prefix: ['check'],

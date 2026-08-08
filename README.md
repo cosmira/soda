@@ -10,22 +10,13 @@ Even with AI-generated code, errors slip through. **Soda catches them first**, k
 
 ## Installation
 
-Requires PHP 8.4 or higher.
+Requires PHP 8.3.18 or higher.
 
-
-> [!WARNING]
-> Composer currently does not work. Use `git clone` as a temporary workaround.
-
-<details>
-<summary>Try with Composer (spoiler)</summary>
-  
 ```bash
 composer require bunnivo/soda --dev
 ```
 
-</details>
-
-Or temporarily via `git clone`:
+For local development:
 
 ```bash
 git clone https://github.com/tabuna/soda.git
@@ -35,14 +26,6 @@ composer install
 
 ## Usage
 
-### Analyze project metrics
-
-Measure project size and structure. No configuration required.
-
-```bash
-php soda analyse src
-```
-
 ### Quality checks
 
 Create a configuration file:
@@ -51,34 +34,27 @@ Create a configuration file:
 php soda init
 ```
 
-Or add `soda.php` manually (see [docs/SODA_PHP_CONFIG.md](docs/SODA_PHP_CONFIG.md)) using `SodaConfigurator` and fluent calls in `configure()` for IDE autocomplete.
+It creates `soda.php` in your project root:
 
 ```php
-class SodaRules extends SodaConfigurator
-{
-    protected function configure(SodaConfig $config): void
-    {
-        $config->structural()
-            ->maxMethodLength(100)
-            ->maxClassLength(800)
-            ->maxArguments(3);
+<?php
 
-        $config->complexity()
-            ->maxCyclomaticComplexity(15)
-            ->maxControlNesting(3);
+use Bunnivo\Soda\Config\Soda;
+use Bunnivo\Soda\Plugins\Rules\Structural\MaxFileLoc;
 
-        $config->breathing()
-            ->minCodeBreathingScore(25);
-    }
-}
-
-return SodaConfigurator::entry(SodaRules::class);
+return Soda::configure()
+    ->withPaths([
+        'src/',
+    ])
+    ->with([
+        new MaxFileLoc(700),
+    ]);
 ```
 
 Run the quality check:
 
 ```bash
-php soda quality src
+php soda quality
 ```
 
 Example output:
@@ -106,19 +82,30 @@ src/Controllers/UserController.php
 
 | Option           | Description                   |
 |------------------|-------------------------------|
-| `--config=`      | Path to config file           |
+| `--config=`      | Path to `soda.php`            |
 | `--report-json=` | Export report to JSON         |
 | `--suffix=`      | File suffix (default: `.php`) |
 | `--exclude=`     | Exclude paths (repeatable)    |
 
 ### Disabling rules
 
-Set `null` to disable: `"max_control_nesting": null`
+Remove a rule from the `with([...])` list to disable it.
+
+### Project metrics
+
+Measure project size and structure without a quality config:
+
+```bash
+php soda analyse src
+```
 
 ### Documentation
 
 | Document                                                           | Content                                                                     |
 |--------------------------------------------------------------------|-----------------------------------------------------------------------------|
+| [Documentation](docs/README.md)                                    | Start here for config, rules, reports, and design notes                     |
+| [Project Flow](docs/PROJECT_FLOW.md)                               | Mermaid runtime flow, rule authoring flow, and cleanup matrix               |
+| [Config](docs/SODA_PHP_CONFIG.md)                                  | Root `soda.php`, paths, rules, custom rules                                 |
 | [Structural Metrics](docs/STRUCTURAL_METRICS.md)                   | Size, dependencies, structure — good/bad examples, possible values          |
 | [Complexity & Readability](docs/COMPLEXITY_READABILITY_METRICS.md) | Cyclomatic complexity, nesting, breathing metrics — examples, config ranges |
 | [Breathing Metrics](docs/BREATHING_METRICS.md)                     | Breathing metrics overview                                                  |
@@ -142,7 +129,7 @@ Recommended order:
   run: echo "This is a placeholder for other tools"
 
 - name: Run Soda quality check
-  run: php soda quality src
+  run: php soda quality
 ```
 
 ## Contributing

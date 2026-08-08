@@ -13,7 +13,10 @@ use Bunnivo\Soda\Quality\Rule\RuleChecker;
  *
  * @example
  *   return Soda::configure()
- *       ->withPlugins([
+ *       ->withPaths([
+ *           'src/',
+ *       ])
+ *       ->with([
  *           new MaxFileLoc(700),
  *           new MaxMethodLength(100),
  *           new MaxCyclomaticComplexity(10),
@@ -23,6 +26,9 @@ final class SodaConfig
 {
     /** @var list<RuleChecker> */
     private array $checkers = [];
+
+    /** @var list<non-empty-string> */
+    private array $paths = [];
 
     /**
      * Register a plugin by its class name.
@@ -53,7 +59,7 @@ final class SodaConfig
     /**
      * Register a single rule checker by class name.
      *
-     * Prefer {@see withPlugins()} with an instance when the rule needs constructor args.
+     * Prefer {@see with()} with an instance when the rule needs constructor args.
      *
      * @param class-string<RuleChecker> $ruleClass
      *
@@ -79,37 +85,55 @@ final class SodaConfig
     }
 
     /**
+     * Register paths analysed when `soda quality` is called without arguments.
+     *
+     * @param list<non-empty-string> $paths
+     */
+    public function withPaths(array $paths): self
+    {
+        foreach ($paths as $path) {
+            if (! is_string($path) || $path === '') {
+                throw new \InvalidArgumentException('Each entry in withPaths() must be a non-empty path.');
+            }
+
+            $this->paths[] = $path;
+        }
+
+        return $this;
+    }
+
+    /**
      * Register rule or plugin **instances** directly.
      *
      * This is the primary API. Pass any mix of {@see SodaPlugin} and
      * {@see RuleChecker} instances. Each rule class carries its own threshold
      * via its constructor — no global config object required.
      *
-     * @param array<SodaPlugin|RuleChecker> $plugins
+     * @param array<SodaPlugin|RuleChecker> $rules
      *
      * @throws \InvalidArgumentException when an element implements neither interface
      *
      * @example
      *   return Soda::configure()
-     *       ->withPlugins([
+     *       ->with([
      *           new MaxFileLoc(700),
      *           new MaxCyclomaticComplexity(10),
      *           new UselessVariableRule(),
      *       ]);
      */
-    public function withPlugins(array $plugins): self
+    public function with(array $rules): self
     {
-        foreach ($plugins as $plugin) {
-            if ($plugin instanceof SodaPlugin) {
-                array_push($this->checkers, ...$plugin->checkers());
-            } elseif ($plugin instanceof RuleChecker) {
-                $this->checkers[] = $plugin;
+        foreach ($rules as $rule) {
+            if ($rule instanceof SodaPlugin) {
+                array_push($this->checkers, ...$rule->checkers());
+            } elseif ($rule instanceof RuleChecker) {
+                $this->checkers[] = $rule;
             } else {
                 throw new \InvalidArgumentException(sprintf(
-                    'Each entry in withPlugins() must implement %s or %s, got %s.',
+                    'Each entry in with() must implement %s or %s, got %s.',
                     SodaPlugin::class,
                     RuleChecker::class,
-                    get_debug_type($plugin),
+                    get_debug_type($rule),
                 ));
             }
         }
@@ -125,5 +149,13 @@ final class SodaConfig
     public function pluginCheckers(): array
     {
         return $this->checkers;
+    }
+
+    /**
+     * @return list<non-empty-string>
+     */
+    public function paths(): array
+    {
+        return $this->paths;
     }
 }

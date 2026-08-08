@@ -128,7 +128,9 @@ final class LayerMixingChecker implements RuleChecker
     {
         $dirName = strtolower(basename($directory));
 
-        if (str_contains($dirName, strtolower($dominantType))) {
+        $dominant = strtolower($dominantType);
+
+        if (str_contains($dirName, $dominant) || str_contains($dominant, $dirName)) {
             return true;
         }
 

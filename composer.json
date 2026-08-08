@@ -14,7 +14,8 @@
     "license": "BSD-3-Clause",
     "authors": [
         {
-            "name": "Bunnivo",
+            "name": "Alexadr Chernyaev",
+            "email": "bliz48rus@gmail.com",
             "role": "lead"
         }
     ],
@@ -58,7 +59,7 @@
         "test": "phpunit --exclude-group performance --fail-on-deprecation --display-deprecations",
         "test:unit": "phpunit --testsuite unit",
         "test:e2e": "phpunit --testsuite end-to-end",
-        "quality": "@php soda quality src",
+        "quality": "@php soda quality",
         "pint": "pint  --quiet",
         "phpstan": "phpstan analyse src --no-progress",
         "rector": "rector process src --no-progress-bar",

@@ -41,18 +41,30 @@ final class InitCommandTest extends TestCase
             $content = file_get_contents($path);
             $this->assertNotFalse($content);
             $this->assertStringContainsString('Soda::configure()', $content);
-            $this->assertStringContainsString('->withPlugins([', $content);
+            $this->assertStringContainsString('->withPaths([', $content);
+            $this->assertStringContainsString("'src/'", $content);
+            $this->assertStringContainsString('->with([', $content);
             $this->assertStringContainsString('new MaxMethodLength(', $content);
+            $this->assertStringContainsString('new MaxMethodLength(100)', $content);
+            $this->assertStringContainsString('new MaxFileLoc(700)', $content);
+            $this->assertStringContainsString('new MaxLineLength(100)', $content);
+            $this->assertStringContainsString('new VariableNameLength(min: 3, max: 16)', $content);
+            $this->assertStringContainsString('new MethodNameLength(min: 3, max: 32)', $content);
+            $this->assertStringContainsString('new ClassNameLength(min: 3, max: 32)', $content);
             $this->assertStringContainsString('new MaxLayerDominancePercentage(', $content);
             $this->assertStringContainsString('new OnlyListArraysAllowed(', $content);
             $this->assertStringContainsString('new NoNumericArrayIndex(', $content);
             $this->assertStringContainsString('new NoUnusedMethods(', $content);
             $this->assertStringContainsString('new UselessVariableRule(', $content);
+            $this->assertStringContainsString('new MethodsFollowCallOrder(0)', $content);
+            $this->assertStringContainsString("new MultilineMethodPhpDoc(['public'])", $content);
+            $this->assertStringContainsString("new MultilinePropertyPhpDoc(['public'])", $content);
 
             $config = QualityConfig::fromPhpConfiguratorFile($path);
 
             $this->assertNotEmpty($config->pluginCheckers);
             $this->assertTrue($config->noBuiltinRules);
+            $this->assertSame(['src/'], $config->paths);
         } finally {
             chdir($cwd);
             if (is_file($path)) {

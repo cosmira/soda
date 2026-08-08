@@ -71,7 +71,9 @@ final class QualityConfigTest extends TestCase
 declare(strict_types=1);
 use Bunnivo\Soda\Config\Soda;
 use Bunnivo\Soda\Plugins\Rules\Structural\MaxMethodLength;
-return Soda::configure()->withPlugins([new MaxMethodLength(90)]);
+return Soda::configure()
+    ->withPaths(['src/'])
+    ->with([new MaxMethodLength(90)]);
 PHP
         );
 
@@ -97,131 +99,28 @@ PHP
         }
     }
 
-    public function testRuleWithZeroDisablesRule(): void
+    public function testResolveIgnoresDotSodaPhp(): void
     {
-        $config = QualityConfig::fromRulesData([
-            'rules' => [
-                'structural' => [],
-                'complexity' => [
-                    'max_control_nesting' => 0,
-                ],
-                'breathing' => [
-                    'min_code_breathing_score' => 0,
-                ],
-                'naming' => [],
-            ],
-        ]);
-
-        $this->assertSame(0, $config->getRule('max_control_nesting'));
-        $this->assertSame(0, $config->getRule('min_code_breathing_score'));
-    }
-
-    public function testNullRuleValueDisablesRule(): void
-    {
-        $config = QualityConfig::fromRulesData([
-            'rules' => [
-                'structural' => [
-                    'max_method_length' => null,
-                ],
-                'complexity' => [],
-                'breathing'  => [],
-                'naming'     => [],
-            ],
-        ]);
-
-        $this->assertContains('max_method_length', $config->disabledRuleIds);
-        $this->assertFalse($config->isRuleEnabled('max_method_length'));
-        $this->assertTrue($config->isRuleEnabled('max_class_length'));
-    }
-
-    public function testFromRulesDataUsesDefaultsForMissingSections(): void
-    {
-        $config = QualityConfig::fromRulesData([
-            'rules' => [
-                'structural' => [
-                    'max_method_length' => 50,
-                ],
-                'complexity' => [],
-                'breathing'  => [],
-                'naming'     => [],
-            ],
-        ]);
-
-        $this->assertSame(50, $config->getRule('max_method_length'));
-        $this->assertSame(500, $config->getRule('max_class_length'));
-    }
-
-    public function testFromRulesDataLoadsGenericRuleExceptions(): void
-    {
-        $config = QualityConfig::fromRulesData([
-            'rules' => [
-                'structural' => [],
-                'complexity' => [],
-                'breathing'  => [],
-                'naming'     => [
-                    'boolean_methods_without_prefix' => [
-                        'threshold'  => 0,
-                        'exceptions' => [
-                            'methods' => ['runningUnitTests', 'App\Application::runningUnitTests'],
-                            'classes' => ['App\Application'],
-                            'files'   => ['/tmp/demo.php'],
-                        ],
-                    ],
-                ],
-            ],
-        ]);
-
-        $this->assertSame(
-            [
-                'files'   => ['/tmp/demo.php'],
-                'classes' => ['App\Application'],
-                'methods' => ['runningUnitTests', 'App\Application::runningUnitTests'],
-            ],
-            $config->ruleExceptions('boolean_methods_without_prefix'),
+        $dir = sys_get_temp_dir().'/soda-dot-config-'.uniqid();
+        mkdir($dir, 0700, true);
+        $sodaPath = $dir.'/.soda.php';
+        file_put_contents($sodaPath, <<<'PHP'
+<?php
+declare(strict_types=1);
+use Bunnivo\Soda\Config\Soda;
+use Bunnivo\Soda\Plugins\Rules\Structural\MaxMethodLength;
+return Soda::configure()
+    ->withPaths(['src/'])
+    ->with([new MaxMethodLength(90)]);
+PHP
         );
-    }
 
-    public function testFromRulesDataLoadsRuleOptions(): void
-    {
-        $config = QualityConfig::fromRulesData([
-            'rules' => [
-                'structural' => [
-                    'max_layer_dominance_percentage' => [
-                        'threshold' => 60,
-                        'min_files' => 6,
-                    ],
-                ],
-                'complexity' => [],
-                'breathing'  => [],
-                'naming'     => [],
-            ],
-        ]);
-
-        $this->assertSame(60, $config->getRule('max_layer_dominance_percentage'));
-        $this->assertSame(['min_files' => 6], $config->ruleOptions('max_layer_dominance_percentage'));
-    }
-
-    public function testFromRulesDataSupportsLegacyBooleanMethodExceptionsKey(): void
-    {
-        $config = QualityConfig::fromRulesData([
-            'rules' => [
-                'structural' => [],
-                'complexity' => [],
-                'breathing'  => [],
-                'naming'     => [
-                    'boolean_methods_without_prefix'   => 0,
-                    'boolean_method_prefix_exceptions' => ['runningUnitTests'],
-                ],
-            ],
-        ]);
-
-        $this->assertSame(
-            [
-                'files'   => [],
-                'classes' => [],
-                'methods' => ['runningUnitTests'],
-            ],
-            $config->ruleExceptions('boolean_methods_without_prefix'),
-        );
+        try {
+            $config = ConfigResolver::resolveConfig([$dir.'/dummy.php']);
+            $this->assertSame(100, $config->getRule('max_method_length'));
+        } finally {
+            unlink($sodaPath);
+            rmdir($dir);
+        }
     }
 }

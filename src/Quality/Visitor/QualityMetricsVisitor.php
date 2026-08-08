@@ -77,9 +77,9 @@ final class QualityMetricsVisitor extends NullableReturnVisitor
     {
         match (true) {
             $node instanceof Class_, $node instanceof Trait_ => $this->handleClassOrTrait($node),
-            $node instanceof ClassMethod => $this->handleClassMethod($node),
-            $node instanceof Function_   => $this->handleFunction($node),
-            default                      => null,
+            $node instanceof ClassMethod                     => $this->handleClassMethod($node),
+            $node instanceof Function_                       => $this->handleFunction($node),
+            default                                          => null,
         };
     }
 

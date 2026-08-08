@@ -45,9 +45,8 @@ final class BooleanMethodPrefixCheckerTest extends TestCase
     {
         $result = $this->evaluate(
             new QualityConfig(
-                ['boolean_methods_without_prefix' => 0],
-                [],
-                new QualityConfigRuleState(['boolean_methods_without_prefix' => [
+                rules: ['boolean_methods_without_prefix' => 0],
+                ruleState: new QualityConfigRuleState(['boolean_methods_without_prefix' => [
                     'files'   => [],
                     'classes' => [],
                     'methods' => ['runningUnitTests'],
@@ -78,9 +77,8 @@ final class BooleanMethodPrefixCheckerTest extends TestCase
     {
         $result = $this->evaluate(
             new QualityConfig(
-                ['boolean_methods_without_prefix' => 0],
-                [],
-                new QualityConfigRuleState(['boolean_methods_without_prefix' => [
+                rules: ['boolean_methods_without_prefix' => 0],
+                ruleState: new QualityConfigRuleState(['boolean_methods_without_prefix' => [
                     'files'   => [],
                     'classes' => ['App\Application'],
                     'methods' => [],

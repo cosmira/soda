@@ -11,7 +11,10 @@ use Bunnivo\Soda\Plugins\Rules\Structural\MaxMethodLength;
 use Bunnivo\Soda\Plugins\Rules\Structural\MaxMethodsPerClass;
 
 return Soda::configure()
-    ->withPlugins([
+    ->withPaths([
+        'src/',
+    ])
+    ->with([
         new MaxMethodLength(30),
         new MaxClassLength(600),
         new MaxArguments(4),

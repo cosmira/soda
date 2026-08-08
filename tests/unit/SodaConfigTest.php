@@ -14,10 +14,10 @@ use PHPUnit\Framework\TestCase;
 
 final class SodaConfigTest extends TestCase
 {
-    public function testWithPluginsAcceptsRuleInstances(): void
+    public function testWithAcceptsRuleInstances(): void
     {
         $soda = Soda::configure()
-            ->withPlugins([
+            ->with([
                 new MaxMethodLength(80),
                 new MaxFileLoc(500),
             ]);
@@ -29,20 +29,27 @@ final class SodaConfigTest extends TestCase
         $this->assertInstanceOf(MaxFileLoc::class, $checkers[1]);
     }
 
-    public function testWithPluginsIsChainable(): void
+    public function testWithIsChainable(): void
     {
         $soda = Soda::configure()
-            ->withPlugins([new MaxFileLoc(300)])
-            ->withPlugins([new MaxMethodLength(100)]);
+            ->with([new MaxFileLoc(300)])
+            ->with([new MaxMethodLength(100)]);
 
         $this->assertCount(2, $soda->pluginCheckers());
     }
 
-    public function testWithPluginsRejectsInvalidType(): void
+    public function testWithRejectsInvalidType(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        Soda::configure()->withPlugins([new \stdClass]);
+        Soda::configure()->with([new \stdClass]);
+    }
+
+    public function testWithPathsRegistersAnalysisPaths(): void
+    {
+        $soda = Soda::configure()->withPaths(['src/', 'tests/']);
+
+        $this->assertSame(['src/', 'tests/'], $soda->paths());
     }
 
     public function testFromPhpConfiguratorFileLoadsInstance(): void
@@ -53,13 +60,16 @@ final class SodaConfigTest extends TestCase
 declare(strict_types=1);
 use Bunnivo\Soda\Config\Soda;
 use Bunnivo\Soda\Plugins\Rules\Structural\MaxMethodLength;
-return Soda::configure()->withPlugins([new MaxMethodLength(77)]);
+return Soda::configure()
+    ->withPaths(['src/'])
+    ->with([new MaxMethodLength(77)]);
 PHP);
 
         try {
             $qc = QualityConfig::fromPhpConfiguratorFile($path);
             $this->assertCount(1, $qc->pluginCheckers);
             $this->assertInstanceOf(MaxMethodLength::class, $qc->pluginCheckers[0]);
+            $this->assertSame(['src/'], $qc->paths);
         } finally {
             unlink($path);
         }

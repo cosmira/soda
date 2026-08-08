@@ -96,9 +96,8 @@ final class LayerMixingCheckerTest extends TestCase
     private function evaluate(array $ruleConfig, array $fileTypes): QualityResult
     {
         $config = new QualityConfig(
-            ['max_layer_dominance_percentage' => $ruleConfig['threshold']],
-            [],
-            new QualityConfigRuleState([], ['max_layer_dominance_percentage' => ['min_files' => $ruleConfig['min_files']]]),
+            rules: ['max_layer_dominance_percentage' => $ruleConfig['threshold']],
+            ruleState: new QualityConfigRuleState([], ['max_layer_dominance_percentage' => ['min_files' => $ruleConfig['min_files']]]),
         );
         $engine = new QualityEngine($config, [new LayerMixingChecker()]);
 

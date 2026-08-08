@@ -30,7 +30,14 @@ final class PhpFileQualityExtractor
      * @throws ParserException
      * @throws Error
      *
-     * @psalm-return array{metrics: array, complexity: ComplexityCollection, nesting: array<string, array{depth: int, line: int}>, returns: array<string, int>, booleanConditions: array<string, list<array{line: int, count: int}>>, tryCatch: array<string, int>}
+     * @psalm-return array{
+     *   metrics: array,
+     *   complexity: ComplexityCollection,
+     *   nesting: array<string, array{depth: int, line: int}>,
+     *   returns: array<string, int>,
+     *   booleanConditions: array<string, list<array{line: int, count: int}>>,
+     *   tryCatch: array<string, int>
+     * }
      */
     public function extract(string $file): array
     {

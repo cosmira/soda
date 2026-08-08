@@ -22,4 +22,4 @@ Options:
   list        List commands
   quality     Analyse code quality and check against configured thresholds
  list
-  list:rules  List built-in quality rule ids (from RuleCatalog)
+  list:rules  List built-in quality rules

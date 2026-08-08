@@ -6,12 +6,13 @@ namespace Bunnivo\Soda\Plugins;
 
 use Bunnivo\Soda\Config\SodaPlugin;
 use Bunnivo\Soda\Quality\Rule\BooleanMethodPrefixChecker;
+use Bunnivo\Soda\Quality\Rule\NameLengthChecker;
 use Bunnivo\Soda\Quality\Rule\RedundantNamingChecker;
 
 /**
  * Naming convention rules: redundant naming, boolean method prefixes.
  *
- * Covers: max_redundant_naming, boolean_methods_without_prefix.
+ * Covers: redundant names, boolean method prefixes, and name lengths.
  */
 final class NamingPlugin implements SodaPlugin
 {
@@ -21,6 +22,7 @@ final class NamingPlugin implements SodaPlugin
         return [
             new RedundantNamingChecker,
             new BooleanMethodPrefixChecker,
+            new NameLengthChecker,
         ];
     }
 }

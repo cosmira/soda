@@ -16,8 +16,8 @@ final class ComplexityStatistics
         $values = collect($items)->map(fn ($item) => $item->cyclomaticComplexity());
 
         return [
-            'minimum' => (int) ($values->min() ?? 0),
-            'maximum' => (int) ($values->max() ?? 0),
+            'minimum' => $values->min() ?? 0,
+            'maximum' => $values->max() ?? 0,
             'average' => (float) ($values->avg() ?? 0.0),
         ];
     }

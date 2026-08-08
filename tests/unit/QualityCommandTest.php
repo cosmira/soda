@@ -127,10 +127,11 @@ final class QualityCommandTest extends TestCase
 
 declare(strict_types=1);
 
-use Bunnivo\Soda\Config\SodaConfig;
+use Bunnivo\Soda\Config\Soda;
 
-return static function (SodaConfig $config): void {
-};
+return Soda::configure()
+    ->withPaths([__DIR__])
+    ->with([]);
 PHP);
 
         try {
@@ -157,9 +158,9 @@ PHP);
         }
     }
 
-    public function testQualityAliasDoesNotCrashOnRegularAssignments(): void
+    public function testQualityDoesNotCrashOnRegularAssignments(): void
     {
-        $dir = sys_get_temp_dir().'/soda-quality-alias-'.uniqid();
+        $dir = sys_get_temp_dir().'/soda-quality-assignments-'.uniqid();
         mkdir($dir, 0700, true);
         $php = $dir.'/Example.php';
         file_put_contents($php, <<<'PHP'
@@ -183,10 +184,11 @@ PHP);
 
 declare(strict_types=1);
 
-use Bunnivo\Soda\Config\SodaConfig;
+use Bunnivo\Soda\Config\Soda;
 
-return static function (SodaConfig $config): void {
-};
+return Soda::configure()
+    ->withPaths([__DIR__])
+    ->with([]);
 PHP);
 
         try {
@@ -196,7 +198,7 @@ PHP);
             $artisan->add(new QualityCommand());
 
             $input = new ArrayInput([
-                'command'  => 'q',
+                'command'  => 'quality',
                 'path'     => [$dir],
                 '--config' => $soda,
             ]);
@@ -226,7 +228,9 @@ declare(strict_types=1);
 use Bunnivo\Soda\Config\Soda;
 use Bunnivo\Soda\Plugins\Rules\Structural\MaxLayerDominancePercentage;
 
-return Soda::configure()->withPlugins([new MaxLayerDominancePercentage(50, 4)]);
+return Soda::configure()
+    ->withPaths(['app/Services'])
+    ->with([new MaxLayerDominancePercentage(50, 4)]);
 PHP);
 
         foreach (range(1, 5) as $index) {
@@ -246,7 +250,7 @@ PHP);
             $artisan->add(new QualityCommand());
 
             $input = new ArrayInput([
-                'command'  => 'q',
+                'command'  => 'quality',
                 'path'     => [$dir.'/app'],
                 '--config' => $soda,
             ]);

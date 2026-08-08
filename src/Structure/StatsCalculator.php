@@ -16,7 +16,21 @@ final class StatsCalculator
     /**
      * @param array<string, mixed> $stats
      *
-     * @return array{llocClasses: int, llocFunctions: int, llocGlobal: int, classLlocMin: int, classLlocAvg: int, classLlocMax: int, methodLlocMin: int, methodLlocAvg: int, methodLlocMax: int, averageMethodsPerClass: int, minimumMethodsPerClass: int, maximumMethodsPerClass: int, averageFunctionLength: int}
+     * @return array{
+     *   llocClasses: int,
+     *   llocFunctions: int,
+     *   llocGlobal: int,
+     *   classLlocMin: int,
+     *   classLlocAvg: int,
+     *   classLlocMax: int,
+     *   methodLlocMin: int,
+     *   methodLlocAvg: int,
+     *   methodLlocMax: int,
+     *   averageMethodsPerClass: int,
+     *   minimumMethodsPerClass: int,
+     *   maximumMethodsPerClass: int,
+     *   averageFunctionLength: int
+     * }
      */
     public static function compute(array $stats, int $lloc): array
     {

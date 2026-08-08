@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Bunnivo\Soda\Quality\RuleStructure;
 
 use Bunnivo\Soda\Quality\RuleCatalog\RuleDefinition;
-use Bunnivo\Soda\Quality\RuleCatalog\RuleDefinitionPack;
 use Bunnivo\Soda\Quality\RuleCatalog\RuleIdentity;
 use Bunnivo\Soda\Quality\RuleCatalog\RulePresentation;
 use Bunnivo\Soda\Quality\RuleCatalog\RuleScoring;
@@ -21,9 +20,9 @@ final class StructuralRuleSurfaceApiDefinitions
     {
 
         return [
-            RuleDefinitionPack::tie(new RuleIdentity('max_public_methods', $sectionKey), new RulePresentation('Public methods:', 'warning'), new RuleScoring(20)),
+            RuleDefinition::of(new RuleIdentity('max_public_methods', $sectionKey), new RulePresentation('Public methods:', 'warning'), new RuleScoring(20)),
 
-            RuleDefinitionPack::tie(new RuleIdentity('max_dependencies', $sectionKey), new RulePresentation('Dependencies:', 'warning'), new RuleScoring(8)),
+            RuleDefinition::of(new RuleIdentity('max_dependencies', $sectionKey), new RulePresentation('Dependencies:', 'warning'), new RuleScoring(8)),
         ];
     }
 }

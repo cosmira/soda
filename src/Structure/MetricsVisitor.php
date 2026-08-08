@@ -80,7 +80,21 @@ final class MetricsVisitor extends NullableReturnVisitor
     /**
      * @param array<string, mixed> $stats
      *
-     * @return array{llocClasses: int, llocFunctions: int, llocGlobal: int, classLlocMin: int, classLlocAvg: int, classLlocMax: int, methodLlocMin: int, methodLlocAvg: int, methodLlocMax: int, averageMethodsPerClass: int, minimumMethodsPerClass: int, maximumMethodsPerClass: int, averageFunctionLength: int}
+     * @return array{
+     *   llocClasses: int,
+     *   llocFunctions: int,
+     *   llocGlobal: int,
+     *   classLlocMin: int,
+     *   classLlocAvg: int,
+     *   classLlocMax: int,
+     *   methodLlocMin: int,
+     *   methodLlocAvg: int,
+     *   methodLlocMax: int,
+     *   averageMethodsPerClass: int,
+     *   minimumMethodsPerClass: int,
+     *   maximumMethodsPerClass: int,
+     *   averageFunctionLength: int
+     * }
      *
      * @psalm-suppress PossiblyUnusedMethod used by tests and external callers
      */

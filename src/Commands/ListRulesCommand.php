@@ -11,7 +11,7 @@ final class ListRulesCommand extends Command
 {
     protected $signature = 'list:rules';
 
-    protected $description = 'List built-in quality rule ids (from RuleCatalog)';
+    protected $description = 'List built-in quality rules';
 
     public function handle(): int
     {

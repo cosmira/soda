@@ -6,6 +6,7 @@ namespace Bunnivo\Soda\Commands;
 
 use Bunnivo\Soda\Analyzer;
 use Bunnivo\Soda\Formatter\JsonResultFormatter;
+use Bunnivo\Soda\Quality\Config\ConfigLoader;
 use Bunnivo\Soda\Quality\ConfigException;
 use Bunnivo\Soda\Quality\Engine\QualityAnalysisContract;
 use Bunnivo\Soda\Quality\QualityResult;
@@ -13,9 +14,11 @@ use Bunnivo\Soda\Quality\Report\ReportFormatter;
 use Bunnivo\Soda\Quality\Report\RuleMetadata;
 
 use function file_put_contents;
+use function getcwd;
 
 use Illuminate\Console\Command;
 
+use function is_readable;
 use function is_string;
 use function json_encode;
 
@@ -34,7 +37,7 @@ final class QualityCommand extends Command
         {--suffix= : Include files with names ending in suffix (default: .php)}
         {--exclude=* : Exclude files with path in their path}
         {--debug : Print debugging information}
-        {--config= : Path to soda.php (callable config)}
+        {--config= : Path to soda.php}
         {--report-json= : Write quality report to JSON file}
     ';
 
@@ -48,8 +51,11 @@ final class QualityCommand extends Command
         /** @var list<non-empty-string> $directories */
         $directories = (array) $this->argument('path');
 
+        $configPath = $this->resolveConfigPath();
+        $directories = $this->directoriesFromArgumentsOrConfig($directories, $configPath);
+
         if ($directories === []) {
-            $this->error('No directory specified');
+            $this->error('No directory specified. Add withPaths([...]) to soda.php or pass a path.');
 
             return self::FAILURE;
         }
@@ -61,8 +67,6 @@ final class QualityCommand extends Command
 
             return self::FAILURE;
         }
-
-        $configPath = $this->resolveConfigPath();
 
         $result = Analyzer::paths($files)
             ->debug((bool) $this->option('debug'))
@@ -105,6 +109,42 @@ final class QualityCommand extends Command
         }
 
         return $configOpt;
+    }
+
+    /**
+     * @param list<non-empty-string> $directories
+     *
+     * @return list<non-empty-string>
+     */
+    private function directoriesFromArgumentsOrConfig(array $directories, ?string $configPath): array
+    {
+        if ($directories !== []) {
+            return $directories;
+        }
+
+        $path = $configPath ?? $this->defaultConfigPath();
+
+        if ($path === null) {
+            return [];
+        }
+
+        return (new ConfigLoader)->load($path)->paths;
+    }
+
+    /**
+     * @return non-empty-string|null
+     */
+    private function defaultConfigPath(): ?string
+    {
+        $cwd = getcwd();
+
+        if ($cwd === false || $cwd === '') {
+            return null;
+        }
+
+        $path = $cwd.'/soda.php';
+
+        return is_readable($path) ? $path : null;
     }
 
     private function writeReportJson(QualityResult $result): void

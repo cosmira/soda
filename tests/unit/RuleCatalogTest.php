@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Bunnivo\Soda;
 
+use Bunnivo\Soda\Config\SodaInitFileEmitter;
 use Bunnivo\Soda\Quality\Config\RuleSections;
 use Bunnivo\Soda\Quality\QualityConfig;
 use Bunnivo\Soda\Quality\Report\RuleMetadata;
+use Bunnivo\Soda\Quality\Rule\RuleChecker;
 use Bunnivo\Soda\Quality\RuleCatalog\RuleCatalog;
 use PHPUnit\Framework\TestCase;
 
@@ -41,5 +43,24 @@ final class RuleCatalogTest extends TestCase
     public function testSectionsOrderedMatchesRuleSections(): void
     {
         $this->assertSame(RuleSections::sections(), RuleCatalog::sectionsOrdered());
+    }
+
+    public function testInitEmitterCoversEveryCatalogRule(): void
+    {
+        $catalogIds = array_keys(RuleCatalog::definitions());
+        $emittedIds = SodaInitFileEmitter::ruleIds();
+
+        sort($catalogIds);
+        sort($emittedIds);
+
+        $this->assertSame($catalogIds, $emittedIds);
+    }
+
+    public function testInitDefinitionsPointToExistingRuleCheckers(): void
+    {
+        foreach (RuleCatalog::initDefinitions() as $id => $init) {
+            $this->assertTrue(class_exists($init->class), $id);
+            $this->assertContains(RuleChecker::class, class_implements($init->class), $id);
+        }
     }
 }

@@ -15,7 +15,9 @@ use Bunnivo\Soda\Quality\QualityEngine;
 use Bunnivo\Soda\Quality\Rule\BooleanMethodPrefixChecker;
 use Bunnivo\Soda\Quality\Rule\BreathingChecker;
 use Bunnivo\Soda\Quality\Rule\ClassRules;
+use Bunnivo\Soda\Quality\Rule\LineLengthChecker;
 use Bunnivo\Soda\Quality\Rule\MethodRules;
+use Bunnivo\Soda\Quality\Rule\NameLengthChecker;
 use Bunnivo\Soda\Quality\Rule\RedundantNamingChecker;
 use Bunnivo\Soda\Quality\Rule\RuleChecker;
 use PHPUnit\Framework\TestCase;
@@ -34,12 +36,14 @@ final class BuiltinPluginsTest extends TestCase
         $this->assertContains(BreathingChecker::class, $classNames);
         $this->assertContains(RedundantNamingChecker::class, $classNames);
         $this->assertContains(BooleanMethodPrefixChecker::class, $classNames);
+        $this->assertContains(NameLengthChecker::class, $classNames);
     }
 
     public function testStructuralPluginContainsClassRules(): void
     {
         $classNames = array_map(fn (RuleChecker $c) => $c::class, (new StructuralPlugin)->checkers());
         $this->assertContains(ClassRules::class, $classNames);
+        $this->assertContains(LineLengthChecker::class, $classNames);
     }
 
     public function testComplexityPluginContainsMethodRules(): void
@@ -61,7 +65,7 @@ final class BuiltinPluginsTest extends TestCase
         $this->assertContains(BooleanMethodPrefixChecker::class, $classNames);
     }
 
-    // --- plugin cherry-picking via withPlugins ---
+    // --- plugin cherry-picking via with() ---
 
     public function testSodaConfigCherryPickedPlugins(): void
     {

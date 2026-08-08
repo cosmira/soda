@@ -15,13 +15,23 @@ use Bunnivo\Soda\Quality\Rule\RuleChecker;
  *
  * @example Explicit full setup in soda.php:
  *
- *   $config->withoutBuiltins()
- *          ->plugin(StandardPlugin::class)
- *          ->rule(MyCustomRule::class);
+ *   return Soda::configure()
+ *       ->withPaths([
+ *           'src/',
+ *       ])
+ *       ->with([
+ *           new StandardPlugin(),
+ *           new MyCustomRule(),
+ *       ]);
  * @example Start from scratch — only your rules:
  *
- *   $config->withoutBuiltins()
- *          ->rule(MyCustomRule::class);
+ *   return Soda::configure()
+ *       ->withPaths([
+ *           'src/',
+ *       ])
+ *       ->with([
+ *           new MyCustomRule(),
+ *       ]);
  */
 final class StandardPlugin implements SodaPlugin
 {
