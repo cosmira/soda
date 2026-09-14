@@ -7,11 +7,13 @@ namespace Cosmira\Soda\Rules\Structure;
 final readonly class TrivialDelegatingClassFinding
 {
     /**
-     * Initialize the configured values and collaborators for this instance.
+     * Identify the forwarding class, its operations and their shared collaborator.
+     *
+     * @param non-empty-list<string> $methods
      */
     public function __construct(
         public string $class,
-        public string $method,
+        public array $methods,
         public string $delegate,
         public int $line,
     ) {}

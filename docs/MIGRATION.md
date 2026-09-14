@@ -343,3 +343,26 @@ list directly; custom fact producers must respect the `FileMetrics` shape.
 Its summary field is `roleCounts`; `PLAIN_ROLE` replaces `PLAIN_TYPE`. These are
 architectural roles inferred from name suffixes, not PHP types or parent classes.
 The rule ID, settings, heuristic and existing diagnostic text are unchanged.
+
+## Practical rule contracts
+
+`NoTrivialDelegatingClasses` now checks all non-constructor operations. A class
+whose methods transparently forward to the same dependency produces one finding,
+including the method names. A single-method report retains its `method` field;
+a multi-method report uses `method: null` and identifies the class and its line.
+Existing contract, trait, attribute, adapter and behavior exclusions remain.
+The internal `TrivialDelegatingClassFinding::$method` becomes `$methods`, a
+non-empty list. The message no longer suggests adding an interface as a remedy.
+
+`NoBooleanParameters` treats direct readonly state consistently across promoted
+parameters and explicit property assignments. Every constructor-body reference
+to the parameter must be a direct top-level assignment to a declared readonly
+property on `$this`. Promoted parameters with no body references remain allowed.
+Direct uses in conditions, transformations, calls, closures or references are
+reported, including on promoted parameters previously exempted unconditionally.
+This is deliberately a local syntax policy: it does not prove the absence of
+behavior through property reads, dynamic access or aliases.
+
+Both changes affect findings explicitly; IDs, constructor settings and the
+standard selection remain unchanged. See [Practical Design](DESIGN_PHILOSOPHY.md)
+for executable positive examples and counterexamples.

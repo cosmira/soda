@@ -68,6 +68,7 @@ PHPStan or Psalm by checking code structure and maintainability.
 - [Custom rules](docs/PLUGINS.md): implement a named PHP class.
 - [Report JSON](docs/QUALITY_REPORT_JSON.md): machine-readable results.
 - [Project flow](docs/PROJECT_FLOW.md): where parsing, checks and reporting happen.
+- [Design philosophy](docs/DESIGN_PHILOSOPHY.md): concerns, fluent APIs and value objects with executable examples.
 - [Migration](docs/MIGRATION.md): changed namespaces and extension contracts.
 
 Rule authors can inspect available facts with `vendor/bin/soda list:metrics`.

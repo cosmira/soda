@@ -37,6 +37,8 @@ Inside this repository, use `php soda` instead of `vendor/bin/soda`.
 | Page | What It Covers |
 |------|----------------|
 | [Laravel Style Architecture](LARAVEL_STYLE_ARCHITECTURE.md) | Architecture direction and public API taste. |
+| [Practical Design](DESIGN_PHILOSOPHY.md) | Concerns, fluent APIs, value objects and evidence before enforcement. |
+| [Practical Rules Plan](PRAGMATIC_RULES_PLAN.md) | Research, compatibility decisions and implementation scope. |
 | [Simplification Review](SIMPLIFICATION_REVIEW.md) | Ten sourced review perspectives, evidence and remaining costs. |
 | [Expert Rule Proposals](EXPERT_RULE_PROPOSALS.md) | Historical review notes and proposed rule contracts. |
 

@@ -1,0 +1,38 @@
+<?php
+require '/Users/tabuna/GitHub/quality-tools/soda/vendor/autoload.php';
+use Cosmira\Soda\Analysis\Runner;
+use Cosmira\Soda\Config\Soda;
+use Cosmira\Soda\Rules\Architecture\NoBooleanParameters;
+use Cosmira\Soda\Rules\Architecture\NoObjectCloning;
+use Cosmira\Soda\Rules\Complexity\NoElseBranches;
+use Cosmira\Soda\Rules\Complexity\MaxReturnStatements;
+use Cosmira\Soda\Rules\Structure\NoTrivialDelegatingClasses;
+use Cosmira\Soda\Rules\Structure\MaxLayerDominancePercentage;
+use Cosmira\Soda\Rules\Usage\OnlyListArraysAllowed;
+$cases = [
+ 'guards' => ['function label(int $number): string { if ($number === 1) return "one"; if ($number === 2) return "two"; if ($number === 3) return "three"; if ($number === 4) return "four"; if ($number === 5) return "five"; return "other"; }', [new NoElseBranches(), new MaxReturnStatements(4)]],
+ 'boolean_promoted' => ['final readonly class Flag { public function __construct(public bool $enabled) {} }', [new NoBooleanParameters()]],
+ 'boolean_assigned' => ['final readonly class Flag { public bool $enabled; public function __construct(bool $enabled) { $this->enabled = $enabled; } }', [new NoBooleanParameters()]],
+ 'forward_one' => ['final class Facade { public function __construct(private object $inner) {} public function first(int $value): int { return $this->inner->first($value); } }', [new NoTrivialDelegatingClasses()]],
+ 'forward_two' => ['final class Facade { public function __construct(private object $inner) {} public function first(int $value): int { return $this->inner->first($value); } public function second(int $value): int { return $this->inner->second($value); } }', [new NoTrivialDelegatingClasses()]],
+ 'array_direct' => ['function identifier(array $record): int { return $record["user"]["id"]; }', [new OnlyListArraysAllowed()]],
+ 'array_steps' => ['function identifier(array $record): int { $user = $record["user"]; return $user["id"]; }', [new OnlyListArraysAllowed()]],
+ 'immutable_fluent' => ['final class Query { private int $limit = 10; public function limit(int $limit): self { $copy = clone $this; $copy->limit = $limit; return $copy; } }', [new NoObjectCloning()]],
+];
+$result = [];
+foreach ($cases as $name => [$source, $rules]) {
+ $path = __DIR__."/$name.php";
+ file_put_contents($path, "<?php\n".$source."\n");
+ $check = (new Runner())->check([$path], Soda::configure()->with($rules));
+ $result[$name] = $check->violations->map(fn ($v) => ['rule'=>$v->rule,'value'=>$v->value,'threshold'=>$v->threshold,'message'=>$v->message])->all();
+}
+foreach (['Feature', 'Services'] as $directory) {
+ @mkdir(__DIR__."/$directory"); $paths=[];
+ foreach (['FirstService','SecondService','ThirdService','EndpointController'] as $name) {
+  $path=__DIR__."/$directory/$name.php";
+  file_put_contents($path, "<?php\nnamespace Example; final class $name {}\n"); $paths[]=$path;
+ }
+ $check=(new Runner())->check($paths,Soda::configure()->with([new MaxLayerDominancePercentage(50,4)]));
+ $result['directory_'.$directory]=$check->violations->map(fn ($v)=>['rule'=>$v->rule,'value'=>$v->value,'message'=>$v->message])->all();
+}
+echo json_encode($result, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES),"\n";

@@ -269,9 +269,10 @@ if (! $order->isPaid()) {
 ### no_trivial_delegating_classes
 
 Reports a concrete class that has no explicit contract and contributes no
-behavior: its only public operation forwards unchanged arguments to the same
-operation on its only dependency. This is a high-confidence `Lazy Class` /
-`Middle Man` signal produced by mechanical extraction of ever-smaller classes.
+behavior: all its operations forward unchanged arguments to the corresponding
+operations on its only dependency. A second forwarding method does not remove
+the signal. The rule emits one violation per class and lists the operations.
+This is a narrow structural signal, not proof that every wrapper is useless.
 
 ```php
 new NoTrivialDelegatingClasses()
@@ -292,6 +293,12 @@ final class OrderSaver
 
 Inline a pass-through class when it has no independent reason to change. Keep
 the small class when it owns behavior or establishes a real boundary:
+
+An existing interface, parent, trait or attribute makes the class outside this
+detector's conservative scope. Adding an interface solely to silence the rule
+does not demonstrate a useful boundary. An adapter that changes the called
+operation, argument transformation, extra state or constructor behavior also
+remains outside its scope.
 
 ```php
 // Good — the explicit port makes alternative implementations meaningful.

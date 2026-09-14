@@ -1,0 +1,53 @@
+{
+    "guards": [
+        {
+            "rule": "max_return_statements",
+            "value": 6,
+            "threshold": 4,
+            "message": null
+        }
+    ],
+    "boolean_promoted": [],
+    "boolean_assigned": [
+        {
+            "rule": "no_boolean_parameters",
+            "value": 1,
+            "threshold": 0,
+            "message": "Boolean parameters hide alternate behaviors. Use separate named methods or a policy value."
+        }
+    ],
+    "forward_one": [
+        {
+            "rule": "no_trivial_delegating_classes",
+            "value": 1,
+            "threshold": 0,
+            "message": "Facade::first() only forwards unchanged arguments to $this->inner->first(). Inline the class or give it an explicit contract or behavior."
+        }
+    ],
+    "forward_two": [],
+    "array_direct": [
+        {
+            "rule": "only_list_arrays",
+            "value": 1,
+            "threshold": 0,
+            "message": "Nested array indexing is forbidden. Prefer objects, a flat list, or split access into steps instead of chaining `[]`."
+        }
+    ],
+    "array_steps": [],
+    "immutable_fluent": [
+        {
+            "rule": "no_object_cloning",
+            "value": 1,
+            "threshold": 0,
+            "message": "Object cloning hides copy semantics. Use an explicit copy method or construct a new value."
+        }
+    ],
+    "directory_Feature": [
+        {
+            "rule": "max_layer_dominance_percentage",
+            "value": 75,
+            "message": "Layer mixing: Service dominates 75.0% of 4 PHP files in /private/tmp/soda-cqfn-audit/Feature; other types: Controller=1"
+        }
+    ],
+    "directory_Services": []
+}

@@ -10,7 +10,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\NodeFinder;
 
 /**
- * Finds concrete classes that add no behavior or contract around one dependency call.
+ * Finds concrete classes that add no behavior or contract around calls to one dependency.
  *
  * @internal
  */
@@ -56,17 +56,17 @@ final readonly class TrivialDelegatingClassAnalyser
      */
     private function findingFor(Class_ $class): ?TrivialDelegatingClassFinding
     {
-        $method = $this->classPolicy->isContractlessConcrete($class)
-            ? $this->singleOperation($class)
-            : null;
-        $isClassMethod = $method instanceof ClassMethod;
-        if (! $isClassMethod) {
+        $isContractless = $this->classPolicy->isContractlessConcrete($class);
+        if (! $isContractless) {
             return null;
         }
 
-        $delegate = $this->methodProbe->delegatedProperty($method);
-        $hasExtraState = $delegate === null || ! $this->classPolicy->hasOnlyDelegateState($class, $delegate);
-        if ($hasExtraState) {
+        $methods = $this->operations($class);
+        $delegates = array_unique(array_map($this->methodProbe->delegatedProperty(...), $methods));
+        $delegate = reset($delegates);
+        $isTransparent = count($delegates) === 1 && is_string($delegate)
+            && $this->classPolicy->hasOnlyDelegateState($class, $delegate);
+        if (! $isTransparent) {
             return null;
         }
 
@@ -82,32 +82,22 @@ final readonly class TrivialDelegatingClassAnalyser
 
         return $name === null ? null : new TrivialDelegatingClassFinding(
             $name,
-            $method->name->toString(),
+            array_map(fn (ClassMethod $method): string => $method->name->toString(), $methods),
             $delegate,
             $class->getStartLine(),
         );
     }
 
     /**
-     * Identify the sole operation performed by a potential forwarding method.
+     * Select every operation; one method with behavior disqualifies the whole class.
+     *
+     * @return list<ClassMethod>
      */
-    private function singleOperation(Class_ $class): ?ClassMethod
+    private function operations(Class_ $class): array
     {
-        $operation = null;
-
-        foreach ($class->getMethods() as $method) {
-            $isConstructor = $method->name->toLowerString() === '__construct';
-            if ($isConstructor) {
-                continue;
-            }
-
-            if ($operation !== null) {
-                return null;
-            }
-
-            $operation = $method;
-        }
-
-        return $operation;
+        return array_values(array_filter(
+            $class->getMethods(),
+            fn (ClassMethod $method): bool => $method->name->toLowerString() !== '__construct',
+        ));
     }
 }
