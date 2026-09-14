@@ -235,3 +235,11 @@ threshold 0 per finding. They are discoverable in `list:rules` as **opt-in**.
 `RuleCatalog::standard()`, `RuleCatalog::checks()` and `init` do not enable them.
 Select the named classes explicitly. There are no auto-fixes or suppressions.
 Adaptations and license notices: [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md).
+
+### max_cognitive_complexity
+
+Optional `MaxCognitiveComplexity(15)` measures the documented **Soda PHP cognitive
+v1** variant. It reports each contribution and retains independent nested callable
+scopes. It is not a replacement for the existing standard or a claim of identical
+Sonar scores. See [Research Metrics](RESEARCH_METRICS.md) for the exact formula,
+PHP boundaries, limitations and corpus protocol.

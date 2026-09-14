@@ -79,6 +79,16 @@ abstract class ExpressionCheck extends Check
     }
 
     /**
+     * Select the facts evaluated by this check without changing the shared executor.
+     *
+     * @return iterable<array<string, mixed>>
+     */
+    protected function rows(FileFacts $file): iterable
+    {
+        return $file->rows($this->compiled()->scope);
+    }
+
+    /**
      * Compile once and attach the rule identifier to configuration errors.
      */
     private function compiled(): RuleExpression
@@ -100,7 +110,7 @@ abstract class ExpressionCheck extends Check
             return;
         }
 
-        foreach ($file->rows($this->compiled()->scope) as $row) {
+        foreach ($this->rows($file) as $row) {
             $isMatch = $this->compiled()->isMatch($row);
             if ($isMatch) {
                 yield $this->violation($file, $row);

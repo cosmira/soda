@@ -27,6 +27,42 @@ return [
         ],
     ],
     'class' => [
+        'method_groups' => [
+            'type'        => 'number',
+            'unit'        => 'components',
+            'description' => 'Observed connected components of non-static concrete instance methods excluding constructors. Local calls and shared literal fields create links. Consult cohesion_unknown; components do not count business responsibilities.',
+            'source'      => 'Cosmira\\Soda\\Rules\\Architecture\\Cohesion::resolve',
+            'analysis'    => 'cohesion',
+        ],
+        'cohesion_methods' => [
+            'type'        => 'number',
+            'unit'        => 'methods',
+            'description' => 'Number of methods in the composed cohesion graph; includes known traits and parents, excludes constructors, static and abstract methods.',
+            'source'      => 'Cosmira\\Soda\\Rules\\Architecture\\Cohesion::resolve',
+            'analysis'    => 'cohesion',
+        ],
+        'cohesion_unknown' => [
+            'type'        => 'number',
+            'unit'        => 'unresolved relationships',
+            'description' => 'Count of distinct unresolved relationship reasons. A positive value means observed disconnected groups do not prove actual separation.',
+            'source'      => 'Cosmira\\Soda\\Rules\\Architecture\\Cohesion::resolve',
+            'analysis'    => 'cohesion',
+        ],
+        'tcc_pairs' => [
+            'type'        => 'number',
+            'unit'        => 'method pairs',
+            'description' => 'Pairs of public eligible methods sharing a literal field directly. Calls do not count; read together with tcc_possible_pairs and cohesion_unknown.',
+            'source'      => 'Cosmira\\Soda\\Rules\\Architecture\\Cohesion::resolve',
+            'analysis'    => 'cohesion',
+        ],
+        'tcc_possible_pairs' => [
+            'type'        => 'number',
+            'unit'        => 'method pairs',
+            'description' => 'Public eligible method count n*(n-1)/2. TCC is tcc_pairs divided by this value; with zero possible pairs it is undefined, not perfect cohesion.',
+            'source'      => 'Cosmira\\Soda\\Rules\\Architecture\\Cohesion::resolve',
+            'analysis'    => 'cohesion',
+        ],
+
         'loc' => [
             'type'        => 'number',
             'unit'        => 'logical lines',
@@ -120,6 +156,13 @@ return [
         ],
     ],
     'method' => [
+        'cognitive_complexity' => [
+            'type'        => 'number',
+            'unit'        => 'points (Soda PHP cognitive v1)',
+            'description' => 'Starts at zero; structural nesting, boolean runs and syntactic direct recursion. Named callable expression rows exclude nested callable bodies. MaxCognitiveComplexity additionally checks separately collected anonymous scopes. Mutual/dynamic recursion is not resolved; this is not Sonar score compatibility.',
+            'source'      => 'Cosmira\\Soda\\Rules\\Complexity\\CognitiveComplexity::collect',
+            'analysis'    => 'cognitive',
+        ],
         'loc' => [
             'type'        => 'number',
             'unit'        => 'logical lines',

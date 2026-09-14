@@ -1,0 +1,122 @@
+[
+  {
+    "file": "./Application.php",
+    "name": "Symfony\\Component\\Console\\Application::getAbbreviations",
+    "line": 949,
+    "score": 3,
+    "project": "symfony-console",
+    "rule": "non-finding",
+    "review_id": "M001",
+    "verdict": "non-finding-reviewed",
+    "reason": "Two loops directly express prefix enumeration; no need for classes per prefix.",
+    "source_url": "https://github.com/symfony/console/blob/de53cc95f326bea88098c0d1be4443011d2cab3c/Application.php#L949"
+  },
+  {
+    "file": "./Command/CompleteCommand.php",
+    "name": "Symfony\\Component\\Console\\Command\\CompleteCommand::__construct",
+    "line": 47,
+    "score": 0,
+    "project": "symfony-console",
+    "rule": "non-finding",
+    "review_id": "M002",
+    "verdict": "non-finding-reviewed",
+    "reason": "Default completion backend mapping is linear.",
+    "source_url": "https://github.com/symfony/console/blob/de53cc95f326bea88098c0d1be4443011d2cab3c/Command/CompleteCommand.php#L47"
+  },
+  {
+    "file": "./Question/Question.php",
+    "name": "Symfony\\Component\\Console\\Question\\Question::getMaxAttempts",
+    "line": 277,
+    "score": 0,
+    "project": "symfony-console",
+    "rule": "non-finding",
+    "review_id": "M003",
+    "verdict": "non-finding-reviewed",
+    "reason": "Simple state query is expected.",
+    "source_url": "https://github.com/symfony/console/blob/de53cc95f326bea88098c0d1be4443011d2cab3c/Question/Question.php#L277"
+  },
+  {
+    "file": "./Question/ChoiceQuestion.php",
+    "name": "Symfony\\Component\\Console\\Question\\ChoiceQuestion::getChoices",
+    "line": 50,
+    "score": 0,
+    "project": "symfony-console",
+    "rule": "non-finding",
+    "review_id": "M004",
+    "verdict": "non-finding-reviewed",
+    "reason": "Simple choices getter is expected.",
+    "source_url": "https://github.com/symfony/console/blob/de53cc95f326bea88098c0d1be4443011d2cab3c/Question/ChoiceQuestion.php#L50"
+  },
+  {
+    "file": "./Descriptor/ReStructuredTextDescriptor.php",
+    "name": "Symfony\\Component\\Console\\Descriptor\\ReStructuredTextDescriptor::removeAliasesAndHiddenCommands",
+    "line": 264,
+    "score": 4,
+    "project": "symfony-console",
+    "rule": "non-finding",
+    "review_id": "M005",
+    "verdict": "non-finding-reviewed",
+    "reason": "A small filter loop is understandable.",
+    "source_url": "https://github.com/symfony/console/blob/de53cc95f326bea88098c0d1be4443011d2cab3c/Descriptor/ReStructuredTextDescriptor.php#L264"
+  },
+  {
+    "file": "src/ClientTrait.php",
+    "name": "GuzzleHttp\\ClientTrait::patchAsync",
+    "line": 1215,
+    "score": 0,
+    "project": "guzzle",
+    "rule": "non-finding",
+    "review_id": "M006",
+    "verdict": "non-finding-reviewed",
+    "reason": "HTTP convenience method is useful fluent/client API, not automatically a useless wrapper.",
+    "source_url": "https://github.com/guzzle/guzzle/blob/93939470950a9b11e2e84204166ef5e048c55fe4/src/ClientTrait.php#L1215"
+  },
+  {
+    "file": "src/RedirectMiddleware.php",
+    "name": "GuzzleHttp\\RedirectMiddleware::__construct",
+    "line": 55,
+    "score": 0,
+    "project": "guzzle",
+    "rule": "non-finding",
+    "review_id": "M007",
+    "verdict": "non-finding-reviewed",
+    "reason": "Constructor stores one handler.",
+    "source_url": "https://github.com/guzzle/guzzle/blob/93939470950a9b11e2e84204166ef5e048c55fe4/src/RedirectMiddleware.php#L55"
+  },
+  {
+    "file": "src/Handler/RequestFraming.php",
+    "name": "GuzzleHttp\\Handler\\RequestFraming::__construct",
+    "line": 36,
+    "score": 0,
+    "project": "guzzle",
+    "rule": "non-finding",
+    "review_id": "M008",
+    "verdict": "non-finding-reviewed",
+    "reason": "A framing record stores three related values.",
+    "source_url": "https://github.com/guzzle/guzzle/blob/93939470950a9b11e2e84204166ef5e048c55fe4/src/Handler/RequestFraming.php#L36"
+  },
+  {
+    "file": "src/Client.php",
+    "name": "GuzzleHttp\\Client::request",
+    "line": 650,
+    "score": 0,
+    "project": "guzzle",
+    "rule": "non-finding",
+    "review_id": "M009",
+    "verdict": "non-finding-reviewed",
+    "reason": "Synchronous request bridge sets its option then waits; low branching is expected.",
+    "source_url": "https://github.com/guzzle/guzzle/blob/93939470950a9b11e2e84204166ef5e048c55fe4/src/Client.php#L650"
+  },
+  {
+    "file": "src/Cookie/SessionCookieJar.php",
+    "name": "GuzzleHttp\\Cookie\\SessionCookieJar::__destruct",
+    "line": 57,
+    "score": 1,
+    "project": "guzzle",
+    "rule": "non-finding",
+    "review_id": "M010",
+    "verdict": "non-finding-reviewed",
+    "reason": "Autosave destructor has little control flow but hides a lifecycle effect; low cognitive score cannot certify good architecture.",
+    "source_url": "https://github.com/guzzle/guzzle/blob/93939470950a9b11e2e84204166ef5e048c55fe4/src/Cookie/SessionCookieJar.php#L57"
+  }
+]

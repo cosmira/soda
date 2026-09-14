@@ -1,0 +1,99 @@
+[
+  {
+    "project": {
+      "name": "soda",
+      "repository": "https://github.com/cosmira/soda",
+      "commit": "33d0c5cd51e8b6cdb317856b5198f39349f4fd4f",
+      "root": "src",
+      "partition": "discovery"
+    },
+    "files": 167,
+    "callables": 828,
+    "types": 168,
+    "findings": {
+      "max_cognitive_complexity": 1,
+      "max_disconnected_method_groups": 31
+    },
+    "complete_graphs": 91,
+    "seconds": 8.476723333,
+    "peak_allocated_bytes": 16777216
+  },
+  {
+    "project": {
+      "name": "laravel",
+      "repository": "https://github.com/laravel/framework",
+      "commit": "5c6b069aab234b9264155335678421ec7746d6e4",
+      "root": "src",
+      "partition": "discovery"
+    },
+    "files": 1680,
+    "callables": 16173,
+    "types": 1433,
+    "findings": {
+      "max_cognitive_complexity": 63,
+      "no_redundant_rethrow": 1,
+      "no_empty_finally_blocks": 1,
+      "max_disconnected_method_groups": 49
+    },
+    "complete_graphs": 543,
+    "seconds": 30.48657975,
+    "peak_allocated_bytes": 98566144
+  },
+  {
+    "project": {
+      "name": "monolog",
+      "repository": "https://github.com/Seldaek/monolog",
+      "commit": "2dc40e8f3b76a0b657e0a25c932dc6edef215891",
+      "root": "src",
+      "partition": "discovery"
+    },
+    "files": 125,
+    "callables": 744,
+    "types": 117,
+    "findings": {
+      "max_cognitive_complexity": 13,
+      "max_disconnected_method_groups": 4
+    },
+    "complete_graphs": 35,
+    "seconds": 0.895304708,
+    "peak_allocated_bytes": 98566144
+  },
+  {
+    "project": {
+      "name": "symfony-console",
+      "repository": "https://github.com/symfony/console",
+      "commit": "de53cc95f326bea88098c0d1be4443011d2cab3c",
+      "root": ".",
+      "partition": "held-out"
+    },
+    "files": 177,
+    "callables": 1389,
+    "types": 158,
+    "findings": {
+      "max_cognitive_complexity": 55,
+      "max_disconnected_method_groups": 19
+    },
+    "complete_graphs": 67,
+    "seconds": 11.963375958,
+    "peak_allocated_bytes": 29360128
+  },
+  {
+    "project": {
+      "name": "guzzle",
+      "repository": "https://github.com/guzzle/guzzle",
+      "commit": "93939470950a9b11e2e84204166ef5e048c55fe4",
+      "root": "src",
+      "partition": "held-out"
+    },
+    "files": 70,
+    "callables": 754,
+    "types": 64,
+    "findings": {
+      "max_cognitive_complexity": 35,
+      "max_disconnected_method_groups": 3
+    },
+    "complete_graphs": 28,
+    "seconds": 6.515914208,
+    "peak_allocated_bytes": 31457280
+  }
+]

@@ -113,5 +113,11 @@ final class RuleCatalogTest extends TestCase
         $expected = array_column(RuleCatalog::standardDefinitions(), 'class');
         $actual = array_map(fn ($check) => $check::class, RuleCatalog::standard());
         $this->assertSame($expected, $actual);
+        $this->assertCount(69, $actual);
+        $ids = array_map(fn ($check) => $check->id(), RuleCatalog::standard());
+        $this->assertNotContains('max_cognitive_complexity', $ids);
+        $this->assertNotContains('no_redundant_rethrow', $ids);
+        $this->assertNotContains('no_empty_finally_blocks', $ids);
+        $this->assertArrayNotHasKey('max_disconnected_method_groups', RuleCatalog::definitions());
     }
 }

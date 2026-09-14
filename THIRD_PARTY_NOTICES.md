@@ -27,3 +27,16 @@ Production detectors are independently implemented against nikic's AST.
 No third-party application fixture (including DBeaver's Apache-licensed files)
 was copied. The donors' full test suites were not used as an oracle or executed
 as part of Soda's tests.
+
+## Research definitions and source inspection
+
+The cognitive and cohesion calculators and their PHP tests are independently
+implemented. Sonar's specification, Aibolit and jPeek informed the comparison and
+boundary cases; no Sonar implementation or donor graph code was copied. Pinned
+links, formula differences and limitations are recorded in
+[Research Metrics](docs/RESEARCH_METRICS.md).
+
+The [corpus manifest](docs/research/corpus.json) pins read-only source snapshots.
+Review records contain measurements, original commentary and source links, not
+copies of upstream application files. No external corpus dependency is loaded
+into Soda's runtime or distributed as an application fixture.
