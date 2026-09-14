@@ -12,12 +12,14 @@ use PhpParser\Node\Stmt\ElseIf_;
 /**
  * Collects explicit else and elseif branches during the shared AST traversal.
  *
+ * @phpstan-type ElseBranch array{line: int, kind: 'else'|'elseif'}
+ *
  * @internal
  */
 final class ElseBranchVisitor extends FactVisitor
 {
     /**
-     * @var list<array{line: int, kind: 'else'|'elseif'}>
+     * @var list<ElseBranch>
      */
     private array $occurrences = [];
 
@@ -39,7 +41,7 @@ final class ElseBranchVisitor extends FactVisitor
     }
 
     /**
-     * @return list<array{line: int, kind: 'else'|'elseif'}>
+     * @return list<ElseBranch>
      */
     public function occurrences(): array
     {

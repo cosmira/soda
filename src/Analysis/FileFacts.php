@@ -48,6 +48,8 @@ use PhpParser\Node;
  * }
  *
  * @phpstan-import-type CognitiveRow from \Cosmira\Soda\Rules\Complexity\CognitiveComplexity
+ * @phpstan-import-type ComplexCondition from \Cosmira\Soda\Rules\Complexity\ComplexControlConditionVisitor
+ * @phpstan-import-type ElseBranch from \Cosmira\Soda\Rules\Complexity\ElseBranchVisitor
  * @phpstan-import-type Declaration from \Cosmira\Soda\Rules\Usage\UnusedMethodDeclarations
  *
  * @phpstan-type FileMetrics array{
@@ -57,8 +59,8 @@ use PhpParser\Node;
  *   classes: array<string, ClassFacts>, methods: array<string, MethodFacts>,
  *   namespaces: array<string, int>, interfaceParents: array<string, list<string>>,
  *   naming?: NamingFacts|array{}, compoundVariableNames?: list<CompoundVariableNameOccurrence>,
- *   emptyCatches?: list<LocatedCallable>, elseBranches?: list<array{line: int, kind: 'else'|'elseif'}>,
- *   complexControlConditions?: list<array{line: int, reason: 'mixed_logic'|'nested_computation'}>,
+ *   emptyCatches?: list<LocatedCallable>, elseBranches?: list<ElseBranch>,
+ *   complexControlConditions?: list<ComplexCondition>,
  *   askThenTell?: list<AskThenTell>,
  *   todoFixme?: list<array{line: int, kind: string, text: string}>,
  *   commentedCode?: list<array{line: int, text: string}>

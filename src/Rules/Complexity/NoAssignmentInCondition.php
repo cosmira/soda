@@ -46,29 +46,8 @@ final class NoAssignmentInCondition extends Check
     #[\Override]
     public function checkFile(FileFacts $facts): iterable
     {
-        $file = $facts->path;
-        $findings = (new AssignmentInConditionAnalyser)->analyse($facts->nodes);
-        $violations = [];
-
-        foreach ($findings as $hit) {
-            $isArray = is_array($hit);
-            if (! $isArray) {
-                continue;
-            }
-
-            $isPresent = isset($hit['line']);
-            if (! $isPresent) {
-                continue;
-            }
-
-            $isInt = is_int($hit['line']);
-            if (! $isInt) {
-                continue;
-            }
-
-            $violations[] = new Violation(rule: $this->id(), file: $file, value: 1, threshold: 0, line: $hit['line'], message: self::MESSAGE);
+        foreach ((new AssignmentInConditionAnalyser)->analyse($facts->nodes) as $hit) {
+            yield new Violation(rule: $this->id(), file: $facts->path, value: 1, threshold: 0, line: $hit['line'], message: self::MESSAGE);
         }
-
-        return $violations;
     }
 }

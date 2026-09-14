@@ -51,3 +51,8 @@ Reviewed examples:
 An intermediate run added two incorrect Symfony findings. `ProgressBar::getStepWidth` has a caller on a closure parameter declared `self`. `Option::handleUnion` is reached on a factory result obtained with `self::class`. Both became regression cases: explicit parameter types resolve receivers, while the latter remains conservative factory-result uncertainty. The final run has no added method findings.
 
 Tests additionally prove that untyped foreign receivers cannot hide local unused methods, that uncertainty in one type leaves unrelated types reportable, and that alias/override/private dispatch preserves original declaration identity. These synthetic counterexamples matter because the corpus itself contains no final method findings. Review remains qualitative and bounded; arbitrary variable data flow, union/return types and reflection are not claimed to be solved.
+
+
+## Internal fact validation
+
+Removing redundant checks changes no diagnostic. Full JSON reports for all five pinned projects are byte-for-byte identical to the project-usage step. A separate snapshot covers all tracked PHP test sources and generated condition examples: 148 inputs, 147 identical diagnostic objects across the three control-flow rules. The concurrent uncommitted `ExplicitBehaviorCandidatesTest` is excluded from this comparison. Use [control-facts-snapshot.php](control-facts-snapshot.php) to reproduce it with development dependencies installed.
