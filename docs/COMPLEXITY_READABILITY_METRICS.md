@@ -204,3 +204,34 @@ if ($order->isPaid() && ! $order->isExpired() && $user->canRefund() && $gateway-
 ```
 
 ---
+
+## Optional exception checks
+
+```php
+new \Cosmira\Soda\Rules\Complexity\NoRedundantRethrow()
+new \Cosmira\Soda\Rules\Complexity\NoEmptyFinallyBlocks()
+```
+
+### no_redundant_rethrow
+
+Reports a final catch whose only executable statement
+throws the exact bound variable. It excludes any earlier catch because deleting
+it could expose an exception to a later handler. Logging, transformation,
+conditional throws, closures and other statements are behavior and excluded.
+Comments and empty statements do not execute. Catch-variable scope, destruction
+of an overwritten binding and uses in `finally` can still matter: the diagnostic
+requests review and does not claim automatic deletion is equivalent.
+
+### no_empty_finally_blocks
+
+Reports a finally containing only comments/empty
+statements or nothing. With no catch, removing finally alone creates invalid PHP;
+the diagnostic explicitly calls for considering the try body too. A return,
+throw, assignment, call or nested try is executable and makes the block nonempty.
+
+Both checks inspect the shared AST, including nested functions, traits and
+anonymous classes, report the catch/finally keyword line, and use value 1 with
+threshold 0 per finding. They are discoverable in `list:rules` as **opt-in**.
+`RuleCatalog::standard()`, `RuleCatalog::checks()` and `init` do not enable them.
+Select the named classes explicitly. There are no auto-fixes or suppressions.
+Adaptations and license notices: [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md).

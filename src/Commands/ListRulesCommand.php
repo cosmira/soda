@@ -33,13 +33,14 @@ final class ListRulesCommand extends Command
                 $row['id'],
                 $row['section'],
                 $row['severity'],
+                ($row['standard'] ?? true) ? 'standard' : 'opt-in',
                 $row['default'],
                 $row['label'],
                 $row['advice'],
             ];
         }
 
-        $this->table(['Rule id', 'Section', 'Severity', 'Default', 'Label', 'How to improve'], $rows);
+        $this->table(['Rule id', 'Section', 'Severity', 'Selection', 'Default', 'Label', 'How to improve'], $rows);
 
         return self::SUCCESS;
     }

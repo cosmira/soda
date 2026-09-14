@@ -375,3 +375,11 @@ criterion and its limitations. The directory message begins `Directory naming
 convention:`. These wording changes affect JSON messages and console text; IDs,
 measurements, thresholds, locations and selection are unchanged. See
 [Policy Compatibility](POLICY_COMPATIBILITY.md) for the preserved semantics.
+
+## Discoverable opt-in checks
+
+`RuleCatalog::definitions()` now also describes opt-in checks, marked with
+`standard: false`. Use `standardDefinitions()` when expanding the existing
+standard selection. `standard()`, `checks()` and generated `init` configuration
+retain the same 69 checks. `list:rules` adds a Selection column. Explicitly
+construct `NoRedundantRethrow` or `NoEmptyFinallyBlocks` to enable them.

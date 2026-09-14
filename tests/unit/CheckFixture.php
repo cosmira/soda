@@ -17,7 +17,7 @@ final class CheckFixture
 {
     public static function thresholds(): array
     {
-        return array_map(static fn (array $entry): int|float => $entry['default'], RuleCatalog::definitions());
+        return array_map(static fn (array $entry): int|float => $entry['default'], RuleCatalog::standardDefinitions());
     }
 
     public static function collect(string $path, array $checks = [], ?array $required = null): array

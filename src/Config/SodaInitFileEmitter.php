@@ -28,7 +28,7 @@ final class SodaInitFileEmitter
         $items = [];
         $shortNames = [];
 
-        foreach (RuleCatalog::definitions() as $ruleKey => $definition) {
+        foreach (RuleCatalog::standardDefinitions() as $ruleKey => $definition) {
             $shortName = self::shortName($definition['class']);
             self::assertUniqueShortName($shortNames, $shortName, $definition['class']);
             $shortNames[$shortName] = $definition['class'];
@@ -41,7 +41,7 @@ final class SodaInitFileEmitter
             };
         }
 
-        $propertyRule = RuleCatalog::definitions()['max_properties_per_class'];
+        $propertyRule = RuleCatalog::standardDefinitions()['max_properties_per_class'];
         $properties = self::instantiate(self::shortName($propertyRule['class']), $propertyRule['arguments']);
         $properties = rtrim($properties, ',');
         sort($uses);
