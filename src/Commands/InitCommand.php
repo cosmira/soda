@@ -2,12 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Bunnivo\Soda\Commands;
+namespace Cosmira\Soda\Commands;
 
-use Bunnivo\Soda\Config\SodaInitFileEmitter;
-use Bunnivo\Soda\Quality\Config\RuleSections;
-use Bunnivo\Soda\Quality\QualityConfig;
-use Bunnivo\Soda\Quality\Rule\LayerMixingChecker;
+use Cosmira\Soda\Config\SodaInitFileEmitter;
 
 use function file_put_contents;
 use function getcwd;
@@ -16,56 +13,19 @@ use Illuminate\Console\Command;
 
 final class InitCommand extends Command
 {
+    /**
+     * Stores signature for this analysis instance.
+     */
     protected $signature = 'init';
 
+    /**
+     * Stores description for this analysis instance.
+     */
     protected $description = 'Create soda.php with default quality rules';
 
     /**
-     * @return array<string, array<string, mixed>>
+     * Execute the console command and return its exit status.
      */
-    private function buildRulesConfig(): array
-    {
-        $defaults = QualityConfig::default()->rules;
-        $overrides = [
-            'max_method_length'         => 100,
-            'max_class_length'          => 500,
-            'max_arguments'             => 16,
-            'max_methods_per_class'     => 21,
-            'max_file_loc'              => 700,
-            'max_line_length'           => 100,
-            'max_cyclomatic_complexity' => 26,
-            'max_control_nesting'       => 4,
-            'min_code_breathing_score'  => 40,
-            'variable_name_length'      => 16,
-            'method_name_length'        => 32,
-            'class_name_length'         => 32,
-        ];
-
-        $rules = [
-            RuleSections::STRUCTURAL => [],
-            RuleSections::COMPLEXITY => [],
-            RuleSections::BREATHING  => [],
-            RuleSections::NAMING     => [],
-        ];
-
-        foreach (RuleSections::ruleToSection() as $ruleKey => $section) {
-            $value = $overrides[$ruleKey] ?? $defaults[$ruleKey] ?? null;
-
-            if ($value !== null) {
-                $bucket = $rules[$section] ?? [];
-                $bucket[$ruleKey] = $ruleKey === LayerMixingChecker::RULE
-                    ? [
-                        'threshold' => $value,
-                        'min_files' => LayerMixingChecker::DEFAULT_MIN_FILES,
-                    ]
-                    : $value;
-                $rules[$section] = $bucket;
-            }
-        }
-
-        return $rules;
-    }
-
     public function handle(): int
     {
         $failure = $this->validateOrFail();
@@ -74,10 +34,10 @@ final class InitCommand extends Command
         }
 
         $path = getcwd().'/soda.php';
-        $rules = $this->buildRulesConfig();
-        $content = SodaInitFileEmitter::emit($rules);
+        $content = SodaInitFileEmitter::emit();
+        $writeFailed = file_put_contents($path, $content) === false;
 
-        if (file_put_contents($path, $content) === false) {
+        if ($writeFailed) {
             $this->error('Failed to write soda.php');
 
             return self::FAILURE;
@@ -88,17 +48,23 @@ final class InitCommand extends Command
         return self::SUCCESS;
     }
 
+    /**
+     * Validate the supplied configuration and throw when its contract is violated.
+     */
     private function validateOrFail(): ?int
     {
         $cwd = getcwd();
+        $hasNoDirectory = $cwd === false || $cwd === '';
         /** @psalm-suppress TypeDoesNotContainType - getcwd() can return '' on edge cases */
-        if ($cwd === false || $cwd === '') {
+        if ($hasNoDirectory) {
             $this->error('Cannot determine current directory');
 
             return self::FAILURE;
         }
 
-        if (is_readable($cwd.'/soda.php')) {
+        $isConfigReadable = is_readable($cwd.'/soda.php');
+
+        if ($isConfigReadable) {
             $this->error('soda.php already exists');
 
             return self::FAILURE;

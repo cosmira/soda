@@ -1,0 +1,22 @@
+<?php
+
+declare(strict_types=1);
+
+require __DIR__.'/DeliveryClock.php';
+require __DIR__.'/OrderNumberFormatter.php';
+require __DIR__.'/RetryBudget.php';
+
+use DemoApp\Delivery\DeliveryClock;
+use DemoApp\Delivery\RetryBudget;
+use DemoApp\Orders\OrderNumberFormatter;
+
+$clock = new DeliveryClock('Europe/Moscow');
+$moment = new DateTimeImmutable('2026-08-21T09:00:00+00:00');
+$formatter = new OrderNumberFormatter('msk');
+$budget = new RetryBudget(2);
+
+echo json_encode([
+    'deliveryAt' => $clock->localize($moment),
+    'orderNumber' => $formatter->format(42),
+    'claims' => [$budget->tryClaim(), $budget->tryClaim(), $budget->tryClaim()],
+], JSON_THROW_ON_ERROR).PHP_EOL;

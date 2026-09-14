@@ -1,87 +1,57 @@
-# https://help.github.com/en/categories/automating-your-workflow-with-github-actions
+name: CI
 
-on:
-  - "pull_request"
-  - "push"
-
-name: "CI"
-
-env:
-  COMPOSER_ROOT_VERSION: "8.0-dev"
+on: [push, pull_request]
 
 permissions:
   contents: read
 
+env:
+  COMPOSER_ROOT_VERSION: "1.0-dev"
+
 jobs:
-  coding-guidelines:
-    name: Coding Guidelines
-
+  checks:
+    name: PHP ${{ matrix.php }}
     runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.2
-          coverage: none
-
-      - name: Run PHP-CS-Fixer
-        run: ./tools/php-cs-fixer fix --dry-run --show-progress=dots --using-cache=no --verbose
-
-  type-checker:
-    name: Type Checker
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.2
-          coverage: none
-
-      - name: Install dependencies with Composer
-        run: composer update --no-interaction --no-ansi --no-progress
-
-      - name: Run Psalm
-        run: composer psalm
-
-  tests:
-    name: Tests
-
-    runs-on: ubuntu-latest
-
     strategy:
       fail-fast: false
       matrix:
-        php-version:
-          - "8.2"
-          - "8.3"
-          - "8.4"
-
+        php: ["8.3.19", "8.4", "8.5"]
     steps:
-      - name: "Checkout"
-        uses: "actions/checkout@v4"
-
-      - name: "Install PHP with extensions"
-        uses: "shivammathur/setup-php@v2"
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
         with:
-          php-version: "${{ matrix.php-version }}"
-          coverage: "pcov"
-
-      - name: "Install dependencies with Composer"
-        run: "composer update --no-ansi --no-interaction --no-progress"
-
-      - name: "Run tests and quality check"
-        run: "composer ci -- --coverage-clover=coverage.xml"
-
-      - name: "Send code coverage report to Codecov.io"
-        env:
-          CODECOV_TOKEN: "${{ secrets.CODECOV_TOKEN }}"
-        run: "bash <(curl -s https://codecov.io/bash) || true"
+          php-version: ${{ matrix.php }}
+          coverage: pcov
+      - name: Install dependencies
+        id: dependencies
+        run: composer update --no-interaction --no-progress --prefer-dist
+      - name: Check generated rule parser
+        if: always() && steps.dependencies.outcome == 'success'
+        run: |
+          composer rules:compile
+          git diff --exit-code -- resources/rules.php
+      - name: Check formatting
+        if: always() && steps.dependencies.outcome == 'success' && matrix.php == '8.3.19'
+        run: composer pint:test
+      - name: Static analysis
+        if: always() && steps.dependencies.outcome == 'success' && matrix.php == '8.3.19'
+        run: composer phpstan
+      - name: Check refactorings
+        if: always() && steps.dependencies.outcome == 'success' && matrix.php == '8.3.19'
+        run: composer rector:check
+      - name: Quality gate
+        if: always() && steps.dependencies.outcome == 'success' && matrix.php == '8.3.19'
+        run: composer quality
+      - name: Tests
+        if: always() && steps.dependencies.outcome == 'success'
+        run: composer test -- --coverage-clover=coverage.xml
+      - name: Performance budgets
+        if: always() && steps.dependencies.outcome == 'success'
+        run: composer test:performance
+      - name: Upload coverage
+        if: always() && hashFiles('coverage.xml') != ''
+        uses: codecov/codecov-action@v5
+        with:
+          files: coverage.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false

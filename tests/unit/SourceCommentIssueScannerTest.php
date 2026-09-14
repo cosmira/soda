@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Bunnivo\Soda;
+namespace Cosmira\Soda;
 
-use Bunnivo\Soda\Quality\Support\SourceCommentIssueScanner;
+use Cosmira\Soda\Analysis\SourceCommentIssueScanner;
 use PHPUnit\Framework\TestCase;
 
 final class SourceCommentIssueScannerTest extends TestCase

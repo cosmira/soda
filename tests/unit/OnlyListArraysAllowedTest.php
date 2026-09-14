@@ -2,18 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Bunnivo\Soda;
+namespace Cosmira\Soda;
 
-use Bunnivo\Soda\Plugins\Rules\ListOnlyArray\ListOnlyArrayStrictness;
-use Bunnivo\Soda\Plugins\Rules\ListOnlyArray\OnlyListArraysAllowed;
-use Bunnivo\Soda\Quality\EvaluationContext;
-use Bunnivo\Soda\Quality\EvaluationContext\FileMetrics;
-use Bunnivo\Soda\Quality\EvaluationContext\MethodMetricsData;
-use Bunnivo\Soda\Quality\EvaluationContext\QualityCore;
-use Bunnivo\Soda\Quality\QualityConfig;
-
-use function collect;
-
+use Cosmira\Soda\Rules\Usage\ListOnlyArrayStrictness;
+use Cosmira\Soda\Rules\Usage\OnlyListArraysAllowed;
+use Cosmira\Soda\Tests\CheckFixture;
 use PHPUnit\Framework\TestCase;
 
 final class OnlyListArraysAllowedTest extends TestCase
@@ -23,11 +16,11 @@ final class OnlyListArraysAllowedTest extends TestCase
         $file = $this->tempFile("<?php\n\$x = \$row['a']['b'];\n");
         $rule = new OnlyListArraysAllowed;
 
-        $violations = $rule->check($this->context([$file => $this->minimalMetrics()]));
+        $violations = CheckFixture::forRule($rule, $this->context([$file => $this->minimalMetrics()]));
 
         $this->assertCount(1, $violations);
         $this->assertSame('only_list_arrays', $violations->first()->rule);
-        $this->assertStringContainsString('Nested array indexing', (string) $violations->first()->context->message);
+        $this->assertStringContainsString('Nested array indexing', (string) $violations->first()->message);
         unlink($file);
     }
 
@@ -36,10 +29,10 @@ final class OnlyListArraysAllowedTest extends TestCase
         $file = $this->tempFile("<?php\n\$x = \$row['a'];\n");
         $rule = new OnlyListArraysAllowed(strictness: ListOnlyArrayStrictness::Strict);
 
-        $violations = $rule->check($this->context([$file => $this->minimalMetrics()]));
+        $violations = CheckFixture::forRule($rule, $this->context([$file => $this->minimalMetrics()]));
 
         $this->assertCount(1, $violations);
-        $this->assertStringContainsString('Only list arrays are allowed', (string) $violations->first()->context->message);
+        $this->assertStringContainsString('Only list arrays are allowed', (string) $violations->first()->message);
         unlink($file);
     }
 
@@ -52,7 +45,7 @@ final class OnlyListArraysAllowedTest extends TestCase
 
         $rule = new OnlyListArraysAllowed;
 
-        $violations = $rule->check($this->context([$file => $this->minimalMetrics()]));
+        $violations = CheckFixture::forRule($rule, $this->context([$file => $this->minimalMetrics()]));
 
         $this->assertCount(0, $violations);
         unlink($file);
@@ -68,7 +61,7 @@ final class OnlyListArraysAllowedTest extends TestCase
 
         $rule = new OnlyListArraysAllowed(ignorePathPrefixes: [$dir]);
 
-        $violations = $rule->check($this->context([$file => $this->minimalMetrics()]));
+        $violations = CheckFixture::forRule($rule, $this->context([$file => $this->minimalMetrics()]));
 
         $this->assertCount(0, $violations);
         unlink($file);
@@ -92,23 +85,12 @@ final class OnlyListArraysAllowedTest extends TestCase
     /**
      * @param array<string, array<string, mixed>> $qualityMetrics
      */
-    private function context(array $qualityMetrics): EvaluationContext
+    private function context(array $qualityMetrics): array
     {
-        $core = new QualityCore($qualityMetrics, []);
-        $fileMetrics = new FileMetrics($core, collect(), new MethodMetricsData);
+        $core = $qualityMetrics;
+        $fileMetrics = $core;
 
-        $config = QualityConfig::default();
-        $loc = new LocMetrics([
-            'directories'        => 0, 'files' => 0, 'linesOfCode' => 0,
-            'commentLinesOfCode' => 0, 'nonCommentLinesOfCode' => 0, 'logicalLinesOfCode' => 0,
-        ]);
-        $complexity = new ComplexityMetrics([
-            'functions'       => 0, 'funcLowest' => 0, 'funcAverage' => 0.0, 'funcHighest' => 0,
-            'classesOrTraits' => 0, 'methods' => 0, 'methodLowest' => 0, 'methodAverage' => 0.0, 'methodHighest' => 0,
-        ]);
-        $result = new Result([], new CoreMetrics($loc, $complexity));
-
-        return new EvaluationContext($config, $result, $fileMetrics);
+        return [CheckFixture::checks(), $fileMetrics];
     }
 
     private function tempFile(string $contents): string

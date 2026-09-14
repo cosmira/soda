@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Bunnivo\Soda\Tests;
+namespace Cosmira\Soda\Tests;
 
-use Bunnivo\Soda\Plugins\Rules\UselessVariable\UselessVariableAnalyser;
-use PhpParser\Node;
-use PhpParser\ParserFactory;
+use Cosmira\Soda\Rules\Usage\UselessVariableAnalyser;
 use PHPUnit\Framework\TestCase;
 
 final class UselessVariableRuleTest extends TestCase
 {
+    use ParsesPhpSnippets;
+
     private UselessVariableAnalyser $analyser;
 
     protected function setUp(): void
@@ -18,20 +18,10 @@ final class UselessVariableRuleTest extends TestCase
         $this->analyser = new UselessVariableAnalyser;
     }
 
-    // -------------------------------------------------------------------------
-    // Helpers
-    // -------------------------------------------------------------------------
-
-    /** @return Node[] */
-    private function parse(string $code): array
-    {
-        return (new ParserFactory)->createForNewestSupportedVersion()->parse('<?php '.$code) ?? [];
-    }
-
     /** @return list<array{line: int, variable: string, source: string}> */
     private function violations(string $code): array
     {
-        return $this->analyser->analyse($this->parse($code));
+        return $this->analyser->analyse($this->parseSnippet($code));
     }
 
     private function hasViolation(string $code): bool

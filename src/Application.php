@@ -2,22 +2,27 @@
 
 declare(strict_types=1);
 
-namespace Bunnivo\Soda;
+namespace Cosmira\Soda;
 
-use Bunnivo\Soda\Quality\Engine\QualityAnalysisContract;
-use Bunnivo\Soda\Quality\QualityAnalyser;
+use Cosmira\Soda\Analysis\Runner;
 use Illuminate\Container\Container;
 
 final class Application extends Container
 {
+    /**
+     * Initialize the configured values and collaborators for this instance.
+     */
     public function __construct()
     {
         $this->singleton(
-            QualityAnalysisContract::class,
-            static fn (): QualityAnalyser => new QualityAnalyser,
+            Runner::class,
+            static fn (): Runner => new Runner,
         );
     }
 
+    /**
+     * Indicate whether the application is running under PHPUnit.
+     */
     public function runningUnitTests(): bool
     {
         return ($_ENV['env'] ?? '') === 'testing';

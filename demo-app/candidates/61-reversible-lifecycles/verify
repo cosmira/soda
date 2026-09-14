@@ -1,0 +1,29 @@
+<?php
+
+declare(strict_types=1);
+
+require __DIR__.'/ConnectionLifecycle.php';
+require __DIR__.'/DeploymentLifecycle.php';
+require __DIR__.'/LeaseLifecycle.php';
+
+use DemoApp\Connections\ConnectionLifecycle;
+use DemoApp\Deployments\DeploymentLifecycle;
+use DemoApp\Inventory\LeaseLifecycle;
+
+$connection = new ConnectionLifecycle();
+$connection->connect();
+$connection->disconnect();
+
+$deployment = new DeploymentLifecycle();
+$deployment->deploy();
+$deployment->rollback();
+
+$lease = new LeaseLifecycle();
+$lease->acquire();
+$lease->release();
+
+echo json_encode([
+    'connection' => $connection->events(),
+    'deployment' => $deployment->events(),
+    'lease' => $lease->events(),
+], JSON_THROW_ON_ERROR).PHP_EOL;

@@ -1,0 +1,20 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use DemoApp\Candidates\DeclarativeMaps\OrderStateTransitions;
+use DemoApp\Candidates\DeclarativeMaps\PaymentRetrySchedule;
+use DemoApp\Candidates\DeclarativeMaps\WebhookEventRoutes;
+
+require __DIR__.'/OrderStateTransitions.php';
+require __DIR__.'/PaymentRetrySchedule.php';
+require __DIR__.'/WebhookEventRoutes.php';
+
+$result = [
+    'next_order_states' => (new OrderStateTransitions())->allowedAfter('confirmed'),
+    'payment_retry_delays' => (new PaymentRetrySchedule())->delaysFor('gateway_timeout'),
+    'webhook_handler' => (new WebhookEventRoutes())->handlerFor('subscription.renewed'),
+];
+
+echo json_encode($result, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT).PHP_EOL;

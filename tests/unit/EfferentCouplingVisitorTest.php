@@ -2,34 +2,25 @@
 
 declare(strict_types=1);
 
-namespace Bunnivo\Soda;
+namespace Cosmira\Soda;
 
-use Bunnivo\Soda\Quality\Visitor\EfferentCouplingVisitor;
-use PhpParser\NodeTraverser;
-use PhpParser\NodeVisitor\NameResolver;
-use PhpParser\NodeVisitor\ParentConnectingVisitor;
-use PhpParser\ParserFactory;
+use Cosmira\Soda\Analysis\EfferentCouplingVisitor;
+use Cosmira\Soda\Tests\ParsesPhpSnippets;
 use PHPUnit\Framework\TestCase;
 
 final class EfferentCouplingVisitorTest extends TestCase
 {
+    use ParsesPhpSnippets;
+
     /**
      * @psalm-return array<string, int>
      */
     private function parseAndCollect(string $code): array
     {
-        $parser = (new ParserFactory())->createForNewestSupportedVersion();
-        $nodes = $parser->parse($code);
-        $this->assertNotNull($nodes);
-
         $visitor = new EfferentCouplingVisitor();
-        $traverser = new NodeTraverser();
-        $traverser->addVisitor(new NameResolver());
-        $traverser->addVisitor(new ParentConnectingVisitor());
-        $traverser->addVisitor($visitor);
-        $traverser->traverse($nodes);
+        $this->traversePhpFile($code, $visitor);
 
-        return $visitor->result();
+        return $visitor->couplingCountsByClass();
     }
 
     public function testCountsDistinctExternalTypes(): void
@@ -86,6 +77,29 @@ class Foo {
 }
 PHP;
         $result = $this->parseAndCollect($code);
+        $this->assertSame(2, $result['App\Foo']);
+    }
+
+    public function testAnonymousClassBodyDoesNotInflateOuterClassCoupling(): void
+    {
+        $code = <<<'PHP'
+<?php
+namespace App;
+class Foo {
+    public function factory(): object {
+        return new class extends ExternalBase implements ExternalContract {
+            private HiddenDependency $hidden;
+
+            public function ignored(InnerParameter $parameter): InnerReturn {
+                return new InnerReturn($parameter);
+            }
+        };
+    }
+}
+PHP;
+
+        $result = $this->parseAndCollect($code);
+
         $this->assertSame(2, $result['App\Foo']);
     }
 }

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use Bunnivo\Soda\Config\Soda;
-use Bunnivo\Soda\Plugins\Rules\Complexity\MaxCyclomaticComplexity;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxArguments;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxClassLength;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxFileLoc;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxMethodLength;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxMethodsPerClass;
+use Cosmira\Soda\Config\Soda;
+use Cosmira\Soda\Rules\Complexity\MaxCyclomaticComplexity;
+use Cosmira\Soda\Rules\Structure\MaxArguments;
+use Cosmira\Soda\Rules\Structure\MaxClassLength;
+use Cosmira\Soda\Rules\Structure\MaxFileLoc;
+use Cosmira\Soda\Rules\Structure\MaxMethodLength;
+use Cosmira\Soda\Rules\Structure\MaxMethodsPerClass;
 
 return Soda::configure()
     ->withPaths([

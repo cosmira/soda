@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Bunnivo\Soda\Config;
+namespace Cosmira\Soda\Config;
 
-use Bunnivo\Soda\Quality\Rule\RuleChecker;
+use Cosmira\Soda\Rules\Check;
 
 /**
  * Configuration container for `soda.php`.
@@ -24,58 +24,39 @@ use Bunnivo\Soda\Quality\Rule\RuleChecker;
  */
 final class SodaConfig
 {
-    /** @var list<RuleChecker> */
+    /**
+     * @var list<Check>
+     */
     private array $checkers = [];
 
-    /** @var list<non-empty-string> */
-    private array $paths = [];
-
     /**
-     * Register a plugin by its class name.
-     *
-     * @param class-string<SodaPlugin> $pluginClass
-     *
-     * @throws \InvalidArgumentException when the class does not exist or does not implement {@see SodaPlugin}
+     * @var list<non-empty-string>
      */
-    public function plugin(string $pluginClass): self
-    {
-        throw_if($pluginClass === '', \InvalidArgumentException::class, 'Plugin class name must be non-empty.');
-
-        if (! class_exists($pluginClass)) {
-            throw new \InvalidArgumentException(sprintf('Plugin class not found: %s', $pluginClass));
-        }
-
-        if (! is_a($pluginClass, SodaPlugin::class, true)) {
-            throw new \InvalidArgumentException(
-                sprintf('%s must implement %s.', $pluginClass, SodaPlugin::class)
-            );
-        }
-
-        array_push($this->checkers, ...(new $pluginClass)->checkers());
-
-        return $this;
-    }
+    private array $paths = [];
 
     /**
      * Register a single rule checker by class name.
      *
      * Prefer {@see with()} with an instance when the rule needs constructor args.
      *
-     * @param class-string<RuleChecker> $ruleClass
+     * @param class-string<Check> $ruleClass
      *
-     * @throws \InvalidArgumentException when the class does not exist or does not implement {@see RuleChecker}
+     * @throws \InvalidArgumentException when the class does not exist or does not implement {@see Check}
      */
     public function rule(string $ruleClass): self
     {
         throw_if($ruleClass === '', \InvalidArgumentException::class, 'Rule class name must be non-empty.');
+        $classExists = class_exists($ruleClass);
 
-        if (! class_exists($ruleClass)) {
+        if (! $classExists) {
             throw new \InvalidArgumentException(sprintf('Rule class not found: %s', $ruleClass));
         }
 
-        if (! is_a($ruleClass, RuleChecker::class, true)) {
+        $isA = is_a($ruleClass, Check::class, true);
+
+        if (! $isA) {
             throw new \InvalidArgumentException(
-                sprintf('%s must implement %s.', $ruleClass, RuleChecker::class)
+                sprintf('%s must implement %s.', $ruleClass, Check::class)
             );
         }
 
@@ -92,9 +73,7 @@ final class SodaConfig
     public function withPaths(array $paths): self
     {
         foreach ($paths as $path) {
-            if (! is_string($path) || $path === '') {
-                throw new \InvalidArgumentException('Each entry in withPaths() must be a non-empty path.');
-            }
+            throw_if(! is_string($path) || $path === '', \InvalidArgumentException::class, 'Each entry in withPaths() must be a non-empty path.');
 
             $this->paths[] = $path;
         }
@@ -103,15 +82,14 @@ final class SodaConfig
     }
 
     /**
-     * Register rule or plugin **instances** directly.
+     * Register rule instances directly.
      *
-     * This is the primary API. Pass any mix of {@see SodaPlugin} and
-     * {@see RuleChecker} instances. Each rule class carries its own threshold
+     * This is the primary API. Pass {@see Check} instances. Each rule class carries its own threshold
      * via its constructor — no global config object required.
      *
-     * @param array<SodaPlugin|RuleChecker> $rules
+     * @param array<Check> $rules
      *
-     * @throws \InvalidArgumentException when an element implements neither interface
+     * @throws \InvalidArgumentException when an element is not a Check
      *
      * @example
      *   return Soda::configure()
@@ -124,18 +102,17 @@ final class SodaConfig
     public function with(array $rules): self
     {
         foreach ($rules as $rule) {
-            if ($rule instanceof SodaPlugin) {
-                array_push($this->checkers, ...$rule->checkers());
-            } elseif ($rule instanceof RuleChecker) {
+            if ($rule instanceof Check) {
                 $this->checkers[] = $rule;
-            } else {
-                throw new \InvalidArgumentException(sprintf(
-                    'Each entry in with() must implement %s or %s, got %s.',
-                    SodaPlugin::class,
-                    RuleChecker::class,
-                    get_debug_type($rule),
-                ));
+
+                continue;
             }
+
+            throw new \InvalidArgumentException(sprintf(
+                'Each entry in with() must extend %s, got %s.',
+                Check::class,
+                get_debug_type($rule),
+            ));
         }
 
         return $this;
@@ -144,9 +121,9 @@ final class SodaConfig
     /**
      * Returns all registered checkers in registration order.
      *
-     * @return list<RuleChecker>
+     * @return list<Check>
      */
-    public function pluginCheckers(): array
+    public function checks(): array
     {
         return $this->checkers;
     }

@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Bunnivo\Soda;
+namespace Cosmira\Soda;
 
-use Bunnivo\Soda\Quality\ConfigException;
-use Bunnivo\Soda\Quality\Engine\QualityAnalysisContract;
-use Bunnivo\Soda\Quality\QualityAnalyser;
-use Bunnivo\Soda\Quality\QualityResult;
+use Cosmira\Soda\Analysis\Runner;
+use Cosmira\Soda\Config\ConfigException;
+use Cosmira\Soda\Reporting\QualityResult;
 
 /**
  * Fluent entry for running quality analysis (reads like a sentence).
  */
 final class QualityAnalysisBuilder
 {
-    private bool $debug = false;
-
+    /**
+     * Stores config path for this analysis instance.
+     */
     private ?string $configPath = null;
 
     /**
@@ -24,13 +24,6 @@ final class QualityAnalysisBuilder
     public function __construct(
         private readonly array $paths,
     ) {}
-
-    public function debug(bool $on = true): self
-    {
-        $this->debug = $on;
-
-        return $this;
-    }
 
     /**
      * @param non-empty-string|null $path
@@ -45,10 +38,10 @@ final class QualityAnalysisBuilder
     /**
      * @throws ConfigException
      */
-    public function run(?QualityAnalysisContract $engine = null): QualityResult
+    public function analyse(?Runner $engine = null): QualityResult
     {
-        $engine ??= new QualityAnalyser;
+        $engine ??= new Runner;
 
-        return $engine->analyse($this->paths, $this->debug, $this->configPath);
+        return $engine->analyse($this->paths, $this->configPath);
     }
 }

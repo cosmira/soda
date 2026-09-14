@@ -1,5 +1,5 @@
 {
-    "name": "bunnivo/soda",
+    "name": "cosmira/soda",
     "description": "Keep your PHP code clean and maintainable by enforcing quality rules based on metrics",
     "keywords": [
         "php",
@@ -10,7 +10,7 @@
         "ci",
         "developer-tools"
     ],
-    "homepage": "https://github.com/bunnivo/soda",
+    "homepage": "https://github.com/cosmira/soda",
     "license": "BSD-3-Clause",
     "authors": [
         {
@@ -20,7 +20,7 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/bunnivo/soda/issues"
+        "issues": "https://github.com/cosmira/soda/issues"
     },
     "config": {
         "platform": {
@@ -40,15 +40,16 @@
         "illuminate/events": "^11.0||^12.0||^13.0",
         "illuminate/support": "^11.0||^12.0||^13.0",
         "nikic/php-parser": "^5.0",
-        "sebastian/complexity": "^4.0",
-        "sebastian/lines-of-code": "^3.0",
-        "sebastian/version": "^5.0",
-        "phpunit/php-file-iterator": "^5.1"
+        "phplrt/parser": "^4.0.3",
+        "phplrt/source": "^4.0.3",
+        "phpunit/php-file-iterator": "^5.1",
+        "sebastian/complexity": "^4.0"
     },
     "require-dev": {
         "driftingly/rector-laravel": "^2.1",
         "infection/infection": "^0.32.6",
         "laravel/pint": "^1.28",
+        "phplrt/compiler": "^4.0.3",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-phpunit": "^2.0",
         "phpstan/phpstan-strict-rules": "^2.0",
@@ -57,20 +58,25 @@
     },
     "scripts": {
         "test": "phpunit --exclude-group performance --fail-on-deprecation --display-deprecations",
+        "test:performance": "php -d memory_limit=256M vendor/bin/phpunit --group performance",
         "test:unit": "phpunit --testsuite unit",
         "test:e2e": "phpunit --testsuite end-to-end",
         "quality": "@php soda quality",
         "pint": "pint  --quiet",
-        "phpstan": "phpstan analyse src --no-progress",
+        "phpstan": "phpstan analyse src --no-progress --memory-limit=512M",
         "rector": "rector process src --no-progress-bar",
         "ci": [
             "composer dump-autoload --optimize",
-            "@pint",
+            "@pint:test",
             "@phpstan",
-            "@rector",
+            "@rector:check",
             "@quality",
-            "@test"
-        ]
+            "@test",
+            "@test:performance"
+        ],
+        "rules:compile": "phplrt compile resources/rules.pp3 resources/rules.php --php=8.3",
+        "pint:test": "pint --test",
+        "rector:check": "rector process src --dry-run --no-progress-bar"
     },
     "autoload": {
         "classmap": [
@@ -87,7 +93,7 @@
     ],
     "extra": {
         "branch-alias": {
-            "dev-main": "1.0-dev"
+            "dev-master": "1.0-dev"
         }
     }
 }

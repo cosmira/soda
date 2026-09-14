@@ -2,18 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Bunnivo\Soda\Tests;
+namespace Cosmira\Soda\Tests;
 
-use Bunnivo\Soda\ComplexityMetrics;
-use Bunnivo\Soda\CoreMetrics;
-use Bunnivo\Soda\LocMetrics;
-use Bunnivo\Soda\Plugins\Rules\Structural\MultilineMethodPhpDoc;
-use Bunnivo\Soda\Plugins\Rules\Structural\MultilinePropertyPhpDoc;
-use Bunnivo\Soda\Quality\EvaluationContext;
-use Bunnivo\Soda\Quality\EvaluationContext\FileMetrics;
-use Bunnivo\Soda\Quality\EvaluationContext\QualityCore;
-use Bunnivo\Soda\Quality\QualityConfig;
-use Bunnivo\Soda\Result;
+use Cosmira\Soda\Rules\Documentation\MultilineConstantPhpDoc;
+use Cosmira\Soda\Rules\Documentation\MultilineMethodPhpDoc;
+use Cosmira\Soda\Rules\Documentation\MultilinePropertyPhpDoc;
 use PHPUnit\Framework\TestCase;
 
 final class MultilinePhpDocTest extends TestCase
@@ -40,11 +33,11 @@ final class SomeClass
 PHP);
 
         try {
-            $violations = (new MultilineMethodPhpDoc())->check($this->context($file));
+            $violations = CheckFixture::forRule(new MultilineMethodPhpDoc(), $this->context($file));
 
             $this->assertCount(3, $violations);
             $this->assertSame('multiline_method_phpdoc', $violations->first()->rule);
-            $this->assertSame('missing', $violations->first()->method());
+            $this->assertSame('missing', $violations->first()->method);
         } finally {
             unlink($file);
         }
@@ -65,10 +58,10 @@ final class SomeClass
 PHP);
 
         try {
-            $violations = (new MultilineMethodPhpDoc(['protected', 'private']))->check($this->context($file));
+            $violations = CheckFixture::forRule(new MultilineMethodPhpDoc(['protected', 'private']), $this->context($file));
 
             $this->assertCount(2, $violations);
-            $this->assertSame(['protectedMethod', 'privateMethod'], $violations->map->method()->all());
+            $this->assertSame(['protectedMethod', 'privateMethod'], $violations->map->method->all());
         } finally {
             unlink($file);
         }
@@ -85,11 +78,11 @@ interface Contract
 PHP);
 
         try {
-            $violations = (new MultilineMethodPhpDoc())->check($this->context($file));
+            $violations = CheckFixture::forRule(new MultilineMethodPhpDoc(), $this->context($file));
 
             $this->assertCount(1, $violations);
-            $this->assertSame('Contract', $violations->first()->class());
-            $this->assertSame('run', $violations->first()->method());
+            $this->assertSame('Contract', $violations->first()->class);
+            $this->assertSame('run', $violations->first()->method);
         } finally {
             unlink($file);
         }
@@ -117,11 +110,11 @@ final class SomeClass
 PHP);
 
         try {
-            $violations = (new MultilinePropertyPhpDoc())->check($this->context($file));
+            $violations = CheckFixture::forRule(new MultilinePropertyPhpDoc(), $this->context($file));
 
             $this->assertCount(3, $violations);
             $this->assertSame('multiline_property_phpdoc', $violations->first()->rule);
-            $this->assertNull($violations->first()->method());
+            $this->assertNull($violations->first()->method);
         } finally {
             unlink($file);
         }
@@ -142,27 +135,160 @@ final class SomeClass
 PHP);
 
         try {
-            $violations = (new MultilinePropertyPhpDoc(['private']))->check($this->context($file));
+            $violations = CheckFixture::forRule(new MultilinePropertyPhpDoc(['private']), $this->context($file));
 
             $this->assertCount(1, $violations);
-            $this->assertStringContainsString('privateProperty', $violations->first()->context->message);
+            $this->assertStringContainsString('privateProperty', $violations->first()->message);
         } finally {
             unlink($file);
         }
     }
 
-    public function testLegacyBudgetAllowsKnownViolations(): void
+    public function testAllDocumentationRulesReportEveryUndocumentedMember(): void
     {
         $file = $this->writeFixture(<<<'PHP'
 <?php
 final class SomeClass
 {
+    public const MISSING = 1;
+    public string $missing;
     public function missing(): void {}
 }
 PHP);
 
         try {
-            $violations = (new MultilineMethodPhpDoc(maxViolations: 1))->check($this->context($file));
+            $context = $this->context($file);
+            $violations = CheckFixture::run([new MultilineMethodPhpDoc(), new MultilinePropertyPhpDoc(), new MultilineConstantPhpDoc()], $context[1]);
+
+            $this->assertCount(3, $violations);
+            $this->assertSame([
+                'multiline_method_phpdoc',
+                'multiline_property_phpdoc',
+                'multiline_constant_phpdoc',
+            ], $violations->pluck('rule')->all());
+        } finally {
+            unlink($file);
+        }
+    }
+
+    public function testPublicConstantRequiresMultilinePhpDocByDefault(): void
+    {
+        $file = $this->writeFixture(<<<'PHP'
+<?php
+final class SomeClass
+{
+    public const MISSING = 1;
+
+    /** This is one line. */
+    public const ONE_LINE = 2;
+
+    // This is not PHPDoc.
+    public const ORDINARY_COMMENT = 3;
+
+    /**
+     * A documented public constant.
+     */
+    public const DOCUMENTED = 4;
+
+    private const PRIVATE_CONSTANT = 5;
+}
+PHP);
+
+        try {
+            $violations = CheckFixture::forRule(new MultilineConstantPhpDoc(), $this->context($file));
+
+            $this->assertCount(3, $violations);
+            $this->assertSame('multiline_constant_phpdoc', $violations->first()->rule);
+            $this->assertSame('SomeClass', $violations->first()->class);
+            $this->assertNull($violations->first()->method);
+            $this->assertStringContainsString('constant::MISSING', $violations->first()->message);
+        } finally {
+            unlink($file);
+        }
+    }
+
+    public function testConstantVisibilityReportsEverySelectedDeclaration(): void
+    {
+        $file = $this->writeFixture(<<<'PHP'
+<?php
+final class SomeClass
+{
+    public const PUBLIC_CONSTANT = 1;
+    protected const PROTECTED_CONSTANT = 2;
+    private const PRIVATE_CONSTANT = 3;
+}
+PHP);
+
+        try {
+            $violations = CheckFixture::forRule(new MultilineConstantPhpDoc(
+                ['protected', 'private'],
+            ), $this->context($file));
+
+            $this->assertCount(2, $violations);
+            $this->assertStringContainsString('PROTECTED_CONSTANT', $violations->first()->message);
+            $this->assertStringContainsString('PRIVATE_CONSTANT', $violations->last()->message);
+        } finally {
+            unlink($file);
+        }
+    }
+
+    public function testConstantsInInterfacesTraitsAndEnumsAreCheckedButEnumCasesAreIgnored(): void
+    {
+        $file = $this->writeFixture(<<<'PHP'
+<?php
+interface Contract
+{
+    public const INTERFACE_CONSTANT = 1;
+}
+
+trait SharedValues
+{
+    protected const TRAIT_CONSTANT = 2;
+}
+
+enum Status
+{
+    case Ready;
+
+    private const ENUM_CONSTANT = 3;
+}
+PHP);
+
+        try {
+            $violations = CheckFixture::forRule(new MultilineConstantPhpDoc(
+                ['public', 'protected', 'private'],
+            ), $this->context($file));
+
+            $this->assertCount(3, $violations);
+            $this->assertSame(
+                ['INTERFACE_CONSTANT', 'TRAIT_CONSTANT', 'ENUM_CONSTANT'],
+                $violations->map(static function ($violation): string {
+                    $message = (string) $violation->message;
+                    preg_match('/::([A-Z_]+)/', $message, $matches);
+
+                    return $matches[1];
+                })->all(),
+            );
+        } finally {
+            unlink($file);
+        }
+    }
+
+    public function testOneDocumentedDeclarationCoversEveryConstantInIt(): void
+    {
+        $file = $this->writeFixture(<<<'PHP'
+<?php
+final class SomeClass
+{
+    /**
+     * Related bounds for one domain concept.
+     */
+    public const MIN = 1, MAX = 10;
+}
+PHP);
+
+        try {
+            $violations = CheckFixture::forRule(new MultilineConstantPhpDoc(), $this->context($file));
 
             $this->assertCount(0, $violations);
         } finally {
@@ -179,40 +305,16 @@ PHP);
         return $file;
     }
 
-    private function context(string $file): EvaluationContext
+    private function context(string $file): array
     {
-        return new EvaluationContext(
-            QualityConfig::default(),
-            new Result([], new CoreMetrics(
-                new LocMetrics([
-                    'directories'            => 0,
-                    'files'                  => 0,
-                    'linesOfCode'            => 0,
-                    'commentLinesOfCode'     => 0,
-                    'nonCommentLinesOfCode'  => 0,
-                    'logicalLinesOfCode'     => 0,
-                ]),
-                new ComplexityMetrics([
-                    'functions'       => 0,
-                    'funcLowest'      => 0,
-                    'funcAverage'     => 0.0,
-                    'funcHighest'     => 0,
-                    'classesOrTraits' => 0,
-                    'methods'         => 0,
-                    'methodLowest'    => 0,
-                    'methodAverage'   => 0.0,
-                    'methodHighest'   => 0,
-                ]),
-            )),
-            new FileMetrics(new QualityCore([
-                $file => [
-                    'file_loc'      => 1,
-                    'classes_count' => 0,
-                    'classes'       => [],
-                    'methods'       => [],
-                    'namespaces'    => [],
-                ],
-            ], []), collect()),
-        );
+        return [CheckFixture::checks(), [
+            $file => [
+                'file_loc'      => 1,
+                'classes_count' => 0,
+                'classes'       => [],
+                'methods'       => [],
+                'namespaces'    => [],
+            ],
+        ]];
     }
 }

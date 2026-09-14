@@ -1,0 +1,22 @@
+<?php
+
+declare(strict_types=1);
+
+require __DIR__.'/Migration.php.inc';
+
+$files = [
+    '2026_08_21_000001_create_orders_table.php',
+    '2026_08_21_000002_add_status_to_orders.php',
+    '2026_08_21_000003_create_shipments_table.php',
+];
+
+$operations = [];
+
+foreach ($files as $file) {
+    $migration = require __DIR__.'/'.$file;
+    $migration->up();
+    $migration->down();
+    $operations[] = $migration->operations();
+}
+
+echo json_encode($operations, JSON_THROW_ON_ERROR).PHP_EOL;

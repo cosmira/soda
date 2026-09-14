@@ -57,17 +57,17 @@ return RectorConfig::configure()
         // UselessVariableAnalyser uses strings intentionally (::class would add Ce)
         StringClassNameToClassConstantRector::class => [
             'src/Config/SodaInitFileEmitter.php',
-            'src/Plugins/Rules/UselessVariable/UselessVariableAnalyser.php',
+            'src/Rules/Usage/UselessVariableAnalyser.php',
         ],
         // UselessVariableAnalyser: early-return conversion raises LCF; FQN ::class adds Ce
         ReturnBinaryOrToEarlyReturnRector::class => [
-            'src/Plugins/Rules/UselessVariable/UselessVariableAnalyser.php',
+            'src/Rules/Usage/UselessVariableAnalyser.php',
         ],
         ClassOnObjectRector::class => [
-            'src/Plugins/Rules/UselessVariable/UselessVariableAnalyser.php',
+            'src/Rules/Usage/UselessVariableAnalyser.php',
         ],
         AddArrayFunctionClosureParamTypeRector::class => [
-            'src/Plugins/Rules/UselessVariable/UselessVariableAnalyser.php',
+            'src/Rules/Usage/UselessVariableAnalyser.php',
         ],
     ])
     ->withMemoryLimit('3G')

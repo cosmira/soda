@@ -1,0 +1,22 @@
+<?php
+
+declare(strict_types=1);
+
+require __DIR__.'/DeliveryWindow.php';
+require __DIR__.'/Money.php';
+require __DIR__.'/DeploymentState.php';
+
+use DemoApp\Billing\Money;
+use DemoApp\Delivery\DeliveryWindow;
+use DemoApp\Deployments\DeploymentState;
+
+$window = new DeliveryWindow(
+    new DateTimeImmutable('2026-08-22T09:00:00+03:00'),
+    new DateTimeImmutable('2026-08-22T18:00:00+03:00'),
+);
+
+echo json_encode([
+    'window' => $window->toArray(),
+    'total' => (new Money(129900, 'usd'))->formatted(),
+    'deployment' => (new DeploymentState('PRODUCTION', '2026.08.58'))->identifier(),
+], JSON_THROW_ON_ERROR).PHP_EOL;

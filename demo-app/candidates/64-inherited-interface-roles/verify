@@ -1,0 +1,36 @@
+<?php
+
+declare(strict_types=1);
+
+$files = [
+    'AuditableOrder.php', 'ReservableOrder.php', 'BillableOrder.php',
+    'ExportableOrder.php', 'PrioritizedOrder.php', 'ReconciledOrder.php',
+    'RenewableSubscription.php', 'BillableSubscription.php', 'NotifiableSubscription.php',
+    'TransferableSubscription.php', 'NegotiableSubscription.php', 'ConsolidatedSubscription.php',
+    'SearchableCatalog.php', 'PublishableCatalog.php', 'LocalizedCatalog.php',
+    'ImportableCatalog.php', 'ExportableCatalog.php', 'ArchivableCatalog.php',
+    'OrderProcess.php', 'WholesaleOrderProcess.php',
+    'SubscriptionProcess.php', 'EnterpriseSubscriptionProcess.php',
+    'CatalogProcess.php', 'RegionalCatalogProcess.php',
+];
+
+foreach ($files as $file) {
+    require_once __DIR__.'/'.$file;
+}
+
+use DemoApp\Catalog\RegionalProcess;
+use DemoApp\Orders\WholesaleOrderProcess;
+use DemoApp\Subscriptions\EnterpriseProcess;
+
+$objects = [
+    new WholesaleOrderProcess(),
+    new EnterpriseProcess(),
+    new RegionalProcess(),
+];
+
+echo json_encode(array_map(static function (object $object): array {
+    $interfaces = (new ReflectionObject($object))->getInterfaceNames();
+    sort($interfaces);
+
+    return ['interfaces' => count($interfaces), 'names' => $interfaces];
+}, $objects), JSON_THROW_ON_ERROR).PHP_EOL;

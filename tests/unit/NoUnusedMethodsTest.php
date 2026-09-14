@@ -2,17 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Bunnivo\Soda;
+namespace Cosmira\Soda;
 
-use Bunnivo\Soda\Plugins\Rules\NoUnusedMethods;
-use Bunnivo\Soda\Quality\EvaluationContext;
-use Bunnivo\Soda\Quality\EvaluationContext\FileMetrics;
-use Bunnivo\Soda\Quality\EvaluationContext\MethodMetricsData;
-use Bunnivo\Soda\Quality\EvaluationContext\QualityCore;
-use Bunnivo\Soda\Quality\QualityConfig;
-
-use function collect;
-
+use Cosmira\Soda\Rules\Usage\NoUnusedMethods;
+use Cosmira\Soda\Tests\CheckFixture;
 use PHPUnit\Framework\TestCase;
 
 final class NoUnusedMethodsTest extends TestCase
@@ -22,7 +15,7 @@ final class NoUnusedMethodsTest extends TestCase
         $file = $this->tempFile("<?php\nclass A { private function setUp(): void {} }\n");
         $rule = new NoUnusedMethods;
 
-        $violations = $rule->check($this->context([$file => $this->minimalMetrics()]));
+        $violations = CheckFixture::forRule($rule, $this->context([$file => $this->minimalMetrics()]));
 
         $this->assertCount(0, $violations);
         unlink($file);
@@ -33,7 +26,7 @@ final class NoUnusedMethodsTest extends TestCase
         $file = $this->tempFile("<?php\nclass A { private function seedDb(): void {} }\n");
         $rule = new NoUnusedMethods(ignore: ['seedDb']);
 
-        $violations = $rule->check($this->context([$file => $this->minimalMetrics()]));
+        $violations = CheckFixture::forRule($rule, $this->context([$file => $this->minimalMetrics()]));
 
         $this->assertCount(0, $violations);
         unlink($file);
@@ -44,7 +37,7 @@ final class NoUnusedMethodsTest extends TestCase
         $file = $this->tempFile("<?php\nclass A { private function dead(): void {} }\n");
         $rule = new NoUnusedMethods;
 
-        $violations = $rule->check($this->context([$file => $this->minimalMetrics()]));
+        $violations = CheckFixture::forRule($rule, $this->context([$file => $this->minimalMetrics()]));
 
         $this->assertCount(1, $violations);
         $this->assertSame('unused_methods', $violations->first()->rule);
@@ -68,23 +61,12 @@ final class NoUnusedMethodsTest extends TestCase
     /**
      * @param array<string, array<string, mixed>> $qualityMetrics
      */
-    private function context(array $qualityMetrics): EvaluationContext
+    private function context(array $qualityMetrics): array
     {
-        $core = new QualityCore($qualityMetrics, []);
-        $fileMetrics = new FileMetrics($core, collect(), new MethodMetricsData);
+        $core = $qualityMetrics;
+        $fileMetrics = $core;
 
-        $config = QualityConfig::default();
-        $loc = new LocMetrics([
-            'directories'        => 0, 'files' => 0, 'linesOfCode' => 0,
-            'commentLinesOfCode' => 0, 'nonCommentLinesOfCode' => 0, 'logicalLinesOfCode' => 0,
-        ]);
-        $complexity = new ComplexityMetrics([
-            'functions'       => 0, 'funcLowest' => 0, 'funcAverage' => 0.0, 'funcHighest' => 0,
-            'classesOrTraits' => 0, 'methods' => 0, 'methodLowest' => 0, 'methodAverage' => 0.0, 'methodHighest' => 0,
-        ]);
-        $result = new Result([], new CoreMetrics($loc, $complexity));
-
-        return new EvaluationContext($config, $result, $fileMetrics);
+        return [CheckFixture::checks(), $fileMetrics];
     }
 
     private function tempFile(string $contents): string

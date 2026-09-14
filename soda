@@ -3,14 +3,14 @@
 
 declare(strict_types=1);
 
-use Bunnivo\Soda\Commands\AnalyseCommand;
-use Bunnivo\Soda\Commands\InitCommand;
-use Bunnivo\Soda\Commands\ListRulesCommand;
-use Bunnivo\Soda\Commands\QualityCommand;
-use Bunnivo\Soda\Application;
+use Cosmira\Soda\Commands\InitCommand;
+use Cosmira\Soda\Commands\ListRulesCommand;
+use Cosmira\Soda\Commands\QualityCommand;
+use Cosmira\Soda\Application;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Console\Application as ConsoleApplication;
-use SebastianBergmann\Version;
+use Composer\InstalledVersions;
+use Cosmira\Soda\Commands\ListMetricsCommand;
 
 $autoloadPaths = [
     __DIR__ . '/vendor/autoload.php',
@@ -34,17 +34,18 @@ if (!$autoloadLoaded) {
 
 $container = new Application();
 $events = new Dispatcher($container);
-$version = (new Version('1.0', __DIR__))->asString();
+$version = InstalledVersions::getPrettyVersion('cosmira/soda') ?? '1.0';
 
 $artisan = new ConsoleApplication($container, $events, $version);
 $artisan->setName('Soda');
+$artisan->setDefaultCommand('quality');
 $artisan->setCatchExceptions(true);
 
 // Bind a command
 $artisan->resolveCommands([
-    AnalyseCommand::class,
     InitCommand::class,
     ListRulesCommand::class,
+    ListMetricsCommand::class,
     QualityCommand::class,
 ]);
 
