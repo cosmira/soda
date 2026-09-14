@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Cosmira\Soda\Analysis;
 
+use Cosmira\Soda\Rules\Architecture\Cohesion;
+
 /**
  * @phpstan-import-type ClassFacts from FileFacts
  * @phpstan-import-type FileMetrics from FileFacts
@@ -44,6 +46,8 @@ final class ProjectFacts
             $data['classes'] = $this->resolveFileClasses($data['classes'], $types, $interfaceParents);
             $this->files[$file] = $data;
         }
+
+        $this->files = (new Cohesion)->resolve($this->files);
     }
 
     /**

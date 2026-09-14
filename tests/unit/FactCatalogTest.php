@@ -37,8 +37,8 @@ final class FactCatalogTest extends TestCase
                     $expression = new RuleExpression($scope.' where '.$condition);
                     $required = $field['analysis'] === null ? [] : [$field['analysis']];
                     self::assertSame($required, $expression->requiredAnalyses());
-                    $full = (new FactCollector)->collect($path);
-                    $selective = (new FactCollector)->collect($path, $required);
+                    $full = $this->resolveScope((new FactCollector)->collect($path), $scope);
+                    $selective = $this->resolveScope((new FactCollector)->collect($path, $required), $scope);
                     self::assertSame($this->values($full, $scope, $name), $this->values($selective, $scope, $name));
                     foreach ($selective->rows($scope) as $row) {
                         self::assertIsBool($expression->isMatch($row));
@@ -100,6 +100,18 @@ final class FactCatalogTest extends TestCase
         self::assertEquals($first, $second);
         self::assertSame(4, $first[0]->value);
         self::assertSame(2, $first[0]->threshold);
+    }
+
+    private function resolveScope(FileFacts $file, string $scope): FileFacts
+    {
+        if ($scope !== 'class') {
+            return $file;
+        }
+        $project = new ProjectFacts;
+        $project->add($file);
+        $project->resolveClasses();
+
+        return new FileFacts($file->path, '', [], $project->files[$file->path]);
     }
 
     private function values(FileFacts $file, string $scope, string $name): array

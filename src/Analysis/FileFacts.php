@@ -12,6 +12,7 @@ use PhpParser\Node;
  * Relationship fields are optional while base metrics are being collected.
  *
  * @phpstan-type ClassFacts array{
+ *   method_groups?: int, cohesion_methods?: int, cohesion_unknown?: int, tcc_pairs?: int, tcc_possible_pairs?: int,
  *   kind: 'class'|'trait', line: int, loc: int, methods: int, properties: int,
  *   public_methods: int, dependencies: int, efferent_coupling: int,
  *   traits: int, interfaces: int, namespace: string, namespace_depth: int,
@@ -21,7 +22,8 @@ use PhpParser\Node;
  *   public_trait_aliases?: list<string>, hidden_trait_methods?: list<string>
  * }
  * @phpstan-type MethodFacts array{
- *   line: int, loc: int, args: int, readonlyDataFields?: int,
+ *   line: int, loc: int, args: int, readonlyDataFields?: int, name?: string, cognitive_complexity?: int,
+ *   cognitive_contributions?: list<array{line: int, increment: int, reason: string}>,
  *   complexity?: int, nesting?: int, nesting_line?: int|null,
  *   returns?: int, try_catch?: int,
  *   boolean_conditions?: list<array{line: int, count: int}>
@@ -44,8 +46,12 @@ use PhpParser\Node;
  *   line: int, method: string|null, class: string|null,
  *   receiver: string, question: string, command: string
  * }
+ *
+ * @phpstan-import-type CognitiveRow from \Cosmira\Soda\Rules\Complexity\CognitiveComplexity
+ *
  * @phpstan-type FileMetrics array{
- *   file_loc: int, classes_count: int,
+ *   cohesion?: array<string, array>,
+ *   file_loc: int, classes_count: int, cognitiveExtras?: array<string, CognitiveRow>,
  *   classes: array<string, ClassFacts>, methods: array<string, MethodFacts>,
  *   namespaces: array<string, int>, interfaceParents: array<string, list<string>>,
  *   naming?: NamingFacts|array{}, compoundVariableNames?: list<CompoundVariableNameOccurrence>,
@@ -55,7 +61,7 @@ use PhpParser\Node;
  *   todoFixme?: list<array{line: int, kind: string, text: string}>,
  *   commentedCode?: list<array{line: int, text: string}>
  * }
- * @phpstan-type ExpressionRow array<string, int|string|null|list<string>|list<array{line: int, count: int}>>
+ * @phpstan-type ExpressionRow array<string, int|string|null|list<string>|list<array{line: int, count: int}>|list<array{line: int, increment: int, reason: string}>>
  *
  * Optional fields describe collection stages: structure precedes optional
  * measurements, comments are collected after AST facts, and project storage

@@ -1,0 +1,48 @@
+{
+  "frozen_at": "2026-09-14",
+  "seed": "soda-practical-design-2026-09-14",
+  "selection": "Production PHP under the specified roots. Exclude Tests, tests, Resources and vendor. No donor project is executed. No independent application was supplied; demo-app is synthetic and excluded from external validation.",
+  "candidate_limits": {
+    "max_cognitive_complexity": 15,
+    "max_disconnected_method_groups": 1,
+    "minimum_cohesion_methods": 4
+  },
+  "review": "Deterministic hash order within project and candidate. Inspect at least 100 candidate findings across discovery and held-out projects if available, plus 25 non-findings. Freeze thresholds before inspecting the held-out results. Record actual counts and uncertainty; this is expert inspection, not a human-comprehension experiment.",
+  "projects": [
+    {
+      "name": "soda",
+      "repository": "https://github.com/cosmira/soda",
+      "commit": "33d0c5cd51e8b6cdb317856b5198f39349f4fd4f",
+      "root": "src",
+      "partition": "discovery"
+    },
+    {
+      "name": "laravel",
+      "repository": "https://github.com/laravel/framework",
+      "commit": "5c6b069aab234b9264155335678421ec7746d6e4",
+      "root": "src",
+      "partition": "discovery"
+    },
+    {
+      "name": "monolog",
+      "repository": "https://github.com/Seldaek/monolog",
+      "commit": "2dc40e8f3b76a0b657e0a25c932dc6edef215891",
+      "root": "src",
+      "partition": "discovery"
+    },
+    {
+      "name": "symfony-console",
+      "repository": "https://github.com/symfony/console",
+      "commit": "de53cc95f326bea88098c0d1be4443011d2cab3c",
+      "root": ".",
+      "partition": "held-out"
+    },
+    {
+      "name": "guzzle",
+      "repository": "https://github.com/guzzle/guzzle",
+      "commit": "93939470950a9b11e2e84204166ef5e048c55fe4",
+      "root": "src",
+      "partition": "held-out"
+    }
+  ]
+}

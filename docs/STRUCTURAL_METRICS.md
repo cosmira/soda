@@ -1298,3 +1298,11 @@ if ($this->eligibility->isGoldTier($user, $order)) {
     return 'gold';
 }
 ```
+
+### Research cohesion facts
+
+Observed method components and public TCC counts are available for research.
+The proposed disconnected-groups threshold was rejected after inspecting real
+fluent objects, concerns and protocol implementations; it is not a built-in rule.
+Constructor/static/abstract exclusions, trait composition and unknown cases are
+specified in [Research Metrics](RESEARCH_METRICS.md).

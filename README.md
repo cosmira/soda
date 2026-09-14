@@ -69,6 +69,7 @@ PHPStan or Psalm by checking code structure and maintainability.
 - [Report JSON](docs/QUALITY_REPORT_JSON.md): machine-readable results.
 - [Project flow](docs/PROJECT_FLOW.md): where parsing, checks and reporting happen.
 - [Design philosophy](docs/DESIGN_PHILOSOPHY.md): concerns, fluent APIs and value objects with executable examples.
+- [Research metrics](docs/RESEARCH_METRICS.md) and [100-finding corpus review](docs/research/CORPUS_REVIEW.md): optional cognitive complexity; cohesion remains measurement only.
 - [Migration](docs/MIGRATION.md): changed namespaces and extension contracts.
 
 Rule authors can inspect available facts with `vendor/bin/soda list:metrics`.
