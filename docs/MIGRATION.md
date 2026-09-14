@@ -383,3 +383,12 @@ measurements, thresholds, locations and selection are unchanged. See
 standard selection. `standard()`, `checks()` and generated `init` configuration
 retain the same 69 checks. `list:rules` adds a Selection column. Explicitly
 construct `NoRedundantRethrow` or `NoEmptyFinallyBlocks` to enable them.
+
+## Readable control conditions
+
+`NoComplexControlConditions()` keeps its ID and constructor. Its diagnostics now
+distinguish mixed logical operators from nested computation, replacing the old
+“more than one operation” criterion. Simple comparisons and homogeneous chains
+are accepted, including negated predicates. Every expression in a `for` condition
+is checked. Existing numerical limits, all 69 standard rules, and JSON schema 4
+are unchanged. See [the rule semantics](STRUCTURAL_METRICS.md#no_complex_control_conditions).

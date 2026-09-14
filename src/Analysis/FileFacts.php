@@ -56,7 +56,7 @@ use PhpParser\Node;
  *   namespaces: array<string, int>, interfaceParents: array<string, list<string>>,
  *   naming?: NamingFacts|array{}, compoundVariableNames?: list<CompoundVariableNameOccurrence>,
  *   emptyCatches?: list<LocatedCallable>, elseBranches?: list<array{line: int, kind: 'else'|'elseif'}>,
- *   complexControlConditions?: list<array{line: int, reason: 'multiple_operations'}>,
+ *   complexControlConditions?: list<array{line: int, reason: 'mixed_logic'|'nested_computation'}>,
  *   askThenTell?: list<AskThenTell>,
  *   todoFixme?: list<array{line: int, kind: string, text: string}>,
  *   commentedCode?: list<array{line: int, text: string}>

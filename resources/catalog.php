@@ -220,7 +220,7 @@ return [
         'severity'   => 'warning',
         'default'    => 0,
         'label'      => 'Complex control conditions:',
-        'advice'     => 'Keep one decision operation in control flow; extract every additional comparison, call, or logical step into a named value or predicate.',
+        'advice'     => 'Keep simple predicates, comparisons and homogeneous boolean chains inline. Name mixed decisions or prepare nested computations locally.',
         'comparison' => null,
     ],
     'no_service_locator_calls' => [

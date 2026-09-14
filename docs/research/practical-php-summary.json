@@ -1,0 +1,69 @@
+{
+  "baseline": "ec3449420bee5ed705bc95646bed343f1d7fe6fe",
+  "projects": [
+    {
+      "project": "soda",
+      "files": 167,
+      "before": {},
+      "conditions": {},
+      "added_locations": 0,
+      "removed_locations": 0
+    },
+    {
+      "project": "symfony-console",
+      "files": 177,
+      "before": {
+        "no_complex_control_conditions": 703,
+        "unused_methods": 40
+      },
+      "conditions": {
+        "no_complex_control_conditions": 189,
+        "unused_methods": 40
+      },
+      "added_locations": 12,
+      "removed_locations": 526
+    },
+    {
+      "project": "laravel",
+      "files": 1680,
+      "before": {
+        "no_complex_control_conditions": 3363,
+        "unused_methods": 477
+      },
+      "conditions": {
+        "no_complex_control_conditions": 897,
+        "unused_methods": 477
+      },
+      "added_locations": 18,
+      "removed_locations": 2485
+    },
+    {
+      "project": "monolog",
+      "files": 125,
+      "before": {
+        "no_complex_control_conditions": 297,
+        "unused_methods": 69
+      },
+      "conditions": {
+        "no_complex_control_conditions": 36,
+        "unused_methods": 69
+      },
+      "added_locations": 2,
+      "removed_locations": 263
+    },
+    {
+      "project": "guzzle",
+      "files": 70,
+      "before": {
+        "no_complex_control_conditions": 720,
+        "unused_methods": 1
+      },
+      "conditions": {
+        "no_complex_control_conditions": 85,
+        "unused_methods": 1
+      },
+      "added_locations": 0,
+      "removed_locations": 635
+    }
+  ]
+}
