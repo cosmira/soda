@@ -82,7 +82,7 @@ final class AdversarialDemoTest extends TestCase
         $standard = RuleCatalog::standard();
         $config = require dirname($this->demo).'/soda.php';
 
-        $this->assertSame(array_keys(RuleCatalog::definitions()), array_map(fn ($check) => $check->id(), $standard));
+        $this->assertSame(array_keys(RuleCatalog::standardDefinitions()), array_map(fn ($check) => $check->id(), $standard));
         $this->assertSame(
             array_map(static fn ($checker): string => $checker::class, $standard),
             array_map(static fn ($checker): string => $checker::class, $config->checks()),
@@ -93,7 +93,7 @@ final class AdversarialDemoTest extends TestCase
     {
         $challenges = require dirname($this->demo).'/rule-challenges.php';
 
-        $this->assertSame(array_keys(RuleCatalog::definitions()), array_keys($challenges));
+        $this->assertSame(array_keys(RuleCatalog::standardDefinitions()), array_keys($challenges));
         foreach ($challenges as $rule => $challenge) {
             $this->assertGreaterThanOrEqual(1, $challenge['iteration'], $rule);
             $this->assertLessThanOrEqual(100, $challenge['iteration'], $rule);

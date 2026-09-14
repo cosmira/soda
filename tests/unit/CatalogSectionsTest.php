@@ -11,7 +11,7 @@ final class CatalogSectionsTest extends TestCase
 {
     public function testSectionNames(): void
     {
-        $names = array_values(array_unique(array_column(RuleCatalog::definitions(), 'section')));
+        $names = array_values(array_unique(array_column(RuleCatalog::standardDefinitions(), 'section')));
 
         $this->assertSame(['structural', 'complexity', 'naming'], $names);
     }
@@ -19,7 +19,7 @@ final class CatalogSectionsTest extends TestCase
     public function testSectionsContainExpectedRules(): void
     {
         $sections = [];
-        foreach (RuleCatalog::definitions() as $id => $entry) {
+        foreach (RuleCatalog::standardDefinitions() as $id => $entry) {
             $sections[$entry['section']][] = $id;
         }
 
@@ -41,7 +41,7 @@ final class CatalogSectionsTest extends TestCase
 
     public function testRuleToSectionMapsAllRules(): void
     {
-        $map = array_map(static fn (array $entry): string => $entry['section'], RuleCatalog::definitions());
+        $map = array_map(static fn (array $entry): string => $entry['section'], RuleCatalog::standardDefinitions());
 
         $this->assertSame('structural', $map['max_method_length']);
         $this->assertSame('structural', $map['max_efferent_coupling']);

@@ -110,7 +110,7 @@ final class RuleCatalogTest extends TestCase
 
     public function testCatalogAndBundleContainTheSameRuleClasses(): void
     {
-        $expected = array_column(RuleCatalog::definitions(), 'class');
+        $expected = array_column(RuleCatalog::standardDefinitions(), 'class');
         $actual = array_map(fn ($check) => $check::class, RuleCatalog::standard());
         $this->assertSame($expected, $actual);
     }

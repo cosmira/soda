@@ -12,11 +12,21 @@ use Cosmira\Soda\Rules\Structure\MaxPropertiesPerClass;
 final class RuleCatalog
 {
     /**
-     * @return array<string, array{class: class-string<Check>, arguments: array, section: string, severity: string, default: int|float, label: string, advice: string, comparison: string}>
+     * @return array<string, array{class: class-string<Check>, arguments: array, section: string, severity: string, default: int|float, label: string, advice: string, comparison: ?string, standard?: bool}>
      */
     public static function definitions(): array
     {
         return require __DIR__.'/../../resources/catalog.php';
+    }
+
+    /**
+     * Keep experimental checks discoverable without enabling them in existing bundles.
+     *
+     * @return array<string, array{class: class-string<Check>, arguments: array, section: string, severity: string, default: int|float, label: string, advice: string, comparison: ?string, standard?: bool}>
+     */
+    public static function standardDefinitions(): array
+    {
+        return array_filter(self::definitions(), fn (array $entry): bool => $entry['standard'] ?? true);
     }
 
     /**
@@ -26,7 +36,7 @@ final class RuleCatalog
      */
     public static function standard(): array
     {
-        $definitions = self::definitions();
+        $definitions = self::standardDefinitions();
         $propertyRule = $definitions['max_properties_per_class'];
         $properties = new MaxPropertiesPerClass(...$propertyRule['arguments']);
         $checks = [];
@@ -52,7 +62,7 @@ final class RuleCatalog
     public static function checks(?string $section = null): array
     {
         $checks = [];
-        foreach (self::definitions() as $entry) {
+        foreach (self::standardDefinitions() as $entry) {
             $isOtherSection = $section !== null && $section !== $entry['section'];
             if ($isOtherSection) {
                 continue;

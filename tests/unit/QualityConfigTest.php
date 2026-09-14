@@ -51,7 +51,7 @@ final class QualityConfigTest extends TestCase
     {
         $config = (new ConfigLoader())->load(dirname(__DIR__, 2).'/demo-app/soda.php');
 
-        $this->assertSame(array_keys(RuleCatalog::definitions()), array_map(fn ($rule) => $rule->id(), $config->checks()));
+        $this->assertSame(array_keys(RuleCatalog::standardDefinitions()), array_map(fn ($rule) => $rule->id(), $config->checks()));
         $this->assertInstanceOf(SodaConfig::class, $config);
         $this->assertNotEmpty($config->checks());
     }

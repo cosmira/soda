@@ -51,7 +51,7 @@ final class InitCommandTest extends TestCase
             $this->assertStringContainsString("'src/'", $content);
             $this->assertStringContainsString('->with([', $content);
 
-            foreach (RuleCatalog::definitions() as $id => $init) {
+            foreach (RuleCatalog::standardDefinitions() as $id => $init) {
                 $expression = $id === 'boolean_methods_without_prefix'
                     ? 'BooleanMethodPrefix::standard()'
                     : 'new '.$this->shortName($init['class']).'(';
@@ -81,11 +81,11 @@ final class InitCommandTest extends TestCase
             $properties = new ReflectionProperty($rulesById['max_arguments'], 'properties');
             $this->assertSame($rulesById['max_properties_per_class'], $properties->getValue($rulesById['max_arguments']));
             $this->assertSame(
-                array_keys(RuleCatalog::definitions()),
+                array_keys(RuleCatalog::standardDefinitions()),
                 array_map(static fn ($check): string => $check->id(), $config->checks()),
             );
             $this->assertNotEmpty($config->checks());
-            $this->assertCount(count(RuleCatalog::definitions()), $config->checks());
+            $this->assertCount(count(RuleCatalog::standardDefinitions()), $config->checks());
             $checkerClasses = array_map(static fn (object $checker): string => $checker::class, $config->checks());
             $this->assertSame(array_values(array_unique($checkerClasses)), $checkerClasses);
             $this->assertInstanceOf(SodaConfig::class, $config);

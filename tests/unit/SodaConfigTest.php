@@ -43,7 +43,7 @@ final class SodaConfigTest extends TestCase
     {
         $soda = Soda::configure()->with(RuleCatalog::standard());
 
-        $this->assertSame(array_keys(RuleCatalog::definitions()), array_map(fn ($check) => $check->id(), $soda->checks()));
+        $this->assertSame(array_keys(RuleCatalog::standardDefinitions()), array_map(fn ($check) => $check->id(), $soda->checks()));
     }
 
     public function testWithRejectsInvalidType(): void
