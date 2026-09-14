@@ -9,11 +9,12 @@ use Cosmira\Soda\Reporting\Violation;
 use Cosmira\Soda\Rules\Check;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Stmt;
 use PhpParser\NodeFinder;
 
 final class NoBooleanParameters extends Check
 {
+    use ReadonlyConstructorState;
+
     /**
      * Report each matching PHP construct at its original source position.
      *
@@ -42,38 +43,12 @@ final class NoBooleanParameters extends Check
     private function isBooleanParameter(Node $parameter): bool
     {
         $isExcludedParameter = ! $parameter instanceof Node\Param
-            || ! $parameter->type instanceof Node
-            || $this->isPromotedReadonlyState($parameter);
+            || ! $parameter->type instanceof Node;
         if ($isExcludedParameter) {
             return false;
         }
 
-        return $this->hasBooleanType($parameter->type);
-    }
-
-    /**
-     * Determine whether promoted readonly state applies to the supplied input.
-     */
-    private function isPromotedReadonlyState(Node\Param $parameter): bool
-    {
-        if ($parameter->flags === 0) {
-            return false;
-        }
-
-        $method = $parameter->getAttribute('parent');
-        $isNonConstructor = ! $method instanceof Stmt\ClassMethod || strtolower($method->name->toString()) !== '__construct';
-        if ($isNonConstructor) {
-            return false;
-        }
-
-        $isReadonly = ($parameter->flags & Stmt\Class_::MODIFIER_READONLY) !== 0;
-        if ($isReadonly) {
-            return true;
-        }
-
-        $class = $method->getAttribute('parent');
-
-        return $class instanceof Stmt\Class_ && $class->isReadonly();
+        return $this->hasBooleanType($parameter->type) && ! $this->isReadonlyState($parameter);
     }
 
     /**

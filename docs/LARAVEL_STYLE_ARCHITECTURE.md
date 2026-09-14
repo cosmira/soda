@@ -2,6 +2,8 @@
 
 Soda should feel familiar to Laravel developers: one config file, clear console commands, readable defaults, and no hidden compatibility paths.
 
+See [Practical Design](DESIGN_PHILOSOPHY.md) for the design principles and executable examples behind the rules.
+
 ## Target Experience
 
 ```bash
@@ -45,11 +47,11 @@ Analyzer::analyze($paths, configPath: null);
 | Layer | Responsibility |
 |-------|----------------|
 | `soda.php` | User paths and rule objects |
-| `SodaConfig` | Collect configured paths and rule/plugin instances |
+| `SodaConfig` | Collect configured paths and rule instances |
 | `QualityCommand` | Resolve CLI paths or `withPaths()` and print reports |
 | `Analyzer` | Small facade for programmatic use |
 | `Analysis\Runner` | Collect facts and execute file/project checks |
-| `FactCollector` / `QualityAstPipeline` | Read and parse PHP once; collect requested facts |
+| `FactCollector` / `AstFacts` | Read and parse PHP once; collect requested facts |
 | Rule classes | Express one user-facing quality constraint |
 
 ## Rules

@@ -35,7 +35,7 @@ PHP;
 
         $this->assertCount(1, $findings);
         $this->assertSame('OrderSaver', $findings[0]->class);
-        $this->assertSame('save', $findings[0]->method);
+        $this->assertSame(['save'], $findings[0]->methods);
         $this->assertSame('repository', $findings[0]->delegate);
         $this->assertSame(2, $findings[0]->line);
     }
@@ -64,7 +64,7 @@ PHP;
 
         $this->assertCount(1, $findings);
         $this->assertSame('UserFinder', $findings[0]->class);
-        $this->assertSame('find', $findings[0]->method);
+        $this->assertSame(['find'], $findings[0]->methods);
     }
 
     public function testRuleBuildsActionableClassAndMethodViolation(): void
@@ -91,7 +91,7 @@ PHP;
         $this->assertSame('save', $violations[0]->method);
         $this->assertSame(2, $violations[0]->line);
         $this->assertStringContainsString('only forwards unchanged arguments', (string) $violations[0]->message);
-        $this->assertStringContainsString('explicit contract or behavior', (string) $violations[0]->message);
+        $this->assertStringContainsString('adding an interface alone does not simplify it', (string) $violations[0]->message);
     }
 
     public function testProductionPipelineLoadsRuleFromConfigAndReportsQualifiedClass(): void
@@ -129,6 +129,28 @@ PHP);
             unlink($configPath);
             rmdir($directory);
         }
+    }
+
+    public function testReportsAllTransparentOperationsOncePerClass(): void
+    {
+        $source = <<<'PHP'
+<?php
+final class OrderGateway
+{
+    public function __construct(private OrderRepository $repository) {}
+    public function save(Order $order): void { $this->repository->save($order); }
+    public function delete(Order $order): void { $this->repository->delete($order); }
+}
+PHP;
+        $findings = $this->analyse($source);
+        self::assertCount(1, $findings);
+        self::assertSame(['save', 'delete'], $findings[0]->methods);
+        self::assertSame('repository', $findings[0]->delegate);
+        $violations = (new NoTrivialDelegatingClasses)->checkFile(new FileFacts('/project/OrderGateway.php', $source, $this->parse($source), []));
+        self::assertCount(1, $violations);
+        self::assertSame(1, $violations[0]->value);
+        self::assertNull($violations[0]->method);
+        self::assertStringContainsString('save, delete', $violations[0]->message);
     }
 
     #[DataProvider('legitimateSmallClassProvider')]
@@ -234,13 +256,61 @@ final class OrderSaver
 }
 PHP];
 
-        yield 'more than one operation' => [<<<'PHP'
+        yield 'second method owns behavior' => [<<<'PHP'
 <?php
 final class OrderGateway
 {
     public function __construct(private OrderRepository $repository) {}
     public function save(Order $order): void { $this->repository->save($order); }
+    public function delete(Order $order): void { $this->repository->delete($order->identifier()); }
+}
+PHP];
+
+        yield 'operations use different collaborators' => [<<<'PHP'
+<?php
+final class OrderGateway
+{
+    public function __construct(private OrderRepository $repository, private Logger $logger) {}
+    public function save(Order $order): void { $this->repository->save($order); }
+    public function log(Order $order): void { $this->logger->log($order); }
+}
+PHP];
+
+        yield 'trait provides domain behavior' => [<<<'PHP'
+<?php
+trait ArchivesOrders { public function archive(Order $order): void { $this->repository->markArchived($order); } }
+final class OrderGateway
+{
+    use ArchivesOrders;
+    public function __construct(private OrderRepository $repository) {}
+    public function save(Order $order): void { $this->repository->save($order); }
     public function delete(Order $order): void { $this->repository->delete($order); }
+}
+PHP];
+
+        yield 'fluent builder returns its owner' => [<<<'PHP'
+<?php
+final class OrderQuery
+{
+    public function __construct(private Query $query) {}
+    public function where(string $value): self { $this->query->where($value); return $this; }
+    public function get(): array { return $this->query->get(); }
+}
+PHP];
+
+        yield 'constructor without operations' => [<<<'PHP'
+<?php
+final readonly class OrderGateway
+{
+    public function __construct(public OrderRepository $repository) {}
+}
+PHP];
+
+        yield 'named contract without forwarding' => [<<<'PHP'
+<?php
+final class MaxItems extends Check
+{
+    public function id(): string { return 'max_items'; }
 }
 PHP];
 
