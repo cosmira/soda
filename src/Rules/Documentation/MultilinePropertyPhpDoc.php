@@ -65,7 +65,6 @@ final class MultilinePropertyPhpDoc extends Check
                 file: $file->path,
                 value: 0,
                 threshold: 1,
-                method: null,
                 class: $class->name?->toString() ?? 'anonymous@'.$class->getLine(),
                 line: $member->getLine(),
                 message: sprintf('%s property::%s must have a multiline PHPDoc comment', ucfirst($visibility), $name),

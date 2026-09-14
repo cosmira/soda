@@ -87,7 +87,6 @@ final class ComplexityVisitor extends FactVisitor
         }
 
         assert(isset($parent->namespacedName));
-        assert($parent->namespacedName instanceof Name);
 
         return $parent->namespacedName->toString().'::'.$node->name->toString();
     }

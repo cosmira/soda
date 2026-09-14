@@ -13,25 +13,25 @@ use function str_starts_with;
 /**
  * @internal
  */
-final class BooleanMethodPrefixInspector
+final readonly class BooleanMethodPrefixInspector
 {
     /**
      * Method names and qualified method names explicitly ignored by the rule.
      *
      * @var array<string, true>
      */
-    private readonly array $ignored;
+    private array $ignored;
 
     /**
      * @var array<string, array{inherits: list<string>, methods: array<string, true>}>
      */
-    private array $typeIndex = [];
+    private array $typeIndex;
 
     /**
      * @param list<string> $ignore
      * @param list<string> $allowedPrefixes
      */
-    public function __construct(ProjectFacts $project, array $ignore, private readonly array $allowedPrefixes)
+    public function __construct(ProjectFacts $project, array $ignore, private array $allowedPrefixes)
     {
         $this->ignored = array_fill_keys($ignore, true);
         $this->typeIndex = BooleanMethodTypeIndexBuilder::build($project);
