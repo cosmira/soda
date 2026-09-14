@@ -40,7 +40,7 @@ final class MultilinePhpDocComment
         $closingLine = array_pop($lines);
 
         return trim($openingLine) === '/**'
-            && trim((string) $closingLine) === '*/'
+            && trim($closingLine) === '*/'
             && $this->hasContent($lines);
     }
 

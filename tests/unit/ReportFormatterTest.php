@@ -82,12 +82,12 @@ final class ReportFormatterTest extends TestCase
 
     public function testEscapesUserControlledReportText(): void
     {
-        $violation = new Violation(rule: 'max_line_length', file: '/project/src/<error>File.php', value: 121, threshold: 120, method: 'App\<error>Example::run', message: 'Avoid <error>markup</error> in report text.');
+        $violation = new Violation(rule: 'max_line_length', file: '/project/src/<error>File.php', value: 121, threshold: 120, method: 'App\Example::<error>run', message: 'Avoid <error>markup</error> in report text.');
 
         $text = $this->formatViolation($violation, decorated: true);
 
         $this->assertStringContainsString('src/<error>File.php', $text);
-        $this->assertStringContainsString('App<error>Example::run', $text);
+        $this->assertStringContainsString('App\Example::<error>run', $text);
         $this->assertStringContainsString('Avoid <error>markup</error> in report text.', $text);
         $this->assertStringNotContainsString("\033[37;41mFile.php", $text);
         $this->assertStringNotContainsString("\033[37;41mmarkup", $text);

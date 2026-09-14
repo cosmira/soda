@@ -73,3 +73,5 @@ other source languages would still need their own syntax and semantic collectors
 
 The grammar lives in `resources/rules.pp3`; regenerate `resources/rules.php`
 with `composer rules:compile`. The generated parser is shipped for runtime use.
+The compiler and its lexer/parser builders are pinned so regeneration is
+reproducible. Upgrade them together with the generated parser and expression tests.
