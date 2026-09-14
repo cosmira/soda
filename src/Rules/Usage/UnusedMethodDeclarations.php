@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Cosmira\Soda\Rules\Usage;
 
 use Cosmira\Soda\Analysis\CallableIdentity;
+use PhpParser\Modifiers;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeFinder;
@@ -174,6 +175,8 @@ final class UnusedMethodDeclarations
 
         assert($adaptation instanceof Stmt\TraitUseAdaptation\Alias);
 
-        return $base + ['kind' => 'alias', 'alias' => $adaptation->newName?->toLowerString(), 'visibility' => $adaptation->newModifier === null ? null : self::visibility($adaptation->newModifier)];
+        $visibility = ($adaptation->newModifier ?? 0) & Modifiers::VISIBILITY_MASK;
+
+        return $base + ['kind' => 'alias', 'alias' => $adaptation->newName?->toLowerString(), 'visibility' => $visibility === 0 ? null : self::visibility($visibility)];
     }
 }

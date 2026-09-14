@@ -93,6 +93,12 @@ final class ProjectMethodUsageTest extends TestCase
         yield 'alias uses source declaration' => [
             ['trait Concern { private function save() {} }', 'class Owner { use Concern { save as store; } public function run() { $this->store(); } }'], [],
         ];
+        yield 'final modifier preserves private visibility' => [
+            ['trait Concern { private function save() {} }', 'class Owner { use Concern { save as final; } }'], ['Concern::save'],
+        ];
+        yield 'final alias preserves private visibility' => [
+            ['trait Concern { private function save() {} }', 'class Owner { use Concern { save as final store; } }'], ['Concern::save'],
+        ];
         yield 'public alias is exposed' => [
             ['trait Concern { private function save() {} }', 'class Owner { use Concern { save as public store; } }'], [],
         ];

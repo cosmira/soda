@@ -10,4 +10,6 @@ Corpus comparison uses the unchanged revisions in `research/corpus.json`. Run `p
 
 Conditions validation: self-quality 0; 44 focused tests / 252 assertions; full workspace suite 814 tests / 8416 assertions (including 56 concurrent, uncommitted research tests outside this PR); PHPStan, Pint and fresh Rector pass. Separate performance suite: 2 tests / 6 assertions, 1.056 s, 20 MiB PHPUnit peak. See [corpus diagnostic review](research/PRACTICAL_PHP_REVIEW.md).
 
-Project usage validation: 117 focused tests / 339 assertions on PHP 8.3 and 8.5; full workspace suite 862 tests / 8528 assertions (same 56 concurrent research tests excluded from this PR); self-quality 0, PHPStan, Pint and fresh Rector pass. Separate performance: 3 tests / 9 assertions, 1.459 s, 20 MiB PHPUnit peak, including 600 files containing 300 owner/concern pairs. The project AST-release test uses a weak reference and scalar-only traversal.
+Project usage validation: 119 focused tests / 345 assertions on PHP 8.5; all 65 project-usage cases / 226 assertions on PHP 8.3; full workspace suite 864 tests / 8534 assertions (same 56 concurrent research tests excluded from this PR); self-quality 0, PHPStan, Pint and fresh Rector pass. Separate performance: 3 tests / 9 assertions, 1.465 s, 20 MiB PHPUnit peak, including 600 files containing 300 owner/concern pairs. The project AST-release test uses a weak reference and scalar-only traversal.
+
+A final visibility regression covers `as final` with and without a new alias: adding finality must retain the source method visibility.
