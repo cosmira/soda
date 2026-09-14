@@ -2,31 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Bunnivo\Soda;
+namespace Cosmira\Soda;
 
-use Bunnivo\Soda\Quality\TellDontAsk\TellDontAskVisitor;
-use PhpParser\NodeTraverser;
-use PhpParser\NodeVisitor\NameResolver;
-use PhpParser\NodeVisitor\ParentConnectingVisitor;
-use PhpParser\ParserFactory;
+use Cosmira\Soda\Rules\Structure\TellDontAskVisitor;
+use Cosmira\Soda\Tests\ParsesPhpSnippets;
 use PHPUnit\Framework\TestCase;
 
 final class TellDontAskVisitorTest extends TestCase
 {
+    use ParsesPhpSnippets;
+
     private function parseAndCollect(string $code): array
     {
-        $parser = (new ParserFactory())->createForNewestSupportedVersion();
-        $nodes = $parser->parse($code);
-        $this->assertNotNull($nodes);
-
         $visitor = new TellDontAskVisitor();
-        $traverser = new NodeTraverser();
-        $traverser->addVisitor(new NameResolver());
-        $traverser->addVisitor(new ParentConnectingVisitor());
-        $traverser->addVisitor($visitor);
-        $traverser->traverse($nodes);
+        $this->traversePhpFile($code, $visitor);
 
-        return $visitor->result();
+        return $visitor->violations();
     }
 
     public function testCollectsAskThenTellPattern(): void
@@ -493,5 +484,26 @@ PHP;
         $this->assertSame('$user', $result[0]['receiver']);
         $this->assertSame('hasRole', $result[0]['question']);
         $this->assertSame('grantAccess', $result[0]['command']);
+    }
+
+    public function testAnonymousClassAskThenTellDoesNotLeakIntoOuterMethod(): void
+    {
+        $code = <<<'PHP'
+<?php
+namespace App;
+class UserManager {
+    public function build(): object {
+        return new class {
+            public function ignored(User $user): void {
+                if ($user->isActive()) {
+                    $user->notify();
+                }
+            }
+        };
+    }
+}
+PHP;
+
+        $this->assertSame([], $this->parseAndCollect($code));
     }
 }

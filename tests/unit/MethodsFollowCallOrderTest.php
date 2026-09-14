@@ -2,17 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Bunnivo\Soda\Tests;
+namespace Cosmira\Soda\Tests;
 
-use Bunnivo\Soda\ComplexityMetrics;
-use Bunnivo\Soda\CoreMetrics;
-use Bunnivo\Soda\LocMetrics;
-use Bunnivo\Soda\Plugins\Rules\Structural\MethodsFollowCallOrder;
-use Bunnivo\Soda\Quality\EvaluationContext;
-use Bunnivo\Soda\Quality\EvaluationContext\FileMetrics;
-use Bunnivo\Soda\Quality\EvaluationContext\QualityCore;
-use Bunnivo\Soda\Quality\QualityConfig;
-use Bunnivo\Soda\Result;
+use Cosmira\Soda\Rules\Structure\MethodsFollowCallOrder;
 use PHPUnit\Framework\TestCase;
 
 final class MethodsFollowCallOrderTest extends TestCase
@@ -41,9 +33,9 @@ final class SomeClass
 PHP);
 
         try {
-            $violations = (new MethodsFollowCallOrder())->check($this->context($file));
+            $violations = CheckFixture::forRule(new MethodsFollowCallOrder(), $this->context($file));
 
-            $this->assertCount(0, $violations);
+            self::assertCount(0, $violations);
         } finally {
             unlink($file);
         }
@@ -68,18 +60,18 @@ final class SomeClass
 PHP);
 
         try {
-            $violations = (new MethodsFollowCallOrder())->check($this->context($file));
+            $violations = CheckFixture::forRule(new MethodsFollowCallOrder(), $this->context($file));
 
-            $this->assertCount(1, $violations);
-            $this->assertSame('methods_follow_call_order', $violations->first()->rule);
-            $this->assertSame('SomeClass', $violations->first()->class());
-            $this->assertSame('method1', $violations->first()->method());
+            self::assertCount(1, $violations);
+            self::assertSame('methods_follow_call_order', $violations->first()->rule);
+            self::assertSame('SomeClass', $violations->first()->class);
+            self::assertSame('method1', $violations->first()->method);
         } finally {
             unlink($file);
         }
     }
 
-    public function testLegacyBudgetAllowsKnownViolations(): void
+    public function testRuleReportsEveryOrderingViolationWithoutAllowance(): void
     {
         $file = $this->writeFixture(<<<'PHP'
 <?php
@@ -98,9 +90,10 @@ final class SomeClass
 PHP);
 
         try {
-            $violations = (new MethodsFollowCallOrder(maxViolations: 1))->check($this->context($file));
+            $context = $this->context($file);
+            $violations = CheckFixture::forRule(new MethodsFollowCallOrder(), $context);
 
-            $this->assertCount(0, $violations);
+            self::assertCount(1, $violations);
         } finally {
             unlink($file);
         }
@@ -128,9 +121,110 @@ final class SomeClass
 PHP);
 
         try {
-            $violations = (new MethodsFollowCallOrder())->check($this->context($file));
+            $violations = CheckFixture::forRule(new MethodsFollowCallOrder(), $this->context($file));
 
-            $this->assertCount(0, $violations);
+            self::assertCount(0, $violations);
+        } finally {
+            unlink($file);
+        }
+    }
+
+    public function testContradictoryLifecyclePairIsIgnored(): void
+    {
+        $file = $this->writeFixture(<<<'PHP'
+<?php
+final class Lifecycle
+{
+    public function start(): void
+    {
+        $this->changeState();
+        $this->recordTransition();
+    }
+
+    public function stop(): void
+    {
+        $this->recordTransition();
+        $this->changeState();
+    }
+
+    private function changeState(): void {}
+
+    private function recordTransition(): void {}
+}
+PHP);
+
+        try {
+            self::assertCount(0, CheckFixture::forRule(new MethodsFollowCallOrder, $this->context($file)));
+        } finally {
+            unlink($file);
+        }
+    }
+
+    public function testThreeNodeCallOrderCycleIsIgnored(): void
+    {
+        $file = $this->writeFixture(<<<'PHP'
+<?php
+final class Lifecycle
+{
+    public function first(): void
+    {
+        $this->alpha();
+        $this->beta();
+    }
+
+    public function second(): void
+    {
+        $this->beta();
+        $this->gamma();
+    }
+
+    public function third(): void
+    {
+        $this->gamma();
+        $this->alpha();
+    }
+
+    private function alpha(): void {}
+
+    private function beta(): void {}
+
+    private function gamma(): void {}
+}
+PHP);
+
+        try {
+            self::assertCount(0, CheckFixture::forRule(new MethodsFollowCallOrder, $this->context($file)));
+        } finally {
+            unlink($file);
+        }
+    }
+
+    public function testRepeatedConsistentOrderIsStillChecked(): void
+    {
+        $file = $this->writeFixture(<<<'PHP'
+<?php
+final class Workflow
+{
+    public function first(): void
+    {
+        $this->prepare();
+        $this->commit();
+    }
+
+    public function second(): void
+    {
+        $this->prepare();
+        $this->commit();
+    }
+
+    private function commit(): void {}
+
+    private function prepare(): void {}
+}
+PHP);
+
+        try {
+            self::assertCount(2, CheckFixture::forRule(new MethodsFollowCallOrder, $this->context($file)));
         } finally {
             unlink($file);
         }
@@ -139,46 +233,22 @@ PHP);
     private function writeFixture(string $contents): string
     {
         $file = tempnam(sys_get_temp_dir(), 'soda-method-order-');
-        $this->assertIsString($file);
+        self::assertIsString($file);
         file_put_contents($file, $contents);
 
         return $file;
     }
 
-    private function context(string $file): EvaluationContext
+    private function context(string $file): array
     {
-        return new EvaluationContext(
-            QualityConfig::default(),
-            new Result([], new CoreMetrics(
-                new LocMetrics([
-                    'directories'            => 0,
-                    'files'                  => 0,
-                    'linesOfCode'            => 0,
-                    'commentLinesOfCode'     => 0,
-                    'nonCommentLinesOfCode'  => 0,
-                    'logicalLinesOfCode'     => 0,
-                ]),
-                new ComplexityMetrics([
-                    'functions'       => 0,
-                    'funcLowest'      => 0,
-                    'funcAverage'     => 0.0,
-                    'funcHighest'     => 0,
-                    'classesOrTraits' => 0,
-                    'methods'         => 0,
-                    'methodLowest'    => 0,
-                    'methodAverage'   => 0.0,
-                    'methodHighest'   => 0,
-                ]),
-            )),
-            new FileMetrics(new QualityCore([
-                $file => [
-                    'file_loc'      => 1,
-                    'classes_count' => 0,
-                    'classes'       => [],
-                    'methods'       => [],
-                    'namespaces'    => [],
-                ],
-            ], []), collect()),
-        );
+        return [CheckFixture::checks(), [
+            $file => [
+                'file_loc'      => 1,
+                'classes_count' => 0,
+                'classes'       => [],
+                'methods'       => [],
+                'namespaces'    => [],
+            ],
+        ]];
     }
 }

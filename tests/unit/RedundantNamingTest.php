@@ -2,50 +2,31 @@
 
 declare(strict_types=1);
 
-namespace Bunnivo\Soda;
+namespace Cosmira\Soda;
 
-use Bunnivo\Soda\Quality\Naming\RedundantNamingAnalyser;
-use Bunnivo\Soda\Quality\Naming\RedundantNamingVisitor;
-use PhpParser\NodeTraverser;
-use PhpParser\NodeVisitor\NameResolver;
-use PhpParser\NodeVisitor\ParentConnectingVisitor;
-use PhpParser\ParserFactory;
+use Cosmira\Soda\Analysis\Runner as QualityAnalyser;
+use Cosmira\Soda\Rules\Naming\NamingVisitor;
+use Cosmira\Soda\Rules\Naming\RedundantNamingAnalyser;
+use Cosmira\Soda\Tests\ParsesPhpSnippets;
 use PHPUnit\Framework\TestCase;
 
 final class RedundantNamingTest extends TestCase
 {
+    use ParsesPhpSnippets;
+
     private function parseAndAnalyse(string $code): array
     {
-        $parser = (new ParserFactory())->createForNewestSupportedVersion();
-        $nodes = $parser->parse($code);
-        $this->assertNotNull($nodes);
-
-        $visitor = new RedundantNamingVisitor();
-        $traverser = new NodeTraverser();
-        $traverser->addVisitor(new NameResolver());
-        $traverser->addVisitor(new ParentConnectingVisitor());
-        $traverser->addVisitor($visitor);
-        $traverser->traverse($nodes);
-
         $analyser = new RedundantNamingAnalyser(80.0, 4);
 
-        return $analyser->analyse($visitor->result());
+        return $analyser->analyse($this->parseNaming($code));
     }
 
     private function parseNaming(string $code): array
     {
-        $parser = (new ParserFactory())->createForNewestSupportedVersion();
-        $nodes = $parser->parse($code);
-        $this->assertNotNull($nodes);
+        $visitor = new NamingVisitor();
+        $this->traversePhpFile($code, $visitor);
 
-        $visitor = new RedundantNamingVisitor();
-        $traverser = new NodeTraverser();
-        $traverser->addVisitor(new NameResolver());
-        $traverser->addVisitor(new ParentConnectingVisitor());
-        $traverser->addVisitor($visitor);
-        $traverser->traverse($nodes);
-
-        return $visitor->result();
+        return $visitor->facts();
     }
 
     /**
@@ -64,6 +45,94 @@ PHP;
         $this->assertSame('class', $violations[0]['type']);
         $this->assertSame('PostItemCollection', $violations[0]['current']);
         $this->assertSame('PostCollection', $violations[0]['suggested']);
+    }
+
+    public function testPostCollectionExampleRemovesEveryRepeatedContextWord(): void
+    {
+        $violations = $this->parseAndAnalyse(<<<'PHP'
+<?php
+namespace App;
+
+final class PostItemCollection
+{
+    public function addPost(Post $post): void {}
+    public function hasPost(Post $post): bool { return false; }
+    public function clearPost(): void {}
+}
+PHP);
+
+        $suggestions = [];
+        foreach ($violations as $violation) {
+            $suggestions[$violation['current']] = $violation['suggested'];
+        }
+
+        $this->assertSame('PostCollection', $suggestions['PostItemCollection']);
+        $this->assertSame('add(Post $...)', $suggestions['addPost(Post $...)']);
+        $this->assertSame('has(Post $...)', $suggestions['hasPost(Post $...)']);
+        $this->assertSame('clear()', $suggestions['clearPost()']);
+    }
+
+    public function testContextRuleKeepsExtraMeaningAndOverrideContracts(): void
+    {
+        $violations = $this->parseAndAnalyse(<<<'PHP'
+<?php
+namespace App;
+
+final class PostCollection
+{
+    public function clearPostCache(): void {}
+
+    #[\Override]
+    public function clearPost(): void {}
+}
+PHP);
+
+        $methodViolations = array_filter($violations, fn (array $v): bool => $v['type'] === 'method');
+
+        $this->assertSame([], $methodViolations);
+    }
+
+    public function testProductionPipelineReportsTheCompletePostCollectionExample(): void
+    {
+        $directory = sys_get_temp_dir().'/soda-redundant-context-'.uniqid();
+        mkdir($directory, 0700, true);
+        $sourcePath = $directory.'/PostItemCollection.php';
+        $configPath = $directory.'/soda.php';
+
+        file_put_contents($sourcePath, <<<'PHP'
+<?php
+namespace App;
+
+final class PostItemCollection
+{
+    public function addPost(Post $post): void {}
+    public function hasPost(Post $post): bool { return false; }
+    public function clearPost(): void {}
+}
+PHP);
+        file_put_contents($configPath, <<<'PHP'
+<?php
+return \Cosmira\Soda\Config\Soda::configure()->with([
+    new \Cosmira\Soda\Rules\Naming\AvoidRedundantNaming(80),
+]);
+PHP);
+
+        try {
+            $result = (new QualityAnalyser)->analyse([$sourcePath], $configPath);
+            $messages = $result->violations
+                ->map(static fn ($violation): ?string => $violation->message)
+                ->all();
+
+            $this->assertCount(4, $result->violations);
+            $this->assertContains('Redundant naming: PostItemCollection → PostCollection (100%)', $messages);
+            $this->assertContains('Redundant naming: addPost → add (100%)', $messages);
+            $this->assertContains('Redundant naming: hasPost → has (100%)', $messages);
+            $this->assertContains('Redundant naming: clearPost → clear (100%)', $messages);
+        } finally {
+            unlink($sourcePath);
+            unlink($configPath);
+            rmdir($directory);
+        }
     }
 
     /**
@@ -186,5 +255,41 @@ PHP;
         }
 
         $this->assertTrue($methods['App\AppStatus::runningUnitTests']['hasOverrideAttribute']);
+    }
+
+    public function testNamingVisitorCollectsUnionReturnTypeLabel(): void
+    {
+        $naming = $this->parseNaming(<<<'PHP'
+<?php
+namespace App;
+final class Application {
+    public function running(): bool|null { return null; }
+}
+PHP);
+
+        $methods = [];
+        foreach ($naming['methods'] as $method) {
+            $methods[$method['name']] = $method;
+        }
+
+        $this->assertSame('bool|null', $methods['App\Application::running']['returnType']);
+    }
+
+    public function testNamingVisitorCollectsNullableReturnTypeLabel(): void
+    {
+        $naming = $this->parseNaming(<<<'PHP'
+<?php
+namespace App;
+final class Application {
+    public function running(): ?bool { return null; }
+}
+PHP);
+
+        $methods = [];
+        foreach ($naming['methods'] as $method) {
+            $methods[$method['name']] = $method;
+        }
+
+        $this->assertSame('bool|null', $methods['App\Application::running']['returnType']);
     }
 }

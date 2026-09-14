@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Test;
 
 /**
- * Fixture for enum-workaround tests. REMOVE_WHEN sebastian/complexity adds Enum support.
+ * Fixture preserving enum support across collector changes.
  */
 enum ExampleEnum: string
 {

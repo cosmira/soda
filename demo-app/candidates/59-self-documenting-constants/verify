@@ -1,0 +1,17 @@
+<?php
+
+declare(strict_types=1);
+
+require __DIR__.'/PaymentStatus.php';
+require __DIR__.'/NotificationChannel.php';
+require __DIR__.'/CurrencyScale.php';
+
+use DemoApp\Billing\CurrencyScale;
+use DemoApp\Billing\PaymentStatus;
+use DemoApp\Notifications\NotificationChannel;
+
+echo json_encode([
+    'paidIsTerminal' => PaymentStatus::isTerminal(PaymentStatus::PAID),
+    'channel' => NotificationChannel::defaultChannel(),
+    'total' => CurrencyScale::format(129900),
+], JSON_THROW_ON_ERROR).PHP_EOL;

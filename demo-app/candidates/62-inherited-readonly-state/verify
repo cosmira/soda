@@ -1,0 +1,28 @@
+<?php
+
+declare(strict_types=1);
+
+require __DIR__.'/ShippingContext.php';
+require __DIR__.'/ShipOrderRequest.php';
+require __DIR__.'/WebhookContext.php';
+require __DIR__.'/PaymentWebhookRequest.php';
+require __DIR__.'/ImportContext.php';
+require __DIR__.'/CatalogImportRequest.php';
+
+use DemoApp\Billing\PaymentWebhookRequest;
+use DemoApp\Catalog\CatalogImportRequest;
+use DemoApp\Shipping\ShipOrderRequest;
+
+$requests = [
+    new ShipOrderRequest('ORD-6200', 'Tverskaya 1', 'express'),
+    new PaymentWebhookRequest(129900, 'USD', 'paid'),
+    new CatalogImportRequest('products', 'replace', 'eu'),
+];
+
+echo json_encode(array_map(
+    static fn (object $request): array => [
+        'summary' => $request->summary(),
+        'properties' => count((new ReflectionObject($request))->getProperties()),
+    ],
+    $requests,
+), JSON_THROW_ON_ERROR).PHP_EOL;

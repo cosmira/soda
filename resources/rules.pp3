@@ -1,0 +1,31 @@
+// User expressions are data. Only these repository-owned reducers contain PHP.
+%skip T_SPACE \s++
+%token T_SCOPE (?:file|class|method)\b
+%token T_WHERE where\b
+%token T_OR or\b
+%token T_AND and\b
+%token T_NOT not\b
+%token T_OPERATOR >=|<=|!=|==|>|<|matches\b
+%token T_NUMBER -?\d++(?:\.\d++)?
+%token T_STRING "(?:[^"\\\x00-\x1f]|\\["\\/bfnrt]|\\u[0-9a-fA-F]{4})*"
+%token T_FIELD [a-z_][a-z_0-9]*
+%pragma root Rule
+
+Rule -> { return (object) ['scope' => $children[0]->value, 'expression' => $children[1]]; }
+    : <T_SCOPE> ::T_WHERE:: Any() ;
+Any -> { return count($children) === 1 ? $children[0] : (object) ['operator' => 'or', 'children' => $children]; }
+    : All() (::T_OR:: All())* ;
+All -> { return count($children) === 1 ? $children[0] : (object) ['operator' => 'and', 'children' => $children]; }
+    : Unary() (::T_AND:: Unary())* ;
+Unary : Negation() | Group() | Comparison() ;
+Negation -> { return (object) ['operator' => 'not', 'children' => [$children[0]]]; }
+    : ::T_NOT:: Unary() ;
+Group -> { return $children[0]; }
+    : "(" Any() ")" ;
+Comparison -> { return (object) ['field' => $children[0]->value, 'operator' => $children[1]->value, 'value' => $children[2], 'offset' => $children[0]->offset]; }
+    : <T_FIELD> <T_OPERATOR> Value() ;
+Value : Number() | Text() ;
+Number -> { return (float) $children->value; }
+    : <T_NUMBER> ;
+Text -> { return json_decode($children->value, true, 512, JSON_THROW_ON_ERROR); }
+    : <T_STRING> ;

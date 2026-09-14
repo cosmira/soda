@@ -2,100 +2,84 @@
 
 declare(strict_types=1);
 
-namespace Bunnivo\Soda;
+namespace Cosmira\Soda;
 
-use Bunnivo\Soda\Plugins\Rules\NestedArrayAccess\NoNestedArrayAccess;
-use Bunnivo\Soda\Quality\EvaluationContext;
-use Bunnivo\Soda\Quality\EvaluationContext\FileMetrics;
-use Bunnivo\Soda\Quality\EvaluationContext\MethodMetricsData;
-use Bunnivo\Soda\Quality\EvaluationContext\QualityCore;
-use Bunnivo\Soda\Quality\QualityConfig;
-
-use function collect;
-
+use Cosmira\Soda\Analysis\FileFacts;
+use Cosmira\Soda\Reporting\Violation;
+use Cosmira\Soda\Rules\Usage\NoNestedArrayAccess;
+use Cosmira\Soda\Tests\ParsesPhpSnippets;
 use PHPUnit\Framework\TestCase;
 
 final class NoNestedArrayAccessTest extends TestCase
 {
-    public function testCheckEmitsViolationWithMessageForNestedAccess(): void
+    use ParsesPhpSnippets;
+
+    /** @return list<Violation> */
+    private function hits(string $code, int $maxDepth = 1): array
     {
-        $file = $this->tempFile("<?php\n\$x = \$a['b']['c'];\n");
-        $rule = new NoNestedArrayAccess;
-
-        $violations = $rule->check($this->context([$file => $this->minimalMetrics()]));
-
-        $this->assertCount(1, $violations);
-        $v = $violations->first();
-        $this->assertSame('no_nested_array_access', $v->rule);
-        $this->assertNotNull($v->context->message);
-        $this->assertStringContainsString('Nested array access is forbidden', $v->context->message);
-        unlink($file);
+        return iterator_to_array((new NoNestedArrayAccess($maxDepth))->checkFile(new FileFacts('fixture.php', '<?php '.$code, $this->parseSnippet($code), [])));
     }
 
-    public function testCheckPassesForSingleLevelAccess(): void
+    public function testReportsTwoLevelAccess(): void
     {
-        $file = $this->tempFile("<?php\n\$x = \$a['b'];\n");
-        $rule = new NoNestedArrayAccess;
+        $code = <<<'PHP'
+$x = $usage[$c]['called'];
+$y = $data['a']['b'];
+PHP;
 
-        $violations = $rule->check($this->context([$file => $this->minimalMetrics()]));
-
-        $this->assertCount(0, $violations);
-        unlink($file);
+        $hits = $this->hits($code);
+        $this->assertCount(2, $hits);
+        $this->assertSame(2, count(array_unique(array_column($hits, 'line'))));
     }
 
-    public function testMaxDepthTwoAllowsTwoLevels(): void
+    public function testReportsThreeLevels(): void
     {
-        $file = $this->tempFile("<?php\n\$x = \$a['b']['c'];\n");
-        $rule = new NoNestedArrayAccess(maxDepth: 2);
+        $code = <<<'PHP'
+$z = $a['b']['c']['d'];
+PHP;
 
-        $violations = $rule->check($this->context([$file => $this->minimalMetrics()]));
-
-        $this->assertCount(0, $violations);
-        unlink($file);
+        $this->assertNotSame([], $this->hits($code));
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    private function minimalMetrics(): array
+    public function testReportsMixedNumericAndString(): void
     {
-        return [
-            'file_loc'       => 1,
-            'classes_count'  => 0,
-            'classes'        => [],
-            'methods'        => [],
-            'namespaces'     => [],
-        ];
+        $code = <<<'PHP'
+$u = $array[0]['key'];
+$v = $array['key'][0];
+PHP;
+
+        $this->assertCount(2, $this->hits($code));
     }
 
-    /**
-     * @param array<string, array<string, mixed>> $qualityMetrics
-     */
-    private function context(array $qualityMetrics): EvaluationContext
+    public function testAllowsSingleLevel(): void
     {
-        $core = new QualityCore($qualityMetrics, []);
-        $fileMetrics = new FileMetrics($core, collect(), new MethodMetricsData);
+        $code = <<<'PHP'
+$a = $usage[$c];
+$b = $array['key'];
+$c = $this->usage;
+PHP;
 
-        $config = QualityConfig::default();
-        $loc = new LocMetrics([
-            'directories'        => 0, 'files' => 0, 'linesOfCode' => 0,
-            'commentLinesOfCode' => 0, 'nonCommentLinesOfCode' => 0, 'logicalLinesOfCode' => 0,
-        ]);
-        $complexity = new ComplexityMetrics([
-            'functions'       => 0, 'funcLowest' => 0, 'funcAverage' => 0.0, 'funcHighest' => 0,
-            'classesOrTraits' => 0, 'methods' => 0, 'methodLowest' => 0, 'methodAverage' => 0.0, 'methodHighest' => 0,
-        ]);
-        $result = new Result([], new CoreMetrics($loc, $complexity));
-
-        return new EvaluationContext($config, $result, $fileMetrics);
+        $this->assertSame([], $this->hits($code));
     }
 
-    private function tempFile(string $contents): string
+    public function testRespectsMaxDepthTwo(): void
     {
-        $path = tempnam(sys_get_temp_dir(), 'soda_nested_array_');
-        $this->assertNotFalse($path);
-        file_put_contents($path, $contents);
+        $code = '$x = $a["b"]["c"];';
 
-        return $path;
+        $this->assertSame([], $this->hits($code, 2));
+    }
+
+    public function testReportsNestedInsideIsset(): void
+    {
+        $code = 'isset($a["b"]["c"]);';
+
+        $this->assertNotSame([], $this->hits($code));
+    }
+
+    public function testReportsNestedInsideNullCoalesce(): void
+    {
+        $code = '$x = $a["b"]["c"] ?? null;';
+
+        $this->assertNotSame([], $this->hits($code));
     }
 }

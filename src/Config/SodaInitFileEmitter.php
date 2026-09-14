@@ -2,10 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Bunnivo\Soda\Config;
+namespace Cosmira\Soda\Config;
 
-use Bunnivo\Soda\Quality\RuleCatalog\RuleCatalog;
-use Bunnivo\Soda\Quality\RuleCatalog\RuleInitDefinition;
+use function implode;
+
+use LogicException;
+
+use function sprintf;
 
 /**
  * Generates soda.php using `Soda::configure()->withPaths([...])->with([...])`.
@@ -17,35 +20,30 @@ use Bunnivo\Soda\Quality\RuleCatalog\RuleInitDefinition;
 final class SodaInitFileEmitter
 {
     /**
-     * @return list<string>
+     * Expand the standard catalog into editable PHP rule instances.
      */
-    public static function ruleIds(): array
+    public static function emit(): string
     {
-        return array_keys(RuleCatalog::initDefinitions());
-    }
-
-    /**
-     * @param array<string, array<string, mixed>> $sections Section name → rule_id → value
-     */
-    public static function emit(array $sections): string
-    {
-        $uses = ['use Bunnivo\Soda\Config\Soda;'];
+        $uses = ['use Cosmira\Soda\Config\Soda;'];
         $items = [];
+        $shortNames = [];
 
         foreach (RuleCatalog::definitions() as $ruleKey => $definition) {
-            $init = $definition->fields->init;
-            $section = $sections[$definition->fields->identity->section] ?? [];
-            $value = $section[$ruleKey] ?? null;
-
-            if ($value === null || $init === null) {
-                continue;
-            }
-
-            $shortName = self::shortName($init->class);
-            $uses[] = 'use '.$init->class.';';
-            $items[] = self::instantiate($shortName, $init, $value);
+            $shortName = self::shortName($definition['class']);
+            self::assertUniqueShortName($shortNames, $shortName, $definition['class']);
+            $shortNames[$shortName] = $definition['class'];
+            $uses[] = 'use '.$definition['class'].';';
+            $items[] = match ($ruleKey) {
+                'max_arguments'                  => self::instantiate($shortName, $definition['arguments'], 'properties: $properties'),
+                'max_properties_per_class'       => '$properties,',
+                'boolean_methods_without_prefix' => $shortName.'::standard(),',
+                default                          => self::instantiate($shortName, $definition['arguments']),
+            };
         }
 
+        $propertyRule = RuleCatalog::definitions()['max_properties_per_class'];
+        $properties = self::instantiate(self::shortName($propertyRule['class']), $propertyRule['arguments']);
+        $properties = rtrim($properties, ',');
         sort($uses);
         $usesBlock = implode("\n", array_unique($uses));
         $itemsBlock = implode("\n", array_map(fn (string $line) => '        '.$line, $items));
@@ -57,6 +55,8 @@ declare(strict_types=1);
 
 {$usesBlock}
 
+\$properties = {$properties};
+
 return Soda::configure()
     ->withPaths([
         'src/',
@@ -67,31 +67,46 @@ return Soda::configure()
 PHP;
     }
 
+    /**
+     * Return the unqualified name used in generated PHP configuration.
+     */
     private static function shortName(string $fqcn): string
     {
         return substr($fqcn, strrpos($fqcn, '\\') + 1);
     }
 
-    private static function instantiate(string $class, RuleInitDefinition $init, mixed $value): string
+    /**
+     * @param array<string, string> $shortNames
+     */
+    private static function assertUniqueShortName(array $shortNames, string $shortName, string $fqcn): void
     {
-        return match ($init->constructor) {
-            'none'       => sprintf('new %s(),', $class),
-            'layer'      => self::layerInstance($class, $value),
-            'range'      => sprintf('new %s(min: %d, max: %d),', $class, $init->min, self::intThreshold($value)),
-            'visibility' => sprintf("new %s(['public']),", $class),
-            default      => sprintf('new %s(%d),', $class, self::intThreshold($value)),
-        };
+        $isPresent = isset($shortNames[$shortName]);
+        if (! $isPresent) {
+            return;
+        }
+
+        throw new LogicException(sprintf(
+            'Cannot emit soda.php because rule classes share short name %s: %s.',
+            $shortName,
+            implode(', ', [$shortNames[$shortName], $fqcn]),
+        ));
     }
 
-    private static function layerInstance(string $class, mixed $value): string
+    /**
+     * Render constructor arguments and an optional shared rule dependency.
+     */
+    private static function instantiate(string $class, array $arguments, ?string $dependency = null): string
     {
-        $minFiles = is_array($value) ? (int) ($value['min_files'] ?? 4) : 4;
+        $rendered = [];
+        foreach ($arguments as $key => $argument) {
+            $prefix = is_string($key) ? $key.': ' : '';
+            $rendered[] = $prefix.var_export($argument, true);
+        }
 
-        return sprintf('new %s(%d, %d),', $class, self::intThreshold($value), $minFiles);
-    }
+        if ($dependency !== null) {
+            $rendered[] = $dependency;
+        }
 
-    private static function intThreshold(mixed $value): int
-    {
-        return is_array($value) ? (int) ($value['threshold'] ?? 0) : (int) $value;
+        return sprintf('new %s(%s),', $class, implode(', ', $rendered));
     }
 }

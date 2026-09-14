@@ -2,15 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Bunnivo\Soda;
+namespace Cosmira\Soda;
 
-use Bunnivo\Soda\Quality\ConfigException;
-use Bunnivo\Soda\Quality\QualityResult;
+use Cosmira\Soda\Config\ConfigException;
+use Cosmira\Soda\Reporting\QualityResult;
 
 /**
- * Facade-style entry for **code quality** (metrics + rules).
- *
- * For LOC/structure metrics only, use {@see ProjectMetrics}.
+ * Facade-style entry for code-quality rule evaluation.
  */
 final class Analyzer
 {
@@ -36,10 +34,10 @@ final class Analyzer
      *
      * @throws ConfigException
      */
-    public static function analyze(array $paths, bool $debug = false, ?string $configPath = null): QualityResult
+    public static function analyze(array $paths, ?string $configPath = null): QualityResult
     {
-        $builder = self::paths($paths)->debug($debug)->config($configPath);
+        $builder = self::paths($paths)->config($configPath);
 
-        return $builder->run();
+        return $builder->analyse();
     }
 }

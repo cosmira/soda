@@ -1,141 +1,82 @@
 # Soda
 
-Write PHP code that **stays clean, maintainable, and architecturally solid**.
+Soda checks PHP code for oversized methods, complex conditions, naming problems,
+and structural issues. It reports what failed and where, with a non-zero exit
+status when violations are found.
 
-Soda helps you **enforce quality rules automatically**, so you don’t have to hunt for hidden issues in huge classes or 500-line methods. Turn code metrics into actionable rules that make sense for your project.
-
-Even with AI-generated code, errors slip through. **Soda catches them first**, keeping your code consistent, safe, and review-ready—before it ever reaches a pull request.
-
-> **Stop trusting prompts. Start trusting PHP Quality Gates.**
-
-## Installation
-
-Requires PHP 8.3.18 or higher.
+Requires PHP 8.3.19 or higher.
 
 ```bash
-composer require bunnivo/soda --dev
+composer require --dev cosmira/soda
+vendor/bin/soda quality src/
 ```
 
-For local development:
+The first check needs no configuration: Soda uses its standard rules when it
+finds no `soda.php`. Vendor directories are excluded automatically.
 
-```bash
-git clone https://github.com/tabuna/soda.git
-cd soda
-composer install
-```
+## Configure once, run daily
 
-## Usage
-
-### Quality checks
-
-Create a configuration file:
-
-```bash
-php soda init
-```
-
-It creates `soda.php` in your project root:
+Create `soda.php` in your project root. Choose named classes and pass their options:
 
 ```php
 <?php
 
-use Bunnivo\Soda\Config\Soda;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxFileLoc;
+use Cosmira\Soda\Config\Soda;
+use Cosmira\Soda\Rules\Complexity\MaxCyclomaticComplexity;
+use Cosmira\Soda\Rules\Structure\MaxArguments;
 
 return Soda::configure()
-    ->withPaths([
-        'src/',
-    ])
+    ->withPaths(['src/'])
     ->with([
-        new MaxFileLoc(700),
+        new MaxCyclomaticComplexity(10),
+        new MaxArguments(5),
     ]);
 ```
 
-Run the quality check:
+Then run:
 
 ```bash
-php soda quality
+vendor/bin/soda
 ```
 
-Example output:
+Only the listed rules run. Remove a rule to disable it. To use the whole standard
+set, pass `RuleCatalog::standard()` to `with()`; import
+`Cosmira\Soda\Config\RuleCatalog`. `vendor/bin/soda init` can generate an expanded,
+editable configuration equivalent to `RuleCatalog::standard()`, including its
+thresholds and readonly-data and boolean-method policies. Optional rules remain opt-in.
 
-```
-Soda Quality
-------------------------------------------------------------
+## Useful commands
 
-2 issues
+| Command | Purpose |
+| --- | --- |
+| `vendor/bin/soda` | Check the paths in `soda.php` |
+| `vendor/bin/soda quality src/ tests/` | Check explicit paths |
+| `vendor/bin/soda --config=tools/soda.php` | Select a configuration |
+| `vendor/bin/soda --report-json=quality.json` | Save a JSON report for CI |
+| `vendor/bin/soda quality src/ --exclude=generated` | Exclude a directory; repeat for more exclusions |
+| `vendor/bin/soda list:rules` | Inspect available rules and defaults |
+| `vendor/bin/soda --help` | Show check options |
 
-src/Services/UserService.php
-  ! Line —
-    Properties per class: 18 (max 15)
+Use the same check command in CI. Exit status `0` means no violations; `1` means
+a failed check or a configuration/input error. Soda complements a formatter and
+PHPStan or Psalm by checking code structure and maintainability.
 
-src/Controllers/UserController.php
-  ! Line —
-    Methods per class: 22 (max 20)
+## Learn more
 
-------------------------------------------------------------
+- [Configuration](docs/SODA_PHP_CONFIG.md): paths, thresholds and rule sets.
+- [Rules and examples](docs/README.md): structure, complexity and naming.
+- [Custom rules](docs/PLUGINS.md): implement a named PHP class.
+- [Report JSON](docs/QUALITY_REPORT_JSON.md): machine-readable results.
+- [Project flow](docs/PROJECT_FLOW.md): where parsing, checks and reporting happen.
+- [Migration](docs/MIGRATION.md): changed namespaces and extension contracts.
 
-[FAIL] 2 issues
-```
+Rule authors can inspect available facts with `vendor/bin/soda list:metrics`.
+Expression syntax is an optional implementation tool inside a rule class.
 
-### Options
+## Development
 
-| Option           | Description                   |
-|------------------|-------------------------------|
-| `--config=`      | Path to `soda.php`            |
-| `--report-json=` | Export report to JSON         |
-| `--suffix=`      | File suffix (default: `.php`) |
-| `--exclude=`     | Exclude paths (repeatable)    |
+Clone this repository and run `composer install`. Inside the Soda repository,
+use `php soda` in place of `vendor/bin/soda`. Run `composer test` for behavioral
+tests and `composer ci` for the full project checks.
 
-### Disabling rules
-
-Remove a rule from the `with([...])` list to disable it.
-
-### Project metrics
-
-Measure project size and structure without a quality config:
-
-```bash
-php soda analyse src
-```
-
-### Documentation
-
-| Document                                                           | Content                                                                     |
-|--------------------------------------------------------------------|-----------------------------------------------------------------------------|
-| [Documentation](docs/README.md)                                    | Start here for config, rules, reports, and design notes                     |
-| [Project Flow](docs/PROJECT_FLOW.md)                               | Mermaid runtime flow, rule authoring flow, and cleanup matrix               |
-| [Config](docs/SODA_PHP_CONFIG.md)                                  | Root `soda.php`, paths, rules, custom rules                                 |
-| [Structural Metrics](docs/STRUCTURAL_METRICS.md)                   | Size, dependencies, structure — good/bad examples, possible values          |
-| [Complexity & Readability](docs/COMPLEXITY_READABILITY_METRICS.md) | Cyclomatic complexity, nesting, breathing metrics — examples, config ranges |
-| [Breathing Metrics](docs/BREATHING_METRICS.md)                     | Breathing metrics overview                                                  |
-
-## CI Integration
-
-**Run Soda after** linters and static analyzers. It checks structure and readability — not syntax or types.
-
-Recommended order:
-
-1. **Rector** — refactoring
-2. **PHPStan** (or Psalm) — static analysis
-3. **Laravel Pint** (or similar) — formatting
-4. **Soda** — quality gates (structure, complexity, breathing)
-
-```yaml
-- name: Install composer dependencies
-  run: composer install --no-interaction
-
-- name: Run other tools
-  run: echo "This is a placeholder for other tools"
-
-- name: Run Soda quality check
-  run: php soda quality
-```
-
-## Contributing
-
-Thank you for considering contributing to Soda! Please feel free to submit a Pull Request.
-
-## License
-
-Soda is open-sourced software licensed under the [BSD 3-Clause License](LICENSE).
+Licensed under the [BSD 3-Clause License](LICENSE).

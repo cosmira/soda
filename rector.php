@@ -35,13 +35,13 @@ return RectorConfig::configure()
     )
     ->withSets([
         PHPUnitSetList::PHPUNIT_CODE_QUALITY,
-        PHPUnitSetList::PHPUNIT_110,
         LaravelSetList::LARAVEL_COLLECTION,
         LaravelSetList::LARAVEL_CONTAINER_STRING_TO_FULLY_QUALIFIED_NAME,
         LaravelSetList::LARAVEL_IF_HELPERS,
         LaravelSetList::LARAVEL_CODE_QUALITY,
         LaravelSetList::LARAVEL_ARRAY_STR_FUNCTION_TO_STATIC_CALL,
     ])
+    ->withComposerBased(phpunit: true)
     ->withRules([
         RemoveDumpDataDeadCodeRector::class,
         FactoryFuncCallToStaticCallRector::class,
@@ -57,17 +57,17 @@ return RectorConfig::configure()
         // UselessVariableAnalyser uses strings intentionally (::class would add Ce)
         StringClassNameToClassConstantRector::class => [
             'src/Config/SodaInitFileEmitter.php',
-            'src/Plugins/Rules/UselessVariable/UselessVariableAnalyser.php',
+            'src/Rules/Usage/UselessVariableAnalyser.php',
         ],
         // UselessVariableAnalyser: early-return conversion raises LCF; FQN ::class adds Ce
         ReturnBinaryOrToEarlyReturnRector::class => [
-            'src/Plugins/Rules/UselessVariable/UselessVariableAnalyser.php',
+            'src/Rules/Usage/UselessVariableAnalyser.php',
         ],
         ClassOnObjectRector::class => [
-            'src/Plugins/Rules/UselessVariable/UselessVariableAnalyser.php',
+            'src/Rules/Usage/UselessVariableAnalyser.php',
         ],
         AddArrayFunctionClosureParamTypeRector::class => [
-            'src/Plugins/Rules/UselessVariable/UselessVariableAnalyser.php',
+            'src/Rules/Usage/UselessVariableAnalyser.php',
         ],
     ])
     ->withMemoryLimit('3G')

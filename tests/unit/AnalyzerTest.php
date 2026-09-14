@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Bunnivo\Soda;
+namespace Cosmira\Soda;
 
-use Bunnivo\Soda\Quality\QualityResult;
+use Cosmira\Soda\Reporting\QualityResult;
 use PHPUnit\Framework\TestCase;
 
 final class AnalyzerTest extends TestCase
@@ -12,7 +12,7 @@ final class AnalyzerTest extends TestCase
     public function testAnalyzeReturnsQualityResult(): void
     {
         $path = __DIR__.'/../quality-fixture/SimpleClass.php';
-        $result = Analyzer::analyze([$path], false, __DIR__.'/../quality-fixture/soda.php');
+        $result = Analyzer::analyze([$path], __DIR__.'/../quality-fixture/soda.php');
 
         $this->assertInstanceOf(QualityResult::class, $result);
         $this->assertTrue($result->violations->isEmpty());
@@ -23,7 +23,7 @@ final class AnalyzerTest extends TestCase
         $path = __DIR__.'/../quality-fixture/SimpleClass.php';
         $result = Analyzer::file($path)
             ->config(__DIR__.'/../quality-fixture/soda.php')
-            ->run();
+            ->analyse();
 
         $this->assertInstanceOf(QualityResult::class, $result);
     }

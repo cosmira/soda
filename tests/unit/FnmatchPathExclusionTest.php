@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Bunnivo\Soda;
+namespace Cosmira\Soda;
 
-use Bunnivo\Soda\Plugins\PathExclusion\FnmatchPathExclusion;
+use Cosmira\Soda\Config\FnmatchPathExclusion;
 use PHPUnit\Framework\TestCase;
 
 final class FnmatchPathExclusionTest extends TestCase

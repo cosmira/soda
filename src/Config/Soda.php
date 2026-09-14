@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Bunnivo\Soda\Config;
+namespace Cosmira\Soda\Config;
 
 /**
  * Entry point for the fluent soda.php configuration API.
  *
- * @example Minimal plugin-based config:
+ * @example Minimal custom-rule config:
  *
  *   return Soda::configure()
  *       ->withPaths([
@@ -15,7 +15,6 @@ namespace Bunnivo\Soda\Config;
  *       ])
  *       ->with([
  *           new MyCustomRule(),
- *           new MyCustomPlugin(),
  *       ]);
  * @example Config with explicit thresholds:
  *
@@ -31,6 +30,9 @@ namespace Bunnivo\Soda\Config;
  */
 final class Soda
 {
+    /**
+     * Start a fluent Soda configuration.
+     */
     public static function configure(): SodaConfig
     {
         return new SodaConfig;

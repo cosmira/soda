@@ -1,0 +1,206 @@
+# Complexity Metrics
+
+Metrics that measure branches, control flow nesting, returns and exception handling.
+
+**Config:** Complexity rules are plain objects in `soda.php`.
+
+```php
+use Cosmira\Soda\Config\Soda;
+use Cosmira\Soda\Rules\Complexity\MaxBooleanConditions;
+use Cosmira\Soda\Rules\Complexity\MaxControlNesting;
+use Cosmira\Soda\Rules\Complexity\MaxCyclomaticComplexity;
+use Cosmira\Soda\Rules\Complexity\MaxReturnStatements;
+
+return Soda::configure()
+    ->withPaths(['src/'])
+    ->with([
+        new MaxCyclomaticComplexity(10),
+        new MaxControlNesting(3),
+        new MaxReturnStatements(4),
+        new MaxBooleanConditions(4),
+    ]);
+```
+
+### max_cyclomatic_complexity
+
+Counts branching: `if`, `elseif`, `switch`, `case`, `for`, `foreach`, `while`, `catch`, `&&`, `||`, `?:`.
+
+| Config value | Strictness | Interpretation |
+|--------------|------------|----------------|
+| 5–8 | Strict | Simple methods only |
+| 10–15 | Moderate | Acceptable |
+| 20+ | Lenient | Complex logic allowed |
+
+```php
+// ❌ Bad (complexity 20+)
+public function calculateDiscount(User $user, Order $order): float
+{
+    if ($user->isPremium()) {
+        if ($order->total() > 1000) {
+            return 0.2;
+        }
+        return 0.1;
+    }
+    if ($user->isNew()) {
+        if ($order->items()->count() > 5) {
+            return 0.05;
+        }
+        return 0;
+    }
+    if ($order->total() > 500 && $user->hasCoupon()) {
+        return 0.15;
+    }
+    // ... 10 more branches
+}
+```
+
+```php
+// ✅ Good
+public function calculateDiscount(User $user, Order $order): float
+{
+    return $this->strategies
+        ->findFor($user)
+        ->discount($order);
+}
+```
+
+---
+
+## Nesting Depth
+
+### max_control_nesting
+
+Maximum nesting level of `if`, `for`, `foreach`, `while`, `switch`.
+
+| Config value | Strictness |
+|--------------|------------|
+| 2–3 | Strict |
+| 4 | Moderate |
+| 5+ | Lenient |
+
+```php
+// ❌ Bad (4+ levels)
+if ($a) {
+    foreach ($b as $x) {
+        if ($x->valid()) {
+            switch ($x->type()) {
+                case 1:
+                    if ($y) {
+                        // ...
+                    }
+                    break;
+            }
+        }
+    }
+}
+```
+
+```php
+// ✅ Good
+foreach ($this->filterValid($items) as $item) {
+    $this->handle($item);
+}
+```
+
+---
+
+### max_try_catch_blocks (excessive exception handling)
+
+**What it counts:** number of `try { … } catch (…) { … }` statements in a method or top-level function (each `try` counts once; `finally` does not add a second count). Nested `try` inside the same method counts separately. `try` inside closures passed to `array_map` and similar is **not** attributed to the enclosing method.
+
+| Config value | Severity (default labels) | Meaning |
+|--------------|---------------------------|---------|
+| `2` | Warning at ≥3 blocks | Default: allow up to two `try/catch` per method |
+| `0` | Disabled | Rule off |
+
+```php
+// ❌ Bad (3+ try/catch in one method when max_try_catch_blocks is 2)
+function run() {
+    try {} catch (\Exception $e) {}
+    try {} catch (\Exception $e) {}
+    try {} catch (\Exception $e) {}
+}
+```
+
+```php
+// ✅ Good: consolidate error handling or extract helpers with a single try/catch boundary
+function run(): void
+{
+    try {
+        $this->stepOne();
+        $this->stepTwo();
+    } catch (ProcessException $e) {
+        $this->recover($e);
+    }
+}
+```
+
+---
+
+### max_return_statements
+
+Limits the number of `return` statements in a method or function. Multiple
+returns can be fine, but too many exits often mean the method is mixing
+validation, branching, and result construction.
+
+```php
+new MaxReturnStatements(4)
+```
+
+```php
+// Good
+public function status(): string
+{
+    if ($this->cancelled) {
+        return 'cancelled';
+    }
+
+    return $this->paid ? 'paid' : 'open';
+}
+```
+
+```php
+// Bad
+public function status(): string
+{
+    if ($this->cancelled) {
+        return 'cancelled';
+    }
+    if ($this->expired) {
+        return 'expired';
+    }
+    if ($this->refunded) {
+        return 'refunded';
+    }
+    if ($this->paid) {
+        return 'paid';
+    }
+
+    return 'open';
+}
+```
+
+### max_boolean_conditions
+
+Limits boolean operands in a single decision. Long condition chains hide named
+business concepts and make branch changes risky.
+
+```php
+new MaxBooleanConditions(4)
+```
+
+```php
+// Good
+if ($order->canBeRefundedBy($user)) {
+    $order->refund();
+}
+```
+
+```php
+// Bad
+if ($order->isPaid() && ! $order->isExpired() && $user->canRefund() && $gateway->isOnline() && ! $order->isLocked()) {
+    $order->refund();
+}
+```
+
+---

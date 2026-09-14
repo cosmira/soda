@@ -1,0 +1,32 @@
+<?php
+
+declare(strict_types=1);
+
+require __DIR__.'/OrderWorkflow.php';
+require __DIR__.'/WholesaleOrderWorkflow.php';
+require __DIR__.'/SubscriptionLifecycle.php';
+require __DIR__.'/EnterpriseSubscription.php';
+require __DIR__.'/CatalogOperations.php';
+require __DIR__.'/RegionalCatalogOperations.php';
+
+use DemoApp\Catalog\RegionalCatalogOperations;
+use DemoApp\Orders\WholesaleOrderWorkflow;
+use DemoApp\Subscriptions\EnterpriseSubscription;
+
+$workflows = [
+    new WholesaleOrderWorkflow(),
+    new EnterpriseSubscription(),
+    new RegionalCatalogOperations(),
+];
+
+echo json_encode(array_map(static function (object $workflow): array {
+    $methods = (new ReflectionObject($workflow))->getMethods(ReflectionMethod::IS_PUBLIC);
+    $results = array_map(
+        static fn (ReflectionMethod $method): string => $method->invoke($workflow),
+        $methods,
+    );
+
+    sort($results);
+
+    return ['methods' => count($methods), 'results' => $results];
+}, $workflows), JSON_THROW_ON_ERROR).PHP_EOL;

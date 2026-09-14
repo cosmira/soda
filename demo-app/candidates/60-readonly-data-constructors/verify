@@ -1,0 +1,21 @@
+<?php
+
+declare(strict_types=1);
+
+require __DIR__.'/ShipOrderData.php';
+require __DIR__.'/RegisterCustomerData.php';
+require __DIR__.'/DeploymentRequest.php';
+
+use DemoApp\Customers\RegisterCustomerData;
+use DemoApp\Deployments\DeploymentRequest;
+use DemoApp\Shipping\ShipOrderData;
+
+$shipment = new ShipOrderData('ORD-6000', 'Tverskaya 1', 'express', '2026-08-24');
+$customer = new RegisterCustomerData('ADA@EXAMPLE.COM', 'Ada', 'en', 'checkout');
+$deployment = new DeploymentRequest('production', '2026.08.60', 'ada', 'billing fix');
+
+echo json_encode([
+    'shipment' => $shipment->label(),
+    'customer' => $customer->identifier(),
+    'deployment' => $deployment->summary(),
+], JSON_THROW_ON_ERROR).PHP_EOL;

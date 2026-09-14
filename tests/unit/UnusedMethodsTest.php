@@ -2,15 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Bunnivo\Soda\Tests;
+namespace Cosmira\Soda\Tests;
 
-use Bunnivo\Soda\Plugins\Rules\UnusedMethods\UnusedMethodAnalyser;
-use PhpParser\Node;
-use PhpParser\ParserFactory;
+use Cosmira\Soda\Rules\Usage\UnusedMethodAnalyser;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class UnusedMethodsTest extends TestCase
 {
+    use ParsesPhpSnippets;
+
     private UnusedMethodAnalyser $analyser;
 
     protected function setUp(): void
@@ -18,19 +19,32 @@ final class UnusedMethodsTest extends TestCase
         $this->analyser = new UnusedMethodAnalyser;
     }
 
-    // -------------------------------------------------------------------------
-    // Helpers
-    // -------------------------------------------------------------------------
-
-    /** @return Node[] */
-    private function parse(string $code): array
-    {
-        return (new ParserFactory)->createForNewestSupportedVersion()->parse('<?php '.$code) ?? [];
-    }
-
     private function hasViolation(string $code): bool
     {
-        return $this->analyser->analyse($this->parse($code)) !== [];
+        return $this->analyser->analyse($this->parseSnippet($code)) !== [];
+    }
+
+    #[DataProvider('callForms')]
+    public function testPreservesRecognizedCallForms(string $call, bool $unused): void
+    {
+        $code = 'class Example { private function target() {} public function run() { '.$call.'; } }';
+        $this->assertSame($unused, $this->hasViolation($code));
+    }
+
+    public static function callForms(): iterable
+    {
+        yield 'instance' => ['$this->target()', false];
+        yield 'other receiver preserves name policy' => ['$other->target()', false];
+        yield 'relative static' => ['parent::target()', false];
+        yield 'named static receiver remains outside policy' => ['Other::target()', true];
+        yield 'callback array' => ['call_user_func_array([$this, "target"], [])', false];
+        yield 'empty callback' => ['call_user_func()', true];
+        yield 'short callback' => ['call_user_func([$this])', true];
+        yield 'nonliteral callback' => ['call_user_func([$this, $method])', true];
+        yield 'string callback remains outside policy' => ['call_user_func("target")', true];
+        yield 'first class callback function' => ['call_user_func(...)', true];
+        yield 'dynamic instance disables findings' => ['$this->$method()', false];
+        yield 'nullsafe call remains outside policy' => ['$other?->target()', true];
     }
 
     // -------------------------------------------------------------------------
@@ -56,7 +70,7 @@ final class UnusedMethodsTest extends TestCase
     /** Private and uncontracted protected both reported. */
     public function testCase8MultipleUnused(): void
     {
-        $violations = $this->analyser->analyse($this->parse(
+        $violations = $this->analyser->analyse($this->parseSnippet(
             'class A { private function a() {} protected function b() {} }',
         ));
 
@@ -74,7 +88,7 @@ final class UnusedMethodsTest extends TestCase
     /** Child override is skipped; abstract parent stub may still be reported if unused in A. */
     public function testChildProtectedOverrideSkippedWhenAbstractDeclaresConcreteProtected(): void
     {
-        $violations = $this->analyser->analyse($this->parse(
+        $violations = $this->analyser->analyse($this->parseSnippet(
             'abstract class A { protected function f(): void {} } class B extends A { protected function f(): void {} }',
         ));
 
@@ -113,7 +127,7 @@ final class UnusedMethodsTest extends TestCase
     /** Protected not on contract; other protected on implementor still reported. */
     public function testProtectedOrphanStillReportedWhenInterfaceDeclaresOtherMethod(): void
     {
-        $violations = $this->analyser->analyse($this->parse(
+        $violations = $this->analyser->analyse($this->parseSnippet(
             'interface I { public function run(): void; } class C implements I { public function run(): void {} protected function helper(): void {} }',
         ));
 
@@ -229,7 +243,7 @@ final class UnusedMethodsTest extends TestCase
     /** Violation contains expected metadata */
     public function testViolationMetadata(): void
     {
-        $violations = $this->analyser->analyse($this->parse(
+        $violations = $this->analyser->analyse($this->parseSnippet(
             'class MyClass { private function myMethod() {} }',
         ));
 

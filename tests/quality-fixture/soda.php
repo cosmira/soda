@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-use Bunnivo\Soda\Config\Soda;
-use Bunnivo\Soda\Plugins\Rules\Complexity\MaxCyclomaticComplexity;
-use Bunnivo\Soda\Plugins\Rules\Naming\ClassNameLength;
-use Bunnivo\Soda\Plugins\Rules\Naming\MethodNameLength;
-use Bunnivo\Soda\Plugins\Rules\Naming\VariableNameLength;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxArguments;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxClassLength;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxFileLoc;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxLineLength;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxMethodLength;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxMethodsPerClass;
-use Bunnivo\Soda\Plugins\Rules\Structural\MethodsFollowCallOrder;
+use Cosmira\Soda\Config\Soda;
+use Cosmira\Soda\Rules\Complexity\MaxCyclomaticComplexity;
+use Cosmira\Soda\Rules\Naming\ClassNameLength;
+use Cosmira\Soda\Rules\Naming\MethodNameLength;
+use Cosmira\Soda\Rules\Naming\VariableNameLength;
+use Cosmira\Soda\Rules\Structure\MaxArguments;
+use Cosmira\Soda\Rules\Structure\MaxClassLength;
+use Cosmira\Soda\Rules\Structure\MaxFileLoc;
+use Cosmira\Soda\Rules\Structure\MaxLineLength;
+use Cosmira\Soda\Rules\Structure\MaxMethodLength;
+use Cosmira\Soda\Rules\Structure\MaxMethodsPerClass;
+use Cosmira\Soda\Rules\Structure\MethodsFollowCallOrder;
 
 return Soda::configure()
     ->withPaths([

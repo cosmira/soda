@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Bunnivo\Soda;
+namespace Cosmira\Soda;
 
-use Bunnivo\Soda\Config\Soda;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxFileLoc;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxMethodLength;
-use Bunnivo\Soda\Quality\ConfigException;
-use Bunnivo\Soda\Quality\QualityConfig;
+use Cosmira\Soda\Config\ConfigException;
+use Cosmira\Soda\Config\ConfigLoader;
+use Cosmira\Soda\Config\RuleCatalog;
+use Cosmira\Soda\Config\Soda;
+use Cosmira\Soda\Rules\Structure\MaxFileLoc;
+use Cosmira\Soda\Rules\Structure\MaxMethodLength;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -22,7 +23,7 @@ final class SodaConfigTest extends TestCase
                 new MaxFileLoc(500),
             ]);
 
-        $checkers = $soda->pluginCheckers();
+        $checkers = $soda->checks();
 
         $this->assertCount(2, $checkers);
         $this->assertInstanceOf(MaxMethodLength::class, $checkers[0]);
@@ -35,7 +36,14 @@ final class SodaConfigTest extends TestCase
             ->with([new MaxFileLoc(300)])
             ->with([new MaxMethodLength(100)]);
 
-        $this->assertCount(2, $soda->pluginCheckers());
+        $this->assertCount(2, $soda->checks());
+    }
+
+    public function testStandardRulesDeclaresEveryEnabledRuleId(): void
+    {
+        $soda = Soda::configure()->with(RuleCatalog::standard());
+
+        $this->assertSame(array_keys(RuleCatalog::definitions()), array_map(fn ($check) => $check->id(), $soda->checks()));
     }
 
     public function testWithRejectsInvalidType(): void
@@ -43,6 +51,21 @@ final class SodaConfigTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         Soda::configure()->with([new \stdClass]);
+    }
+
+    public function testCustomArrayPreservesInstancesAndRegistrationOrder(): void
+    {
+        $first = new MaxFileLoc(300);
+        $second = new MaxMethodLength(70);
+        $config = Soda::configure();
+
+        $this->assertSame($config, $config->with([$first, $second])->with([$first]));
+        $this->assertSame([$first, $second, $first], $config->checks());
+    }
+
+    public function testEmptyRuleSetKeepsConfigurationEmpty(): void
+    {
+        $this->assertSame([], Soda::configure()->with([])->checks());
     }
 
     public function testWithPathsRegistersAnalysisPaths(): void
@@ -58,18 +81,18 @@ final class SodaConfigTest extends TestCase
         file_put_contents($path, <<<'PHP'
 <?php
 declare(strict_types=1);
-use Bunnivo\Soda\Config\Soda;
-use Bunnivo\Soda\Plugins\Rules\Structural\MaxMethodLength;
+use Cosmira\Soda\Config\Soda;
+use Cosmira\Soda\Rules\Structure\MaxMethodLength;
 return Soda::configure()
     ->withPaths(['src/'])
     ->with([new MaxMethodLength(77)]);
 PHP);
 
         try {
-            $qc = QualityConfig::fromPhpConfiguratorFile($path);
-            $this->assertCount(1, $qc->pluginCheckers);
-            $this->assertInstanceOf(MaxMethodLength::class, $qc->pluginCheckers[0]);
-            $this->assertSame(['src/'], $qc->paths);
+            $qc = (new ConfigLoader())->load($path);
+            $this->assertCount(1, $qc->checks());
+            $this->assertInstanceOf(MaxMethodLength::class, $qc->checks()[0]);
+            $this->assertSame(['src/'], $qc->paths());
         } finally {
             unlink($path);
         }
@@ -82,7 +105,7 @@ PHP);
 
         try {
             $this->expectException(ConfigException::class);
-            QualityConfig::fromPhpConfiguratorFile($path);
+            (new ConfigLoader())->load($path);
         } finally {
             unlink($path);
         }

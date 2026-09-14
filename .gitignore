@@ -12,5 +12,4 @@
 /.php-cs-fixer.cache
 /.phpunit.cache
 /.psalm/cache
-/.phpunit.cache
 /.phpunit.result.cache
