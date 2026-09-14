@@ -510,8 +510,8 @@ PHP);
             $text = $output->fetch();
 
             $this->assertSame(1, $exitCode);
-            $this->assertStringContainsString('Layer mixing:', $text);
-            $this->assertStringContainsString('Service dominates 62.5%', $text);
+            $this->assertStringContainsString('Directory naming convention:', $text);
+            $this->assertStringContainsString('Service suffix appears in 62.5%', $text);
         } finally {
             foreach (glob($dir.'/app/Feature/*.php') ?: [] as $file) {
                 unlink($file);

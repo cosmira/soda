@@ -35,7 +35,7 @@ final class MaxLayerDominancePercentageTest extends TestCase
         $this->assertSame('max_layer_dominance_percentage', $violation->rule);
         $this->assertInstanceOf(Violation::class, $violation);
         $this->assertSame(['value' => 63, 'threshold' => 50], ['value' => $violation->value, 'threshold' => $violation->threshold]);
-        $this->assertStringContainsString('Service dominates 62.5%', $violation->message ?? '');
+        $this->assertStringContainsString('Service suffix appears in 62.5%', $violation->message ?? '');
         $this->assertStringContainsString('Controller=2, Plain=1', $violation->message ?? '');
     }
 
@@ -127,7 +127,7 @@ final class MaxLayerDominancePercentageTest extends TestCase
         $violation = $result->violations->first();
         self::assertSame(67, $violation->value);
         self::assertSame(50, $violation->threshold);
-        self::assertStringContainsString('Service dominates 66.7%', $violation->message);
+        self::assertStringContainsString('Service suffix appears in 66.7%', $violation->message);
         self::assertStringContainsString('Controller=1', $violation->message);
     }
 

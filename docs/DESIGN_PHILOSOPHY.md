@@ -25,3 +25,5 @@ Use functions and private helpers for small local work. Preserve adapters that t
 Distinguish an AST fact, a correct metric and a useful recommendation. Test equivalent syntax, legitimate counterexamples and the actual transformation suggested to users. A metric must state what it counts and what it cannot know. Unknown calls are not proof of absent relationships. Cohesion is not a count of business responsibilities; a common logger can connect unrelated operations, while a useful concern can group methods without shared state.
 
 Heuristic rules enter as opt-in checks until PHP examples and corpus review justify broader use. This is rule selection, not a budget of tolerated violations: enabled checks still require zero violations. Do not reward a quota of traits, value objects, interfaces or files. Compare the code and the calling scenario before and after the proposed change.
+
+See [Policy Compatibility](POLICY_COMPATIBILITY.md) for the deliberate decisions on clone, guards, directory names and array access.

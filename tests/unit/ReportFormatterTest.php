@@ -63,7 +63,7 @@ final class ReportFormatterTest extends TestCase
 
         $this->assertStringContainsString('Arguments: 6 (max 5)', $text);
         $this->assertStringContainsString(
-            'Group related arguments into a value object, or move the behavior onto the object that owns the data.',
+            'Move behavior to the owner of its data. Use a value object when related arguments share meaning, operations or an invariant; avoid a wrapper solely to reduce this count.',
             $text,
         );
     }

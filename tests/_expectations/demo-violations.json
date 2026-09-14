@@ -8,7 +8,7 @@
         "value": 6,
         "threshold": 5,
         "message": null,
-        "recommendation": "Group related state into value objects or extract the behavior that owns that state."
+        "recommendation": "Keep state with its behavior. Group values when they share meaning or invariants; a property count alone does not justify another object."
     },
     {
         "rule": "max_properties_per_class",
@@ -19,7 +19,7 @@
         "value": 6,
         "threshold": 5,
         "message": null,
-        "recommendation": "Group related state into value objects or extract the behavior that owns that state."
+        "recommendation": "Keep state with its behavior. Group values when they share meaning or invariants; a property count alone does not justify another object."
     },
     {
         "rule": "max_public_methods",
@@ -30,7 +30,7 @@
         "value": 21,
         "threshold": 20,
         "message": null,
-        "recommendation": "Narrow the public API; keep orchestration public and move supporting behavior behind collaborators."
+        "recommendation": "Review which operations callers need. Supporting behavior can remain private on its owner; preserve useful fluent operations and framework contracts."
     },
     {
         "rule": "max_interfaces_per_class",
@@ -63,7 +63,7 @@
         "value": 21,
         "threshold": 20,
         "message": null,
-        "recommendation": "Narrow the public API; keep orchestration public and move supporting behavior behind collaborators."
+        "recommendation": "Review which operations callers need. Supporting behavior can remain private on its owner; preserve useful fluent operations and framework contracts."
     },
     {
         "rule": "max_properties_per_class",
@@ -74,7 +74,7 @@
         "value": 6,
         "threshold": 5,
         "message": null,
-        "recommendation": "Group related state into value objects or extract the behavior that owns that state."
+        "recommendation": "Keep state with its behavior. Group values when they share meaning or invariants; a property count alone does not justify another object."
     },
     {
         "rule": "max_interfaces_per_class",
@@ -96,7 +96,7 @@
         "value": 21,
         "threshold": 20,
         "message": null,
-        "recommendation": "Narrow the public API; keep orchestration public and move supporting behavior behind collaborators."
+        "recommendation": "Review which operations callers need. Supporting behavior can remain private on its owner; preserve useful fluent operations and framework contracts."
     },
     {
         "rule": "max_public_methods",
@@ -107,7 +107,7 @@
         "value": 22,
         "threshold": 20,
         "message": null,
-        "recommendation": "Narrow the public API; keep orchestration public and move supporting behavior behind collaborators."
+        "recommendation": "Review which operations callers need. Supporting behavior can remain private on its owner; preserve useful fluent operations and framework contracts."
     },
     {
         "rule": "max_line_length",
@@ -293,8 +293,8 @@
         "line": 13,
         "value": 1,
         "threshold": 0,
-        "message": "Boolean parameters hide alternate behaviors. Use separate named methods or a policy value.",
-        "recommendation": "Replace a mode flag with separate intention-revealing methods or a policy object."
+        "message": "Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.",
+        "recommendation": "Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow."
     },
     {
         "rule": "no_behavior_magic_methods",
@@ -348,8 +348,8 @@
         "line": 10,
         "value": 1,
         "threshold": 0,
-        "message": "Boolean parameters hide alternate behaviors. Use separate named methods or a policy value.",
-        "recommendation": "Replace a mode flag with separate intention-revealing methods or a policy object."
+        "message": "Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.",
+        "recommendation": "Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow."
     },
     {
         "rule": "no_environment_reads",
@@ -711,8 +711,8 @@
         "line": 12,
         "value": 1,
         "threshold": 0,
-        "message": "Object cloning hides copy semantics. Use an explicit copy method or construct a new value.",
-        "recommendation": "Make copy semantics explicit with a named method or fresh construction."
+        "message": "This rule forbids every clone, including explicit copy methods. Construct a new value to satisfy this policy; the syntax alone does not prove unsafe copying.",
+        "recommendation": "This policy forbids every clone, including explicit copying APIs. Fresh construction satisfies it; clone-based value APIs require choosing a different rule selection."
     },
     {
         "rule": "no_closure_rebinding",
@@ -1558,8 +1558,8 @@
         "line": 27,
         "value": 1,
         "threshold": 0,
-        "message": "Boolean parameters hide alternate behaviors. Use separate named methods or a policy value.",
-        "recommendation": "Replace a mode flag with separate intention-revealing methods or a policy object."
+        "message": "Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.",
+        "recommendation": "Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow."
     },
     {
         "rule": "no_global_state",

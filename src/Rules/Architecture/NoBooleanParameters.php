@@ -32,7 +32,7 @@ final class NoBooleanParameters extends Check
                 value: 1,
                 threshold: 0,
                 line: $node->getStartLine(),
-                message: 'Boolean parameters hide alternate behaviors. Use separate named methods or a policy value.',
+                message: 'Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.',
             );
         }
     }

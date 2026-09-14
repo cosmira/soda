@@ -30,7 +30,7 @@ final class NoObjectCloning extends Check
                 value: 1,
                 threshold: 0,
                 line: $node->getStartLine(),
-                message: 'Object cloning hides copy semantics. Use an explicit copy method or construct a new value.',
+                message: 'This rule forbids every clone, including explicit copy methods. Construct a new value to satisfy this policy; the syntax alone does not prove unsafe copying.',
             );
         }
     }

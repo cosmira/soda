@@ -71,7 +71,7 @@ final class MaxLayerDominancePercentage extends Check
         unset($otherRoles[$dominantRole]);
 
         return new Violation(rule: $this->id(), file: $summary['file'], value: (int) round($share), threshold: $this->threshold, class: $directory, message: sprintf(
-            'Layer mixing: %s dominates %.1f%% of %d PHP files in %s; other types: %s',
+            'Directory naming convention: %s suffix appears in %.1f%% of %d PHP files in %s; other roles: %s. This does not measure dependency direction.',
             $dominantRole,
             $share,
             $summary['fileCount'],

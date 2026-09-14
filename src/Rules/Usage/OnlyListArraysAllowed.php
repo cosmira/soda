@@ -34,7 +34,7 @@ final class OnlyListArraysAllowed extends Check
     /**
      * Defines message pragmatic used by this policy.
      */
-    private const string MESSAGE_PRAGMATIC = 'Nested array indexing is forbidden. Prefer objects, a flat list, or split access into steps instead of chaining `[]`.';
+    private const string MESSAGE_PRAGMATIC = 'This policy forbids nested array indexing. Review the data shape: repeated domain meaning or invariants can justify a value object; introducing a temporary alone does not improve the model.';
 
     /**
      * Defines message strict used by this policy.

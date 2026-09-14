@@ -366,3 +366,12 @@ behavior through property reads, dynamic access or aliases.
 Both changes affect findings explicitly; IDs, constructor settings and the
 standard selection remain unchanged. See [Practical Design](DESIGN_PHILOSOPHY.md)
 for executable positive examples and counterexamples.
+
+## Recommendation wording
+
+Catalog advice now presents local helpers, traits and value objects according to
+their purpose. Boolean, clone, nested-array and directory diagnostics state the
+criterion and its limitations. The directory message begins `Directory naming
+convention:`. These wording changes affect JSON messages and console text; IDs,
+measurements, thresholds, locations and selection are unchanged. See
+[Policy Compatibility](POLICY_COMPATIBILITY.md) for the preserved semantics.
