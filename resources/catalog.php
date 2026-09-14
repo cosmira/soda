@@ -10,7 +10,7 @@ return [
         'severity'   => 'error',
         'default'    => 100,
         'label'      => 'Method length:',
-        'advice'     => 'Extract a named method for each distinct step and let the original method read as an outline.',
+        'advice'     => 'Name a distinct step with a private method when it clarifies the scenario; keep the operation with its owner.',
         'comparison' => null,
     ],
     'max_class_length' => [
@@ -20,7 +20,7 @@ return [
         'severity'   => 'error',
         'default'    => 500,
         'label'      => 'Class length:',
-        'advice'     => 'Extract a collaborator around the responsibility that changes for a different reason.',
+        'advice'     => 'Review the responsibilities together. Keep related behavior local, organize a cohesive concern in a trait, or extract an object with its own state or boundary.',
         'comparison' => null,
     ],
     'max_arguments' => [
@@ -30,7 +30,7 @@ return [
         'severity'   => 'warning',
         'default'    => 3,
         'label'      => 'Arguments:',
-        'advice'     => 'Group related arguments into a value object, or move the behavior onto the object that owns the data.',
+        'advice'     => 'Move behavior to the owner of its data. Use a value object when related arguments share meaning, operations or an invariant; avoid a wrapper solely to reduce this count.',
         'comparison' => null,
     ],
     'max_methods_per_class' => [
@@ -40,7 +40,7 @@ return [
         'severity'   => 'warning',
         'default'    => 40,
         'label'      => 'Methods per class:',
-        'advice'     => 'Split the class by responsibility and give each collaborator a small, cohesive public purpose.',
+        'advice'     => 'Review the public scenario and unrelated responsibilities. A cohesive concern may stay on the owner as a trait; a new object needs a distinct purpose.',
         'comparison' => null,
     ],
     'max_file_loc' => [
@@ -70,7 +70,7 @@ return [
         'severity'   => 'warning',
         'default'    => 5,
         'label'      => 'Properties per class:',
-        'advice'     => 'Group related state into value objects or extract the behavior that owns that state.',
+        'advice'     => 'Keep state with its behavior. Group values when they share meaning or invariants; a property count alone does not justify another object.',
         'comparison' => null,
     ],
     'max_public_methods' => [
@@ -80,7 +80,7 @@ return [
         'severity'   => 'warning',
         'default'    => 20,
         'label'      => 'Public methods:',
-        'advice'     => 'Narrow the public API; keep orchestration public and move supporting behavior behind collaborators.',
+        'advice'     => 'Review which operations callers need. Supporting behavior can remain private on its owner; preserve useful fluent operations and framework contracts.',
         'comparison' => null,
     ],
     'max_dependencies' => [
@@ -90,7 +90,7 @@ return [
         'severity'   => 'warning',
         'default'    => 8,
         'label'      => 'Dependencies:',
-        'advice'     => 'Extract a cohesive service instead of injecting every participant into one object.',
+        'advice'     => 'Review which dependencies belong to the same operation. Extract only an independently useful responsibility; another forwarding service does not remove coupling.',
         'comparison' => null,
     ],
     'max_todo_fixme_comments' => [
@@ -140,7 +140,7 @@ return [
         'severity'   => 'warning',
         'default'    => 0,
         'label'      => 'Trivial delegating classes:',
-        'advice'     => 'Inline the pass-through class, or make its independent responsibility explicit with a contract or real policy.',
+        'advice'     => 'Call the collaborator directly when the wrapper adds no concept. Keep genuine adapters and boundaries; adding an interface alone does not simplify the call path.',
         'comparison' => null,
     ],
     'methods_follow_call_order' => [
@@ -160,7 +160,7 @@ return [
         'severity'   => 'warning',
         'default'    => 0,
         'label'      => 'Nested array chains (list-only / strict opt-in):',
-        'advice'     => 'Replace nested associative arrays with named value objects; keep arrays for homogeneous lists.',
+        'advice'     => 'This checks array-access syntax. Use a value object for repeated domain interpretation or invariants; transport payloads and one-off arrays do not automatically need wrappers.',
         'comparison' => null,
     ],
     'no_numeric_array_index' => [
@@ -390,7 +390,7 @@ return [
         'severity'   => 'warning',
         'default'    => 0,
         'label'      => 'Object cloning:',
-        'advice'     => 'Make copy semantics explicit with a named method or fresh construction.',
+        'advice'     => 'This policy forbids every clone, including explicit copying APIs. Fresh construction satisfies it; clone-based value APIs require choosing a different rule selection.',
         'comparison' => null,
     ],
     'no_closure_rebinding' => [
@@ -470,7 +470,7 @@ return [
         'severity'   => 'warning',
         'default'    => 0,
         'label'      => 'Boolean parameters:',
-        'advice'     => 'Replace a mode flag with separate intention-revealing methods or a policy object.',
+        'advice'     => 'Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow.',
         'comparison' => null,
     ],
     'no_behavior_magic_methods' => [
@@ -550,7 +550,7 @@ return [
         'severity'   => 'error',
         'default'    => 50,
         'label'      => 'Layer mixing:',
-        'advice'     => 'Organize by feature or domain capability instead of accumulating unrelated technical-layer classes.',
+        'advice'     => 'This is a naming and directory convention, not a dependency analysis. Inspect actual responsibilities and call paths; renaming a folder alone does not improve architecture.',
         'comparison' => null,
     ],
     'max_traits_per_class' => [
@@ -560,7 +560,7 @@ return [
         'severity'   => 'warning',
         'default'    => 10,
         'label'      => 'Traits per class:',
-        'advice'     => 'Prefer explicit collaborators; use a trait only for behavior that truly belongs to the consuming type.',
+        'advice'     => 'Review the state and methods each trait expects. Keep cohesive concerns on their owner, even with one consumer; avoid extraction solely to reduce this count.',
         'comparison' => null,
     ],
     'max_interfaces_per_class' => [
@@ -590,7 +590,7 @@ return [
         'severity'   => 'error',
         'default'    => 8,
         'label'      => 'Cyclomatic complexity:',
-        'advice'     => 'Replace branching with guard clauses and extract named policy objects for genuinely different cases.',
+        'advice'     => 'Review branches and duplicate decisions. Guards can reduce nesting but do not reduce this score; use a private method for a named step or an object for an independent responsibility.',
         'comparison' => null,
     ],
     'max_control_nesting' => [
@@ -610,7 +610,7 @@ return [
         'severity'   => 'warning',
         'default'    => 4,
         'label'      => 'Return statements:',
-        'advice'     => 'Separate validation and decision branches so each method has one obvious outcome.',
+        'advice'     => 'This counts all returns, including guards. Review the whole scenario alongside nesting; do not add intermediary classes solely to move exits elsewhere.',
         'comparison' => null,
     ],
     'max_boolean_conditions' => [
@@ -620,7 +620,7 @@ return [
         'severity'   => 'warning',
         'default'    => 4,
         'label'      => 'Boolean conditions:',
-        'advice'     => 'Give the condition a domain name or move the decision into a policy object with focused predicates.',
+        'advice'     => 'Give a repeated or complex decision a useful name, usually with a local value or private predicate. A policy object needs an independent responsibility.',
         'comparison' => null,
     ],
     'max_try_catch_blocks' => [

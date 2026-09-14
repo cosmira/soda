@@ -20,7 +20,7 @@ final class OnlyListArraysAllowedTest extends TestCase
 
         $this->assertCount(1, $violations);
         $this->assertSame('only_list_arrays', $violations->first()->rule);
-        $this->assertStringContainsString('Nested array indexing', (string) $violations->first()->message);
+        $this->assertStringContainsString('nested array indexing', (string) $violations->first()->message);
         unlink($file);
     }
 
