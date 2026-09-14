@@ -7,7 +7,8 @@
       "before": {},
       "conditions": {},
       "added_locations": 0,
-      "removed_locations": 0
+      "removed_locations": 0,
+      "usage": {}
     },
     {
       "project": "symfony-console",
@@ -21,7 +22,10 @@
         "unused_methods": 40
       },
       "added_locations": 12,
-      "removed_locations": 526
+      "removed_locations": 526,
+      "usage": {
+        "no_complex_control_conditions": 189
+      }
     },
     {
       "project": "laravel",
@@ -35,7 +39,10 @@
         "unused_methods": 477
       },
       "added_locations": 18,
-      "removed_locations": 2485
+      "removed_locations": 2485,
+      "usage": {
+        "no_complex_control_conditions": 897
+      }
     },
     {
       "project": "monolog",
@@ -49,7 +56,10 @@
         "unused_methods": 69
       },
       "added_locations": 2,
-      "removed_locations": 263
+      "removed_locations": 263,
+      "usage": {
+        "no_complex_control_conditions": 36
+      }
     },
     {
       "project": "guzzle",
@@ -63,7 +73,10 @@
         "unused_methods": 1
       },
       "added_locations": 0,
-      "removed_locations": 635
+      "removed_locations": 635,
+      "usage": {
+        "no_complex_control_conditions": 85
+      }
     }
   ]
 }

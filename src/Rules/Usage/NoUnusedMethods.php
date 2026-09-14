@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Cosmira\Soda\Rules\Usage;
 
-use Cosmira\Soda\Analysis\FileFacts;
+use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Reporting\Violation;
 use Cosmira\Soda\Rules\Check;
 
 /**
- * Flags **private** and **protected** methods that are never called within their class,
- * trait, or any subclass / trait-user in the same file — except protected methods that
+ * Flags **private** and **protected** methods that are never called within configured project files,
+ * including inherited and trait-composed callers — except protected methods that
  * clearly belong to a supertype contract (see {@see UnusedMethodAnalyser}).
  *
  * Magic methods are never flagged. {@see self::DEFAULT_IGNORE} is merged with {@see $ignore}
@@ -28,7 +28,7 @@ final class NoUnusedMethods extends Check
     #[\Override]
     public function requiredAnalyses(): array
     {
-        return [];
+        return ['methodUsage'];
     }
 
     /**
@@ -51,7 +51,7 @@ final class NoUnusedMethods extends Check
     public function __construct(
         array $ignore = [],
     ) {
-        $this->ignore = array_values(array_unique([...self::DEFAULT_IGNORE, ...$ignore]));
+        $this->ignore = array_values(array_unique(array_map(strtolower(...), [...self::DEFAULT_IGNORE, ...$ignore])));
     }
 
     /**
@@ -64,18 +64,19 @@ final class NoUnusedMethods extends Check
     }
 
     /**
-     * Convert matching facts into violations with their source locations.
+     * Resolve project usage and convert matching facts into violations with their source locations.
      */
     #[\Override]
-    public function checkFile(FileFacts $facts): iterable
+    public function checkProject(ProjectFacts $facts): iterable
     {
-        foreach ((new UnusedMethodAnalyser)->analyse($facts->nodes) as $finding) {
-            if (in_array($finding['method'], $this->ignore, true)) {
+        foreach ((new UnusedMethodAnalyser)->analyse($facts) as $finding) {
+            $method = strtolower($finding['method']);
+            if (in_array($method, $this->ignore, true)) {
                 continue;
             }
 
             yield new Violation(
-                rule: $this->id(), file: $facts->path, value: 1, threshold: 0,
+                rule: $this->id(), file: $finding['file'], value: 1, threshold: 0,
                 method: $finding['method'], class: $finding['class'], line: $finding['line'],
             );
         }

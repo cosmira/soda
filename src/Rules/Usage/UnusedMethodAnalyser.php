@@ -4,238 +4,160 @@ declare(strict_types=1);
 
 namespace Cosmira\Soda\Rules\Usage;
 
-use PhpParser\Node;
-use PhpParser\Node\Name;
-use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Interface_;
-use PhpParser\Node\Stmt\Trait_;
-use PhpParser\Node\Stmt\TraitUse;
-use PhpParser\NodeFinder;
+use Cosmira\Soda\Analysis\ProjectFacts;
 
 /**
- * Detects **private** and **protected** methods that are never called within their class, trait,
- * or any subclass / trait-user in the same file.
- *
- * Protected methods are skipped when: the same name is declared on an **abstract** ancestor
- * class or on an **implemented interface** in this file; the method has **#[\Override]**
- * (parent may live in another file); or the method is **final protected** on an **abstract**
- * class (shared API for subclasses).
- *
- * Calls tracked:
- *   - $this->method()  / self::method()  / static::method()
- *   - call_user_func([$this, 'method'])
- *   - dynamic: $this->$var() → treats ALL methods as potentially used
+ * Resolve usage across configured files using compact, receiver-aware declarations.
+ * No reachability analysis or dependency autoloading is performed.
  */
-final readonly class UnusedMethodAnalyser
+final class UnusedMethodAnalyser
 {
-    /**
-     * Stores finder for this analysis instance.
-     */
-    private NodeFinder $finder;
+    use UnusedMethodComposition;
+    use UnusedMethodResolution;
 
     /**
-     * Initialize the configured values and collaborators for this instance.
+     * @var array<string, array>
      */
-    public function __construct()
-    {
-        $this->finder = new NodeFinder;
-    }
+    private array $types = [];
 
     /**
-     * @param Node[] $nodes Top-level AST nodes from a parsed file.
+     * @var array<string, array>
+     */
+    private array $surfaces = [];
+
+    /**
+     * @var array<string, true>
+     */
+    private array $used = [];
+
+    /**
+     * Index once, resolve possible calls, then report each original declaration once.
      *
-     * @return list<array{class: string, method: string, visibility: string, line: int}>
+     * @return list<array{file: string, class: string, method: string, visibility: string, line: int}>
      */
-    public function analyse(array $nodes): array
+    public function analyse(ProjectFacts $project): array
     {
-        $byName = $this->collectDeclarationsByName($nodes);
-
-        if ($byName === []) {
-            return [];
-        }
-
-        $fileIndex = [
-            'usage'      => array_map(UnusedMethodCalls::collect(...), $byName),
-            'children'   => $this->buildChildrenMap($byName),
-            'traitUsers' => $this->buildTraitUsersMap($byName),
-            'byName'     => $byName,
-        ];
-
-        $violations = [];
-
-        foreach ($byName as $name => $type) {
-            $isUnsupportedType = ! $type instanceof Class_ && ! $type instanceof Trait_;
-            if ($isUnsupportedType) {
+        $this->types = $this->index($project);
+        $this->surfaces = [];
+        $this->used = [];
+        $candidates = [];
+        foreach ($this->types as $name => $type) {
+            if ($type['kind'] === 'trait') {
                 continue;
             }
 
-            $violations = array_merge($violations, $this->analyseType($name, $type, $fileIndex));
+            $surface = $this->surface($name);
+            $candidates += $this->candidates($surface);
+            $this->calls($name, $surface);
         }
 
-        return $violations;
+        return array_values(array_diff_key($candidates, $this->used));
     }
 
     /**
-     * @return array<string, Class_|Trait_|Interface_>
+     * Anonymous identities include their file; PHP type and method lookup ignores case.
      */
-    private function collectDeclarationsByName(array $nodes): array
+    private function index(ProjectFacts $project): array
     {
-        $byName = [];
+        $types = [];
+        foreach ($project->files as $file => $facts) {
+            foreach ($facts['methodUsage'] ?? [] as $type) {
+                $name = strtolower($type['name']);
+                if (str_starts_with($name, '{anonymous}')) {
+                    $name .= '@'.$file;
+                }
 
-        foreach ($this->finder->find(
-            $nodes,
-            fn (Node $n): bool => $n instanceof Class_ || $n instanceof Trait_ || $n instanceof Interface_,
-        ) as $type) {
-            /** @var Class_|Trait_|Interface_ $type */
-            $short = $type->name?->toString();
-            if ($short !== null) {
-                $byName[$short] = $type;
+                $type['duplicate'] = isset($types[$name]);
+                $types[$name] = $this->locate($type, $name, $file);
             }
         }
 
-        return $byName;
+        return $types;
     }
 
     /**
-     * @param array<string, Class_|Trait_|Interface_> $byName
+     * Origin survives trait aliases, inheritance and every possible consuming class.
      */
-    private function buildChildrenMap(array $byName): array
+    private function locate(array $type, string $name, string $file): array
     {
-        $children = [];
+        $methods = $type['methods'];
+        foreach ($methods as $key => $method) {
+            $methods[$key] = $method + [
+                'origin' => $file.':'.$method['line'].':'.$key,
+                'scope'  => $name, 'class' => $type['name'], 'file' => $file,
+            ];
+        }
 
-        foreach ($byName as $name => $type) {
-            $hasParent = $type instanceof Class_ && $type->extends instanceof Name;
-            if ($hasParent) {
-                $parent = $type->extends->getLast();
-                $list = $children[$parent] ?? [];
-                $list[] = $name;
-                $children[$parent] = $list;
+        $type['methods'] = $methods;
+
+        return $type;
+    }
+
+    /**
+     * Candidate policy is unchanged; unresolved compositions cannot prove non-use.
+     */
+    private function candidates(array $surface): array
+    {
+        $candidates = [];
+        foreach ($surface['bodies'] as $method) {
+            if ($surface['unknown'] || $method['visibility'] === 'public') {
+                $this->used[$method['origin']] = true;
+            }
+
+            $isCandidate = $method['candidate'] && ! $this->hasContract($method);
+            if ($isCandidate) {
+                $candidates[$method['origin']] = [
+                    'file'   => $method['file'], 'class' => $method['class'],
+                    'method' => $method['name'], 'visibility' => $method['visibility'], 'line' => $method['line'],
+                ];
             }
         }
 
-        return $children;
+        return $candidates;
     }
 
     /**
-     * @param array<string, Class_|Trait_|Interface_> $byName
+     * A protected override retains the existing abstract/interface contract exemption.
      */
-    private function buildTraitUsersMap(array $byName): array
+    private function hasContract(array $method): bool
     {
-        $users = [];
+        if ($method['visibility'] !== 'protected') {
+            return false;
+        }
 
-        foreach ($byName as $className => $type) {
-            foreach ($this->traitNamesUsed($type) as $traitName) {
-                $list = $users[$traitName] ?? [];
-                $list[] = $className;
-                $users[$traitName] = $list;
+        $type = $this->types[$method['scope']];
+        $ancestors = [...$type['interfaces'], ...($type['parent'] === null ? [] : [$type['parent']])];
+
+        return $this->hasNamedContract($ancestors, strtolower($method['name']));
+    }
+
+    /**
+     * Missing contracts remain unknown; no vendor path is inspected implicitly.
+     */
+    private function hasNamedContract(array $names, string $method, array $seen = []): bool
+    {
+        foreach ($names as $name) {
+            if (isset($seen[$name])) {
+                continue;
+            }
+
+            $seen[$name] = true;
+            $type = $this->types[$name] ?? null;
+            if ($type === null) {
+                return true;
+            }
+
+            $methods = $type['methods'];
+            if ($type['abstract'] && isset($methods[$method])) {
+                return true;
+            }
+
+            $parents = [...$type['interfaces'], ...($type['parent'] === null ? [] : [$type['parent']])];
+            if ($this->hasNamedContract($parents, $method, $seen)) {
+                return true;
             }
         }
 
-        return $users;
-    }
-
-    /**
-     * @param array{
-     *     usage: array<string, array{called: array<string, true>, hasDynamic: bool}>,
-     *     children: array<string, list<string>>,
-     *     traitUsers: array<string, list<string>>,
-     *     byName: array<string, Class_|Trait_|Interface_>
-     * } $fileIndex
-     *
-     * @return list<array{class: string, method: string, visibility: string, line: int}>
-     */
-    private function analyseType(string $name, Class_|Trait_ $type, array $fileIndex): array
-    {
-        $usage = $fileIndex['usage'];
-        $children = $fileIndex['children'];
-        $traitUsers = $fileIndex['traitUsers'];
-        $byName = $fileIndex['byName'];
-        $isUnusedTrait = $type instanceof Trait_ && ($traitUsers[$name] ?? []) === [];
-
-        if ($isUnusedTrait) {
-            return [];
-        }
-
-        $callers = [$name, ...($children[$name] ?? []), ...($traitUsers[$name] ?? [])];
-        $called = $this->mergeCalledNames($usage, $callers);
-
-        return $this->hasAnyDynamicCall($usage, $callers) ? [] : array_values(array_filter(array_map(
-            fn (ClassMethod $m): ?array => $this->toViolation($name, $m, $called),
-            $this->candidateMethods($type, $byName),
-        ), fn (?array $x): bool => $x !== null));
-    }
-
-    /**
-     * @return string[]
-     */
-    private function traitNamesUsed(Class_|Trait_|Interface_ $type): array
-    {
-        $names = [];
-        foreach ($this->finder->findInstanceOf([$type], TraitUse::class) as $use) {
-            foreach ($use->traits as $trait) {
-                $names[] = $trait->getLast();
-            }
-        }
-
-        return $names;
-    }
-
-    /**
-     * @param array<string, array{called: array<string, true>, hasDynamic: bool}> $usage
-     *
-     * @return array<string, true>
-     */
-    private function mergeCalledNames(array $usage, array $callers): array
-    {
-        return array_reduce(
-            $callers,
-            static function (array $carry, string $c) use ($usage): array {
-                $row = $usage[$c] ?? [];
-
-                return $carry + ($row['called'] ?? []);
-            },
-            [],
-        );
-    }
-
-    /**
-     * @param array<string, array{called: array<string, true>, hasDynamic: bool}> $usage
-     */
-    private function hasAnyDynamicCall(array $usage, array $callers): bool
-    {
-        return array_filter($callers, static function (string $c) use ($usage): bool {
-            $row = $usage[$c] ?? [];
-
-            return $row['hasDynamic'] ?? false;
-        }) !== [];
-    }
-
-    /**
-     * @param array<string, true> $called
-     */
-    private function toViolation(string $class, ClassMethod $method, array $called): ?array
-    {
-        $isCalled = isset($called[$method->name->toString()]);
-
-        return $isCalled ? null : [
-            'class'      => $class,
-            'method'     => $method->name->toString(),
-            'visibility' => $method->isPrivate() ? 'private' : 'protected',
-            'line'       => $method->getStartLine(),
-        ];
-    }
-
-    /**
-     * @param array<string, Class_|Trait_|Interface_> $byName
-     *
-     * @return list<ClassMethod>
-     */
-    private function candidateMethods(Class_|Trait_ $type, array $byName): array
-    {
-        return array_values(array_filter(
-            $type->stmts ?? [],
-            fn (Node $s): bool => $s instanceof ClassMethod && UnusedMethodCandidatePolicy::isCandidate($s, $type, $byName),
-        ));
+        return false;
     }
 }

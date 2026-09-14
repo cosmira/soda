@@ -7,13 +7,7 @@ namespace Cosmira\Soda\Tests\Design;
 use DateTimeImmutable;
 use InvalidArgumentException;
 
-trait Expiration
-{
-    public function hasExpired(DateTimeImmutable $now): bool
-    {
-        return $this->expiresAt <= $now;
-    }
-}
+require_once __DIR__.'/Expiration.php';
 
 final readonly class Invitation
 {

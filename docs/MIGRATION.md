@@ -392,3 +392,29 @@ distinguish mixed logical operators from nested computation, replacing the old
 are accepted, including negated predicates. Every expression in a `for` condition
 is checked. Existing numerical limits, all 69 standard rules, and JSON schema 4
 are unchanged. See [the rule semantics](STRUCTURAL_METRICS.md#no_complex_control_conditions).
+
+## Project method usage
+
+`NoUnusedMethods` now requests `methodUsage` and implements `checkProject()`.
+The existing runner already performs this stage; ordinary configuration needs
+no changes. Integrations that called `checkFile()` directly must collect all
+configured files into `ProjectFacts` and run the project stage. Declarations and
+calls are collected once alongside the existing AST facts.
+
+Reports keep rule ID `unused_methods`, value 1, threshold 0, schema 4 and original
+source positions. Named classes now use qualified names in diagnostics. Methods
+and ignored names are compared case-insensitively. Calls on unrelated receivers
+no longer hide local unused methods; cross-file concerns and inheritance can
+remove former findings. Missing relationships and dynamic receivers are
+conservative within affected types. No vendor autoload or reachability scan is
+introduced.
+
+The internal `UnusedMethodAnalyser::analyse()` consumes `ProjectFacts` instead of
+AST nodes. Its former same-file candidate/contract helpers were replaced by
+declaration collection and project resolution; their behavioral cases are now
+covered through the actual rule pipeline.
+
+The separate concern, mutable fluent draft, immutable value operation and value
+invariant in `tests/fixtures/design` run under the specific reviewed rules.
+These examples do not claim compatibility with every historical policy (for
+example, the existing clone ban still applies when explicitly selected).

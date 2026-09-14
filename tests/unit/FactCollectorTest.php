@@ -10,6 +10,7 @@ use Cosmira\Soda\Analysis\Runner;
 use Cosmira\Soda\Config\Soda;
 use Cosmira\Soda\Rules\Structure\MaxArguments;
 use Cosmira\Soda\Rules\Structure\MaxFileLoc;
+use Cosmira\Soda\Rules\Usage\NoUnusedMethods;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use PHPUnit\Framework\TestCase;
@@ -104,7 +105,7 @@ PHP);
 
         try {
             $result = (new Runner(new FactCollector($parser)))->check([$file, $file], Soda::configure()->with([
-                new MaxArguments(1), new MaxFileLoc(1),
+                new MaxArguments(1), new MaxFileLoc(1), new NoUnusedMethods,
             ]));
             $this->assertCount(2, $result->violations);
         } finally {

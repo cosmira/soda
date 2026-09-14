@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace Cosmira\Soda\Tests;
 
+use Cosmira\Soda\Analysis\Runner;
+use Cosmira\Soda\Config\Soda;
 use Cosmira\Soda\Rules\Architecture\NoBooleanParameters;
+use Cosmira\Soda\Rules\Complexity\NoComplexControlConditions;
 use Cosmira\Soda\Rules\Structure\NoTrivialDelegatingClasses;
+use Cosmira\Soda\Rules\Usage\NoUnusedMethods;
 use Cosmira\Soda\Tests\Design\Invitation;
 use Cosmira\Soda\Tests\Design\MemoryStorage;
 use Cosmira\Soda\Tests\Design\Money;
@@ -29,6 +33,13 @@ final class PracticalDesignTest extends TestCase
         ]);
 
         self::assertSame([], $result['violations']);
+    }
+
+    public function testPracticalObjectsAndSeparateConcernUseTheReviewedRules(): void
+    {
+        $files = [__DIR__.'/../fixtures/design/practical.php', __DIR__.'/../fixtures/design/Expiration.php'];
+        $config = Soda::configure()->with([new NoUnusedMethods, new NoComplexControlConditions, new NoTrivialDelegatingClasses, new NoBooleanParameters]);
+        self::assertCount(0, (new Runner)->check($files, $config)->violations);
     }
 
     public function testConcernKeepsBehaviorOnItsOwner(): void

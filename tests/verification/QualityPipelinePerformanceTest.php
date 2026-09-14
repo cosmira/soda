@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Cosmira\Soda\Verification;
 
 use Cosmira\Soda\Analysis\Runner as QualityAnalyser;
+use Cosmira\Soda\Config\Soda;
+use Cosmira\Soda\Rules\Usage\NoUnusedMethods;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\Attributes\TestWith;
@@ -47,6 +49,33 @@ final class QualityPipelinePerformanceTest extends TestCase
             }
             unlink($config);
             rmdir($project);
+        }
+    }
+
+    #[RunInSeparateProcess]
+    public function testCrossFileConcernsStayWithinTimeAndMemoryBudgets(): void
+    {
+        $directory = sys_get_temp_dir().'/soda-concern-performance-'.uniqid();
+        mkdir($directory, 0700);
+        $files = [];
+        for ($index = 0; $index < 300; $index++) {
+            $trait = $directory.'/Concern'.$index.'.php';
+            $owner = $directory.'/Owner'.$index.'.php';
+            file_put_contents($trait, "<?php trait Concern$index { private function save() {} }");
+            file_put_contents($owner, "<?php class Owner$index { use Concern$index; public function run() { \$this->save(); } }");
+            array_push($files, $trait, $owner);
+        }
+        $before = memory_get_usage(true);
+        $start = hrtime(true);
+
+        try {
+            $result = (new QualityAnalyser)->check($files, Soda::configure()->with([new NoUnusedMethods]));
+            self::assertTrue($result->isPassing());
+            self::assertLessThan(8.0, (hrtime(true) - $start) / 1_000_000_000);
+            self::assertLessThan(64 * 1024 * 1024, memory_get_peak_usage(true) - $before);
+        } finally {
+            array_map(unlink(...), $files);
+            rmdir($directory);
         }
     }
 

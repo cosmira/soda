@@ -48,8 +48,10 @@ use PhpParser\Node;
  * }
  *
  * @phpstan-import-type CognitiveRow from \Cosmira\Soda\Rules\Complexity\CognitiveComplexity
+ * @phpstan-import-type Declaration from \Cosmira\Soda\Rules\Usage\UnusedMethodDeclarations
  *
  * @phpstan-type FileMetrics array{
+ *   methodUsage?: list<Declaration>,
  *   cohesion?: array<string, array>,
  *   file_loc: int, classes_count: int, cognitiveExtras?: array<string, CognitiveRow>,
  *   classes: array<string, ClassFacts>, methods: array<string, MethodFacts>,
