@@ -418,3 +418,20 @@ The separate concern, mutable fluent draft, immutable value operation and value
 invariant in `tests/fixtures/design` run under the specific reviewed rules.
 These examples do not claim compatibility with every historical policy (for
 example, the existing clone ban still applies when explicitly selected).
+
+## New standard checks: factories and repeated conditions
+
+`NoTrivialFactories` and `NoRepeatedCompoundConditions` now belong to
+`RuleCatalog::standard()` and the no-configuration default. `soda init` includes
+both. Existing explicit `with([...])` lists continue to run only their listed
+checks. New findings fail CI with exit status 1.
+
+A repeated condition is reported at three distinct methods by default;
+`new NoRepeatedCompoundConditions(minMethods: 4)` raises that minimum. The
+reported threshold is the maximum allowed count (2 for the default minimum 3).
+To omit either rule, use an explicit rule list without it. Do not remove useful
+contracts or combine independently evolving decisions just to silence a finding.
+
+Promotion is a project policy decision, not a successful corpus admission:
+the frozen 550-file corpus yielded zero findings and precision remains unknown.
+See [the RFC](rfcs/explicit-behavior-rules.md) for exact scope and counterexamples.

@@ -11,6 +11,7 @@ use Cosmira\Soda\Rules\Complexity\MaxTryCatchBlocks;
 use Cosmira\Soda\Rules\Complexity\NoAssignmentInCondition;
 use Cosmira\Soda\Rules\Complexity\NoComplexControlConditions;
 use Cosmira\Soda\Rules\Complexity\NoElseBranches;
+use Cosmira\Soda\Rules\Complexity\NoRepeatedCompoundConditions;
 use Cosmira\Soda\Rules\Documentation\MultilineConstantPhpDoc;
 use Cosmira\Soda\Rules\Documentation\MultilineMethodPhpDoc;
 use Cosmira\Soda\Rules\Documentation\MultilinePropertyPhpDoc;
@@ -44,6 +45,7 @@ use Cosmira\Soda\Rules\Structure\NoCommentedOutCode;
 use Cosmira\Soda\Rules\Structure\NoEmptyCatchBlocks;
 use Cosmira\Soda\Rules\Structure\NoTodoFixmeComments;
 use Cosmira\Soda\Rules\Structure\NoTrivialDelegatingClasses;
+use Cosmira\Soda\Rules\Structure\NoTrivialFactories;
 use Cosmira\Soda\Rules\Usage\NoNumericArrayIndex;
 use Cosmira\Soda\Rules\Usage\NoUnusedMethods;
 use Cosmira\Soda\Rules\Usage\OnlyListArraysAllowed;
@@ -81,6 +83,8 @@ return Soda::configure()
         new NoEmptyCatchBlocks(),
         new NoAskThenTellPatterns(),
         new NoTrivialDelegatingClasses(),
+        new NoTrivialFactories(),
+        new NoRepeatedCompoundConditions(),
         new MethodsFollowCallOrder(),
         new MultilineMethodPhpDoc(['public', 'protected', 'private']),
         new MultilinePropertyPhpDoc(['public', 'protected', 'private']),

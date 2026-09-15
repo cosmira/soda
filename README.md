@@ -82,3 +82,11 @@ use `php soda` in place of `vendor/bin/soda`. Run `composer test` for behavioral
 tests and `composer ci` for the full project checks.
 
 Licensed under the [BSD 3-Clause License](LICENSE).
+
+### Explicit behavior checks
+
+The standard set also reports internal factories that only forward construction
+arguments (`NoTrivialFactories`) and compound own-state conditions repeated in
+three or more methods (`NoRepeatedCompoundConditions`). These are opinionated
+structural checks: they do not prove an abstraction is useless or two decisions
+have the same meaning. See the [examples and policy decision](docs/rfcs/explicit-behavior-rules.md).

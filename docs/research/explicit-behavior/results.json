@@ -1,0 +1,80 @@
+{
+  "projects": [
+    {
+      "project": {
+        "name": "soda",
+        "root": "src",
+        "partition": "discovery",
+        "commit": "ec3449420bee5ed705bc95646bed343f1d7fe6fe",
+        "working_tree": true
+      },
+      "file_count": 178,
+      "source_tree_sha256": "cd48fb1a4b4ff88671d993c488f0353fe0470b6e997416ba8eba1eda4bc8fda7",
+      "findings": [],
+      "lookalike_counts": {
+        "no_trivial_factories": 109,
+        "no_repeated_compound_conditions": 92
+      },
+      "repository": "https://github.com/cosmira/soda"
+    },
+    {
+      "project": {
+        "name": "monolog",
+        "root": "src",
+        "partition": "discovery",
+        "commit": "2dc40e8f3b76a0b657e0a25c932dc6edef215891",
+        "working_tree": false
+      },
+      "file_count": 125,
+      "source_tree_sha256": "64eca46f8993e28d3b19cef27bc6202c8c2f205cf37a5be7c2796aadc150a779",
+      "findings": [],
+      "lookalike_counts": {
+        "no_trivial_factories": 72,
+        "no_repeated_compound_conditions": 51
+      },
+      "repository": "https://github.com/Seldaek/monolog"
+    },
+    {
+      "project": {
+        "name": "symfony-console",
+        "root": ".",
+        "partition": "held-out",
+        "commit": "de53cc95f326bea88098c0d1be4443011d2cab3c",
+        "working_tree": false
+      },
+      "file_count": 177,
+      "source_tree_sha256": "35ad658e8f636c97f72ef428bb381774edea410e2691bf1a59fddaac089e3cfb",
+      "findings": [],
+      "lookalike_counts": {
+        "no_trivial_factories": 96,
+        "no_repeated_compound_conditions": 77
+      },
+      "repository": "https://github.com/symfony/console"
+    },
+    {
+      "project": {
+        "name": "guzzle",
+        "root": "src",
+        "partition": "held-out",
+        "commit": "93939470950a9b11e2e84204166ef5e048c55fe4",
+        "working_tree": false
+      },
+      "file_count": 70,
+      "source_tree_sha256": "a922c39c2f92e5f29ee472c79350514282027b0ce3d99686e96d2a876e15407d",
+      "findings": [],
+      "lookalike_counts": {
+        "no_trivial_factories": 37,
+        "no_repeated_compound_conditions": 36
+      },
+      "repository": "https://github.com/guzzle/guzzle"
+    }
+  ],
+  "reviewed_nonfindings_per_candidate": 20,
+  "findings_per_candidate": 0,
+  "precision": null,
+  "decision": "Research only: minimum 20 findings per candidate was not met.",
+  "runtime": {
+    "php": "8.5.4",
+    "parser": "v5.9.0"
+  }
+}

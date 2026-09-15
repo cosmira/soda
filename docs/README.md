@@ -44,3 +44,7 @@ Inside this repository, use `php soda` instead of `vendor/bin/soda`.
 
 There is no `soda.json`, no secondary `config/soda.php`, and no separate
 configurator DSL. Expression syntax lives inside named PHP check classes. Keep examples copy-pasteable and object-based.
+
+## Research RFCs
+
+- [Explicit behavior rules](rfcs/explicit-behavior-rules.md): factory and repeated-condition candidates, principle matrix, examples and corpus admission results. Both checks now run by default; the original corpus admission result remains documented.

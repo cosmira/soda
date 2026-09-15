@@ -81,4 +81,12 @@ return [
     'method_name_length'                 => ['iteration' => 10, 'attack' => 'Use a short generic verb for a method with many responsibilities.'],
     'class_name_length'                  => ['iteration' => 10, 'attack' => 'Use a short prestigious suffix such as Manager for a god object.'],
     'namespace_name_length'              => ['iteration' => 10, 'attack' => 'Use short meaningless nested namespace segments.'],
+    'no_trivial_factories'               => [
+        'iteration' => 3,
+        'attack'    => 'Rename create to build; this deliberately leaves the narrow factory scope.',
+    ],
+    'no_repeated_compound_conditions' => [
+        'iteration' => 3,
+        'attack'    => 'Hide the condition behind a call; this check only compares syntax.',
+    ],
 ];

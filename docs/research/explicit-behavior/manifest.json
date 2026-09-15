@@ -1,0 +1,44 @@
+{
+  "frozen_before_corpus": true,
+  "selection": "Production PHP only; exclude Tests/tests/Resources/vendor. Do not execute donor source. Nonfinding pool: classes with create/new or boolean AND/OR in a method. Select five per project and candidate by SHA-256 of rule:file:class, then fill shortages by project/hash order.",
+  "admission": {
+    "minimum_findings": 20,
+    "maximum_reviewed_findings": 50,
+    "minimum_nonfindings": 20,
+    "minimum_useful_fraction": 0.9
+  },
+  "detectors": {
+    "NoRepeatedCompoundConditions.php": "48cf69682d423113b6cf81d676f90b642e1019f9bda0df5f5ebc146195e00612",
+    "NoTrivialFactories.php": "781fa2b378e493642fa363129935dbee3aba4d2b555e3a78ffb74d03e96c60a8"
+  },
+  "projects": [
+    {
+      "name": "soda",
+      "root": "src",
+      "partition": "discovery",
+      "commit": "ec3449420bee5ed705bc95646bed343f1d7fe6fe",
+      "working_tree": true
+    },
+    {
+      "name": "monolog",
+      "root": "src",
+      "partition": "discovery",
+      "commit": "2dc40e8f3b76a0b657e0a25c932dc6edef215891",
+      "working_tree": false
+    },
+    {
+      "name": "symfony-console",
+      "root": ".",
+      "partition": "held-out",
+      "commit": "de53cc95f326bea88098c0d1be4443011d2cab3c",
+      "working_tree": false
+    },
+    {
+      "name": "guzzle",
+      "root": "src",
+      "partition": "held-out",
+      "commit": "93939470950a9b11e2e84204166ef5e048c55fe4",
+      "working_tree": false
+    }
+  ]
+}

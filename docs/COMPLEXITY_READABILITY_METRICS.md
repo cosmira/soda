@@ -243,3 +243,22 @@ v1** variant. It reports each contribution and retains independent nested callab
 scopes. It is not a replacement for the existing standard or a claim of identical
 Sonar scores. See [Research Metrics](RESEARCH_METRICS.md) for the exact formula,
 PHP boundaries, limitations and corpus protocol.
+
+### no_repeated_compound_conditions
+
+Enabled by default: `new NoRepeatedCompoundConditions(minMethods: 3)` reports
+an identical compound condition in at least three distinct methods of one class.
+The diagnostic maximum is 2 methods with the default minimum of 3. Values below
+2 for `minMethods` throw `InvalidArgumentException`.
+
+For example, three methods containing `if ($this->active && ! $this->suspended)`
+can call a private `canRenew()` predicate when all three express the same decision.
+The predicate must be reevaluated at each call, not cached across state changes.
+
+Only declared instance-property reads, literals, `!`, `===`, `!==`, `&&` and `||`
+are recognized. Formatting is ignored; operand order and literal values remain
+significant. Calls, nested access, locals, inherited/trait state, magic property
+access and hooks are excluded. Conditions inside nested callables belong to their
+own scope. Repetition within one method counts once. Independent decisions should
+not be merged merely because their expressions currently match.
+See the [RFC and corpus limitations](rfcs/explicit-behavior-rules.md).

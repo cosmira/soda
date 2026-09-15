@@ -1,0 +1,1218 @@
+{
+  "reviewer": "One assistant; no independent panel or participation by the named developers.",
+  "selection": "manifest.json and select_review.py",
+  "reviews": [
+    {
+      "rule": "no_trivial_factories",
+      "file": "src/Rules/Naming/MethodNameLength.php",
+      "class": "Cosmira\\Soda\\Rules\\Naming\\MethodNameLength",
+      "line": 14,
+      "source_sha256": "a6de06a0c8774dc41a0ebe49b370e5e8933a4feebbd329826b15754d03b5e216",
+      "declaration": "final class MethodNameLength extends Check",
+      "project": "soda",
+      "partition": "discovery",
+      "review_id": 0,
+      "method_locations": [
+        {
+          "method": "checkFile",
+          "line": 44
+        },
+        {
+          "method": "violationsForName",
+          "line": 59
+        }
+      ],
+      "excerpt": "    public function checkFile(FileFacts $file): iterable\n    {\n        foreach ((new NodeFinder)->findInstanceOf($file->nodes, ClassMethod::class) as $node) {\n            $isMigrationHook = LaravelMigrationConvention::isHook($node);\n            if (! $isMigrationHook) {\n                yield from $this->violationsForName($file->path, $node->name->toString(), $node->getLine());\n            }\n        }\n    }",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "A rule subclass scans methods and constructs diagnostics.",
+      "dhh_lens": "Do not remove the named rule contract.",
+      "otwell_lens": "Keep the check and its diagnostic creation together.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "A rule subclass scans methods and constructs diagnostics."
+    },
+    {
+      "rule": "no_trivial_factories",
+      "file": "src/Rules/Usage/NoNumericArrayIndex.php",
+      "class": "Cosmira\\Soda\\Rules\\Usage\\NoNumericArrayIndex",
+      "line": 20,
+      "source_sha256": "b937297079c5a9e398804576835ef6af3a219e2c545213edb44f29e142c9455b",
+      "declaration": "final class NoNumericArrayIndex extends Check",
+      "project": "soda",
+      "partition": "discovery",
+      "review_id": 1,
+      "method_locations": [
+        {
+          "method": "checkFile",
+          "line": 50
+        }
+      ],
+      "excerpt": "    public function checkFile(FileFacts $facts): iterable\n    {\n        foreach ((new NodeFinder)->findInstanceOf($facts->nodes, ArrayDimFetch::class) as $fetch) {\n            $dimension = $fetch->dim;\n            $isNumeric = $dimension instanceof Int_ || ($dimension instanceof UnaryMinus && $dimension->expr instanceof Int_);\n            $shouldReport = $isNumeric && $fetch->getStartLine() > 0;\n            if ($shouldReport) {\n                yield new Violation(rule: $this->id(), file: $facts->path, value: 1, threshold: 0, line: $fetch->getStartLine(), message: self::MESSAGE);\n            }",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "AST filtering and a diagnostic with derived location; extends Check.",
+      "dhh_lens": "The rule is a useful named operation.",
+      "otwell_lens": "Construction follows an actual detection decision.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "AST filtering and a diagnostic with derived location; extends Check."
+    },
+    {
+      "rule": "no_trivial_factories",
+      "file": "src/Rules/Architecture/NoRuntimeCodeEvaluation.php",
+      "class": "Cosmira\\Soda\\Rules\\Architecture\\NoRuntimeCodeEvaluation",
+      "line": 14,
+      "source_sha256": "4299a74ae7d7a9fb4e53d2fc31107bc7d4370d1eff147690cf5cdfaff025935c",
+      "declaration": "final class NoRuntimeCodeEvaluation extends Check",
+      "project": "soda",
+      "partition": "discovery",
+      "review_id": 2,
+      "method_locations": [
+        {
+          "method": "checkFile",
+          "line": 21
+        }
+      ],
+      "excerpt": "    public function checkFile(FileFacts $file): iterable\n    {\n        $nodes = (new NodeFinder)->find($file->nodes, fn (Node $node): bool => $node instanceof Expr\\Eval_);\n\n        foreach ($nodes as $node) {\n            yield new Violation(\n                rule: $this->id(),\n                file: $file->path,\n                value: 1,",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "Scanning eval nodes produces diagnostics; not a create-only class.",
+      "dhh_lens": "An explicit rule entry point has a concrete purpose.",
+      "otwell_lens": "Removing it would obscure the supported check.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "Scanning eval nodes produces diagnostics; not a create-only class."
+    },
+    {
+      "rule": "no_trivial_factories",
+      "file": "src/Rules/Architecture/NoBehaviorMagicMethods.php",
+      "class": "Cosmira\\Soda\\Rules\\Architecture\\NoBehaviorMagicMethods",
+      "line": 14,
+      "source_sha256": "94aadade03ecab5f11af91477cbf118b944ca8dc3babb127bc5fe9477ef597c0",
+      "declaration": "final class NoBehaviorMagicMethods extends Check",
+      "project": "soda",
+      "partition": "discovery",
+      "review_id": 3,
+      "method_locations": [
+        {
+          "method": "checkFile",
+          "line": 21
+        }
+      ],
+      "excerpt": "    public function checkFile(FileFacts $file): iterable\n    {\n        $nodes = (new NodeFinder)->find($file->nodes, fn (Node $node): bool => $this->isBehaviorMagicMethod($node));\n\n        foreach ($nodes as $node) {\n            yield new Violation(\n                rule: $this->id(),\n                file: $file->path,\n                value: 1,",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "Scanning magic methods produces diagnostics; not a factory.",
+      "dhh_lens": "Keep the rule boundary.",
+      "otwell_lens": "The constructor call is part of useful analysis.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "Scanning magic methods produces diagnostics; not a factory."
+    },
+    {
+      "rule": "no_trivial_factories",
+      "file": "src/Config/SodaConfig.php",
+      "class": "Cosmira\\Soda\\Config\\SodaConfig",
+      "line": 25,
+      "source_sha256": "3d34e37edbe9ceba5868cfdb74dea7ce5e3efc281bbde415a66524299a48d62a",
+      "declaration": "final class SodaConfig",
+      "project": "soda",
+      "partition": "discovery",
+      "review_id": 4,
+      "method_locations": [
+        {
+          "method": "rule",
+          "line": 46
+        },
+        {
+          "method": "with",
+          "line": 102
+        }
+      ],
+      "excerpt": "\n        if (! $classExists) {\n            throw new \\InvalidArgumentException(sprintf('Rule class not found: %s', $ruleClass));\n        }\n\n        $isA = is_a($ruleClass, Check::class, true);\n\n        if (! $isA) {\n            throw new \\InvalidArgumentException(",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "Validates class names, creates a selected type and stores rule instances.",
+      "dhh_lens": "A fluent configuration object expresses a task.",
+      "otwell_lens": "Validation and state make this more than forwarding.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "Validates class names, creates a selected type and stores rule instances."
+    },
+    {
+      "rule": "no_trivial_factories",
+      "file": "src/Monolog/Handler/CouchDBHandler.php",
+      "class": "Monolog\\Handler\\CouchDBHandler",
+      "line": 38,
+      "source_sha256": "83714f3c42b91ad63ac41cdcae9490eb252b145668a366411c5e9dd22208e011",
+      "declaration": "class CouchDBHandler extends AbstractProcessingHandler",
+      "project": "monolog",
+      "partition": "discovery",
+      "review_id": 5,
+      "method_locations": [
+        {
+          "method": "write",
+          "line": 67
+        },
+        {
+          "method": "getDefaultFormatter",
+          "line": 93
+        }
+      ],
+      "excerpt": "\n        if (false === @file_get_contents($url, false, $context)) {\n            throw new \\RuntimeException(sprintf('Could not connect to %s', $url));\n        }\n    }",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "An inherited handler selects JsonFormatter options in a protected override.",
+      "dhh_lens": "An override is a meaningful integration point.",
+      "otwell_lens": "Selected formatter defaults encode a current need.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "An inherited handler selects JsonFormatter options in a protected override."
+    },
+    {
+      "rule": "no_trivial_factories",
+      "file": "src/Monolog/Handler/NewRelicHandler.php",
+      "class": "Monolog\\Handler\\NewRelicHandler",
+      "line": 29,
+      "source_sha256": "12026d01e146b0524222d81b5bc2323e01115825bd1d5d72de8b9e77439f7f48",
+      "declaration": "class NewRelicHandler extends AbstractProcessingHandler",
+      "project": "monolog",
+      "partition": "discovery",
+      "review_id": 6,
+      "method_locations": [
+        {
+          "method": "write",
+          "line": 60
+        },
+        {
+          "method": "getDefaultFormatter",
+          "line": 176
+        }
+      ],
+      "excerpt": "    {\n        if (!$this->isNewRelicEnabled()) {\n            throw new MissingExtensionException('The newrelic PHP extension is required to use the NewRelicHandler');\n        }\n\n        if (null !== ($appName = $this->getAppName($record->context))) {\n            $this->setNewRelicAppName($appName);\n        }\n",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "An inherited handler provides a formatter and performs New Relic integration.",
+      "dhh_lens": "One-line formatter creation belongs to a useful handler.",
+      "otwell_lens": "Do not delete a protocol default to reduce object counts.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "An inherited handler provides a formatter and performs New Relic integration."
+    },
+    {
+      "rule": "no_trivial_factories",
+      "file": "src/Monolog/Handler/SendGridHandler.php",
+      "class": "Monolog\\Handler\\SendGridHandler",
+      "line": 22,
+      "source_sha256": "04c2060ead6352648568f4a0f2e4935a6affe9dc7a12af218bba41aa1c3cbdef",
+      "declaration": "class SendGridHandler extends MailHandler",
+      "project": "monolog",
+      "partition": "discovery",
+      "review_id": 7,
+      "method_locations": [
+        {
+          "method": "__construct",
+          "line": 41
+        }
+      ],
+      "excerpt": "    ) {\n        if (!\\extension_loaded('curl')) {\n            throw new MissingExtensionException('The curl extension is needed to use the SendGridHandler');\n        }\n\n        $this->to = (array) $to;\n        // @phpstan-ignore property.deprecated\n        $this->apiUser = $apiUser ?? '';\n        parent::__construct($level, $bubble);",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "Constructor checks extension availability and initializes handler state.",
+      "dhh_lens": "State and invariant have a concrete owner.",
+      "otwell_lens": "Failure handling is real behavior.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "Constructor checks extension availability and initializes handler state."
+    },
+    {
+      "rule": "no_trivial_factories",
+      "file": "src/Monolog/Handler/Curl/Util.php",
+      "class": "Monolog\\Handler\\Curl\\Util",
+      "line": 21,
+      "source_sha256": "48386bccc6fe95dc2fc88db9842f558f220c064b22d102a78b0c39f5c0230b40",
+      "declaration": "final class Util",
+      "project": "monolog",
+      "partition": "discovery",
+      "review_id": 8,
+      "method_locations": [
+        {
+          "method": "execute",
+          "line": 40
+        }
+      ],
+      "excerpt": "                    $curlError = curl_error($ch);\n\n                    throw new \\RuntimeException(sprintf('Curl error (code %d): %s', $curlErrno, $curlError));\n                }\n                continue;\n            }\n\n            return $curlResponse;\n        }",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "Static curl execution loop creates an exception after retry failure.",
+      "dhh_lens": "An operational helper is not a transparent factory.",
+      "otwell_lens": "Retries and error reporting are current requirements.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "Static curl execution loop creates an exception after retry failure."
+    },
+    {
+      "rule": "no_trivial_factories",
+      "file": "src/Monolog/Handler/ErrorLogHandler.php",
+      "class": "Monolog\\Handler\\ErrorLogHandler",
+      "line": 24,
+      "source_sha256": "3a23502dfa532642f2efc28a90339f58570213af7e5f37deafa765db4db740a9",
+      "declaration": "class ErrorLogHandler extends AbstractProcessingHandler",
+      "project": "monolog",
+      "partition": "discovery",
+      "review_id": 9,
+      "method_locations": [
+        {
+          "method": "__construct",
+          "line": 39
+        },
+        {
+          "method": "getDefaultFormatter",
+          "line": 67
+        },
+        {
+          "method": "write",
+          "line": 75
+        }
+      ],
+      "excerpt": "            $message = sprintf('The given message type \"%s\" is not supported', print_r($messageType, true));\n\n            throw new \\InvalidArgumentException($message);\n        }\n\n        $this->messageType = $messageType;\n        $this->expandNewlines = $expandNewlines;\n    }",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "Handler selects formatter options and validates message types.",
+      "dhh_lens": "The protected formatter override expresses integration behavior.",
+      "otwell_lens": "Removing it loses useful defaults.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "Handler selects formatter options and validates message types."
+    },
+    {
+      "rule": "no_trivial_factories",
+      "file": "./Formatter/OutputFormatterStyle.php",
+      "class": "Symfony\\Component\\Console\\Formatter\\OutputFormatterStyle",
+      "line": 21,
+      "source_sha256": "bf05463541df4405b92ad23cfb02f09d4f272273425e888b819ed134dfbee5da",
+      "declaration": "class OutputFormatterStyle implements OutputFormatterStyleInterface",
+      "project": "symfony-console",
+      "partition": "held-out",
+      "review_id": 10,
+      "method_locations": [
+        {
+          "method": "__construct",
+          "line": 36
+        },
+        {
+          "method": "setForeground",
+          "line": 41
+        },
+        {
+          "method": "setBackground",
+          "line": 46
+        },
+        {
+          "method": "setOption",
+          "line": 56
+        },
+        {
+          "method": "unsetOption",
+          "line": 62
+        },
+        {
+          "method": "setOptions",
+          "line": 72
+        }
+      ],
+      "excerpt": "    public function __construct(?string $foreground = null, ?string $background = null, array $options = [])\n    {\n        $this->color = new Color($this->foreground = $foreground ?: '', $this->background = $background ?: '', $this->options = $options);\n    }",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "OutputFormatterStyle rebuilds Color from changed state and implements a contract.",
+      "dhh_lens": "Stateful formatting is a coherent object responsibility.",
+      "otwell_lens": "Updates transform arguments and retain state.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "OutputFormatterStyle rebuilds Color from changed state and implements a contract."
+    },
+    {
+      "rule": "no_trivial_factories",
+      "file": "./CommandChain.php",
+      "class": "Symfony\\Component\\Console\\CommandChain",
+      "line": 26,
+      "source_sha256": "5abc4f9fdacdbba9aca0838845d9abbe7603e79d4f7547f5161d623d9a83376e",
+      "declaration": "final class CommandChain",
+      "project": "symfony-console",
+      "partition": "held-out",
+      "review_id": 11,
+      "method_locations": [
+        {
+          "method": "getInvokable",
+          "line": 91
+        }
+      ],
+      "excerpt": "\n        if ($code instanceof \\Closure) {\n            $code = new \\ReflectionFunction($code)->getClosureThis();\n        } elseif (\\is_array($code)) {\n            $code = $code[0];\n        }\n\n        return \\is_object($code) ? $code : null;\n    }",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "Private static helper inspects closures using ReflectionFunction.",
+      "dhh_lens": "A local helper avoids a separate collaborator.",
+      "otwell_lens": "Reflection result extraction is actual work.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "Private static helper inspects closures using ReflectionFunction."
+    },
+    {
+      "rule": "no_trivial_factories",
+      "file": "./Helper/DescriptorHelper.php",
+      "class": "Symfony\\Component\\Console\\Helper\\DescriptorHelper",
+      "line": 28,
+      "source_sha256": "be7c0087f4b019952b39b43437deeba76b1f217cf28dcb252a35631ac3cf22c2",
+      "declaration": "class DescriptorHelper extends Helper",
+      "project": "symfony-console",
+      "partition": "held-out",
+      "review_id": 12,
+      "method_locations": [
+        {
+          "method": "__construct",
+          "line": 35
+        },
+        {
+          "method": "describe",
+          "line": 55
+        }
+      ],
+      "excerpt": "    {\n        $this\n            ->register('txt', new TextDescriptor())\n            ->register('xml', new XmlDescriptor())\n            ->register('json', new JsonDescriptor())\n            ->register('md', new MarkdownDescriptor())\n            ->register('rst', new ReStructuredTextDescriptor())\n        ;\n    }",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "DescriptorHelper registers several named formats and rejects unsupported ones.",
+      "dhh_lens": "Registry entries express supported formats.",
+      "otwell_lens": "Automatic discovery would change the supported set.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "DescriptorHelper registers several named formats and rejects unsupported ones."
+    },
+    {
+      "rule": "no_trivial_factories",
+      "file": "./Question/ChoiceQuestion.php",
+      "class": "Symfony\\Component\\Console\\Question\\ChoiceQuestion",
+      "line": 21,
+      "source_sha256": "a0b033593162604a8648d0240ff6f6c8859da449e7dd03c8ad4ec7f25a28e7a9",
+      "declaration": "class ChoiceQuestion extends Question",
+      "project": "symfony-console",
+      "partition": "held-out",
+      "review_id": 13,
+      "method_locations": [
+        {
+          "method": "__construct",
+          "line": 32
+        },
+        {
+          "method": "getDefaultValidator",
+          "line": 113
+        }
+      ],
+      "excerpt": "    ) {\n        if (!$choices) {\n            throw new \\LogicException('Choice question must have at least 1 choice available.');\n        }\n\n        parent::__construct($question, $default);\n\n        $this->setValidator($this->getDefaultValidator());\n        $this->setAutocompleterValues($choices);",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "ChoiceQuestion validates inputs and constructs exceptions inside its validator.",
+      "dhh_lens": "A question owns its validation behavior.",
+      "otwell_lens": "Error construction is not factory ceremony.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "ChoiceQuestion validates inputs and constructs exceptions inside its validator."
+    },
+    {
+      "rule": "no_trivial_factories",
+      "file": "./Command/TraceableCommand.php",
+      "class": "Symfony\\Component\\Console\\Command\\TraceableCommand",
+      "line": 30,
+      "source_sha256": "ea06876d67bbba572a2932de65b4be223e6cc252ac857980c1fb854d1ba180cb",
+      "declaration": "final class TraceableCommand extends Command",
+      "project": "symfony-console",
+      "partition": "held-out",
+      "review_id": 14,
+      "method_locations": [
+        {
+          "method": "interact",
+          "line": 324
+        }
+      ],
+      "excerpt": "    protected function interact(InputInterface $input, OutputInterface $output): void\n    {\n        if (!$this->isInteractive = Command::class !== (new \\ReflectionMethod($this->command, 'interact'))->class) {\n            return;\n        }\n\n        $event = $this->stopwatch->start($this->getName().'.interact', 'command');\n\n        $this->command->interact($input, $output);",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "TraceableCommand uses ReflectionMethod to select interactive delegation.",
+      "dhh_lens": "The adapter has an observable tracing role.",
+      "otwell_lens": "Conditional delegation is not unchanged construction.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "TraceableCommand uses ReflectionMethod to select interactive delegation."
+    },
+    {
+      "rule": "no_trivial_factories",
+      "file": "src/Auth/DigestAuth.php",
+      "class": "GuzzleHttp\\Auth\\DigestAuth",
+      "line": 14,
+      "source_sha256": "fe0a51ef8831c30af3c887f7933e6bf86807efcac636e50cc1f144f0d3d8a21c",
+      "declaration": "final class DigestAuth",
+      "project": "guzzle",
+      "partition": "held-out",
+      "review_id": 15,
+      "method_locations": [
+        {
+          "method": "createChallenge",
+          "line": 263
+        }
+      ],
+      "excerpt": "        }\n\n        $challenge = new DigestChallenge();\n        $challenge->algorithm = $algorithm;\n        $challenge->realm = $params['realm'] ?? '';\n        $challenge->nonce = $params['nonce'];\n        $challenge->opaque = $params['opaque'] ?? null;\n        if (isset($params['domain'])) {\n            $domainAreas = \\preg_split('/[ \\t]+/', $params['domain']);",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "DigestAuth validates challenge parameters and populates DigestChallenge.",
+      "dhh_lens": "The named operation interprets a protocol.",
+      "otwell_lens": "Validation and mapping justify the helper.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "DigestAuth validates challenge parameters and populates DigestChallenge."
+    },
+    {
+      "rule": "no_trivial_factories",
+      "file": "src/Handler/StreamTlsSessionCache.php",
+      "class": "GuzzleHttp\\Handler\\StreamTlsSessionCache",
+      "line": 32,
+      "source_sha256": "236edc12dad7f036bc83c0c670b492cc1b12b9c05f4a404145e4ff24d039244d",
+      "declaration": "final class StreamTlsSessionCache",
+      "project": "guzzle",
+      "partition": "held-out",
+      "review_id": 16,
+      "method_locations": [
+        {
+          "method": "__construct",
+          "line": 124
+        },
+        {
+          "method": "canonicalHost",
+          "line": 436
+        },
+        {
+          "method": "canonicalScalar",
+          "line": 531
+        },
+        {
+          "method": "canonicalPeerFingerprint",
+          "line": 561
+        }
+      ],
+      "excerpt": "    {\n        if ($maxKeys < 1) {\n            throw new InvalidArgumentException('maxKeys must be a positive integer.');\n        }\n\n        $this->maxKeys = $maxKeys;\n    }",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "TLS cache validates capacity, hosts and fingerprint data.",
+      "dhh_lens": "Invariants justify the cache object.",
+      "otwell_lens": "Exception creation protects current input contracts.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "TLS cache validates capacity, hosts and fingerprint data."
+    },
+    {
+      "rule": "no_trivial_factories",
+      "file": "src/Handler/CurlVersion.php",
+      "class": "GuzzleHttp\\Handler\\CurlVersion",
+      "line": 14,
+      "source_sha256": "2bb10c42bd658c6ce623ea2cae5c24f3cd9df29055abe3f775f96ca8ed489356",
+      "declaration": "final class CurlVersion",
+      "project": "guzzle",
+      "partition": "held-out",
+      "review_id": 17,
+      "method_locations": [
+        {
+          "method": "ensureHandlerSharingSupported",
+          "line": 225
+        },
+        {
+          "method": "ensureSslSessionSharingSupported",
+          "line": 245
+        },
+        {
+          "method": "ensureConnectionSharingSupported",
+          "line": 263
+        },
+        {
+          "method": "ensureSupported",
+          "line": 344
+        }
+      ],
+      "excerpt": "    {\n        if (!self::supportsHandlerSharing()) {\n            throw new InvalidArgumentException(\\sprintf(\n                'The \"transport_sharing\" option requires libcurl %s or higher for cURL share handles.',\n                self::HANDLER_SHARING_VERSION\n            ));\n        }\n    }",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "CurlVersion exposes capability checks that throw contextual exceptions.",
+      "dhh_lens": "Named checks express platform capabilities.",
+      "otwell_lens": "Different failure cases carry useful diagnostics.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "CurlVersion exposes capability checks that throw contextual exceptions."
+    },
+    {
+      "rule": "no_trivial_factories",
+      "file": "src/RedirectMiddleware.php",
+      "class": "GuzzleHttp\\RedirectMiddleware",
+      "line": 28,
+      "source_sha256": "6b3c7ba9681e9fdf5440a3f919c7d2c76f1fd8ac8994e44541496557b404f20b",
+      "declaration": "class RedirectMiddleware",
+      "project": "guzzle",
+      "partition": "held-out",
+      "review_id": 18,
+      "method_locations": [
+        {
+          "method": "__invoke",
+          "line": 63
+        },
+        {
+          "method": "guardMax",
+          "line": 192
+        },
+        {
+          "method": "modifyRequest",
+          "line": 210
+        },
+        {
+          "method": "getRedirectRequestModifiers",
+          "line": 290
+        },
+        {
+          "method": "redirectUri",
+          "line": 330
+        }
+      ],
+      "excerpt": "            $options['allow_redirects'] = self::DEFAULT_SETTINGS;\n        } elseif (!\\is_array($options['allow_redirects'])) {\n            throw new InvalidArgumentException('allow_redirects must be true, false, or array');\n        } else {\n            // Merge the default settings with the provided settings\n            $options['allow_redirects'] += self::DEFAULT_SETTINGS;\n        }\n\n        if (empty($options['allow_redirects']['max'])) {",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "RedirectMiddleware validates options and enforces redirect limits.",
+      "dhh_lens": "Middleware is a real request boundary.",
+      "otwell_lens": "Policy and failure handling are observable behavior.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "RedirectMiddleware validates options and enforces redirect limits."
+    },
+    {
+      "rule": "no_trivial_factories",
+      "file": "src/Handler/ProxyEnv.php",
+      "class": "GuzzleHttp\\Handler\\ProxyEnv",
+      "line": 20,
+      "source_sha256": "3e6daf1767691e8a5aadb595642407cd051c794841d66ebcfd29d79183a87e55",
+      "declaration": "final class ProxyEnv",
+      "project": "guzzle",
+      "partition": "held-out",
+      "review_id": 19,
+      "method_locations": [
+        {
+          "method": "splitNoProxy",
+          "line": 120
+        }
+      ],
+      "excerpt": "\n        if ($split === false) {\n            throw new \\RuntimeException('Unable to split the no_proxy value: '.\\preg_last_error_msg());\n        }\n\n        foreach ($split as $entry) {\n            if ($entry !== '') {\n                $entries[] = $entry;\n            }",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "ProxyEnv throws when splitting no_proxy fails.",
+      "dhh_lens": "A parser helper has a concrete purpose.",
+      "otwell_lens": "Exception construction belongs to error handling.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "ProxyEnv throws when splitting no_proxy fails."
+    },
+    {
+      "rule": "no_repeated_compound_conditions",
+      "file": "src/Rules/Architecture/NoRuntimeHooks.php",
+      "class": "Cosmira\\Soda\\Rules\\Architecture\\NoRuntimeHooks",
+      "line": 15,
+      "source_sha256": "741ca63ba52e9ebf8981eaef5525736d782a0e4596a33f91aefb2ff8b51a553a",
+      "declaration": "final class NoRuntimeHooks extends Check",
+      "project": "soda",
+      "partition": "discovery",
+      "review_id": 20,
+      "method_locations": [
+        {
+          "method": "checkFile",
+          "line": 22
+        }
+      ],
+      "excerpt": "    public function checkFile(FileFacts $file): iterable\n    {\n        $nodes = (new NodeFinder)->find($file->nodes, fn (Node $node): bool => $node instanceof Expr\\FuncCall && $node->name instanceof Name\n                && in_array(strtolower($node->name->toString()), ['register_shutdown_function', 'set_error_handler'], true));\n\n        foreach ($nodes as $node) {\n            yield new Violation(\n                rule: $this->id(),\n                file: $file->path,",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "Condition is inside a callback, uses instanceof and calls; class extends Check.",
+      "dhh_lens": "Keep AST matching with its rule.",
+      "otwell_lens": "Do not infer shared domain predicates from callback syntax.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "Condition is inside a callback, uses instanceof and calls; class extends Check."
+    },
+    {
+      "rule": "no_repeated_compound_conditions",
+      "file": "src/Config/FnmatchPathExclusion.php",
+      "class": "Cosmira\\Soda\\Config\\FnmatchPathExclusion",
+      "line": 12,
+      "source_sha256": "b93f183cd4645ea9471263370f1ddc294d9d204dc759e7a03902af9b81225518",
+      "declaration": "final readonly class FnmatchPathExclusion",
+      "project": "soda",
+      "partition": "discovery",
+      "review_id": 21,
+      "method_locations": [
+        {
+          "method": "isResolvedPathUnderPrefix",
+          "line": 66
+        },
+        {
+          "method": "resolvedPath",
+          "line": 81
+        }
+      ],
+      "excerpt": "        $path = rtrim($resolvedFile, '/');\n\n        return $path === $root || str_starts_with($path, $root.'/');\n    }",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "Conditions use local paths and str_starts_with; one is a return expression.",
+      "dhh_lens": "A local path helper already names the operation.",
+      "otwell_lens": "Local values and calls are outside the narrow detector.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "Conditions use local paths and str_starts_with; one is a return expression."
+    },
+    {
+      "rule": "no_repeated_compound_conditions",
+      "file": "src/Rules/Architecture/NoNativeDeserialization.php",
+      "class": "Cosmira\\Soda\\Rules\\Architecture\\NoNativeDeserialization",
+      "line": 15,
+      "source_sha256": "1a905cc329718fd9c07bf324f41f07264fc9f68e01a2067add89c72cfb939092",
+      "declaration": "final class NoNativeDeserialization extends Check",
+      "project": "soda",
+      "partition": "discovery",
+      "review_id": 22,
+      "method_locations": [
+        {
+          "method": "checkFile",
+          "line": 22
+        }
+      ],
+      "excerpt": "    public function checkFile(FileFacts $file): iterable\n    {\n        $nodes = (new NodeFinder)->find($file->nodes, fn (Node $node): bool => $node instanceof Expr\\FuncCall && $node->name instanceof Name\n                && strtolower($node->name->toString()) === 'unserialize');\n\n        foreach ($nodes as $node) {\n            yield new Violation(\n                rule: $this->id(),\n                file: $file->path,",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "Predicate is a nested callback over a node; class extends Check.",
+      "dhh_lens": "A rule callback is a useful local expression.",
+      "otwell_lens": "Extraction would not consolidate an owned state decision.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "Predicate is a nested callback over a node; class extends Check."
+    },
+    {
+      "rule": "no_repeated_compound_conditions",
+      "file": "src/Rules/Usage/ListOnlyArrayCollectingVisitor.php",
+      "class": "Cosmira\\Soda\\Rules\\Usage\\ListOnlyArrayCollectingVisitor",
+      "line": 18,
+      "source_sha256": "c5e6c9c6eb7417109eaa45b8fe5e310b3b83133efd6a271a09151ffcf9e553c7",
+      "declaration": "final class ListOnlyArrayCollectingVisitor extends NodeVisitorAbstract",
+      "project": "soda",
+      "partition": "discovery",
+      "review_id": 23,
+      "method_locations": [
+        {
+          "method": "captureArrayDimFetch",
+          "line": 61
+        }
+      ],
+      "excerpt": "    {\n        $isNested = $fetch->var instanceof ArrayDimFetch;\n        $isStrictKey = $this->strictness === ListOnlyArrayStrictness::Strict && $fetch->dim instanceof String_;\n        if ($isNested || $isStrictKey) {\n            $this->remember($fetch->getStartLine());\n        }\n    }",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "Visitor extends NodeVisitorAbstract; conditions use a node and local booleans.",
+      "dhh_lens": "The visitor boundary is intentional.",
+      "otwell_lens": "No repeated own-state predicate is established.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "Visitor extends NodeVisitorAbstract; conditions use a node and local booleans."
+    },
+    {
+      "rule": "no_repeated_compound_conditions",
+      "file": "src/Rules/Architecture/NoStaticMutableProperties.php",
+      "class": "Cosmira\\Soda\\Rules\\Architecture\\NoStaticMutableProperties",
+      "line": 14,
+      "source_sha256": "4a803a9c609c6cf88bd3f3277a1b02060972c3cd035fb1fb0aadad657011cd2f",
+      "declaration": "final class NoStaticMutableProperties extends Check",
+      "project": "soda",
+      "partition": "discovery",
+      "review_id": 24,
+      "method_locations": [
+        {
+          "method": "checkFile",
+          "line": 21
+        }
+      ],
+      "excerpt": "    public function checkFile(FileFacts $file): iterable\n    {\n        $nodes = (new NodeFinder)->find($file->nodes, fn (Node $node): bool => ($node instanceof Stmt\\Property && $node->isStatic()) || $node instanceof Stmt\\Static_);\n\n        foreach ($nodes as $node) {\n            yield new Violation(\n                rule: $this->id(),\n                file: $file->path,\n                value: 1,",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "Predicate is in an arrow function, with instanceof and a method call.",
+      "dhh_lens": "Local AST predicate belongs with the check.",
+      "otwell_lens": "Avoid forcing another method for callback-only conditions.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "Predicate is in an arrow function, with instanceof and a method call."
+    },
+    {
+      "rule": "no_repeated_compound_conditions",
+      "file": "src/Monolog/Formatter/MongoDBFormatter.php",
+      "class": "Monolog\\Formatter\\MongoDBFormatter",
+      "line": 24,
+      "source_sha256": "954476e61bec24fa1cea19031bf2cb8e14dd52fe9e6151bc66ed9d26f5a96226",
+      "declaration": "class MongoDBFormatter implements FormatterInterface",
+      "project": "monolog",
+      "partition": "discovery",
+      "review_id": 25,
+      "method_locations": [
+        {
+          "method": "formatArray",
+          "line": 71
+        }
+      ],
+      "excerpt": "    protected function formatArray(array $array, int $nestingLevel = 0)\n    {\n        if ($this->maxNestingLevel > 0 && $nestingLevel > $this->maxNestingLevel) {\n            return '[...]';\n        }\n\n        foreach ($array as $name => $value) {\n            if ($value instanceof \\DateTimeInterface) {\n                $array[$name] = $this->formatDate($value, $nestingLevel + 1);",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "Nesting limit uses a parameter and comparison; object check uses is_object.",
+      "dhh_lens": "Formatting remains with its data traversal.",
+      "otwell_lens": "Different input-dependent decisions should not be merged.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "Nesting limit uses a parameter and comparison; object check uses is_object."
+    },
+    {
+      "rule": "no_repeated_compound_conditions",
+      "file": "src/Monolog/Handler/MailHandler.php",
+      "class": "Monolog\\Handler\\MailHandler",
+      "line": 23,
+      "source_sha256": "175982c1551b55828fd948f501636fbce2ebf8751041c3929e3732478e6476a3",
+      "declaration": "abstract class MailHandler extends AbstractProcessingHandler",
+      "project": "monolog",
+      "partition": "discovery",
+      "review_id": 26,
+      "method_locations": [
+        {
+          "method": "getHighestRecord",
+          "line": 67
+        }
+      ],
+      "excerpt": "        $highestRecord = null;\n        foreach ($records as $record) {\n            if ($highestRecord === null || $record->level->isHigherThan($highestRecord->level)) {\n                $highestRecord = $record;\n            }\n        }\n\n        return $highestRecord;\n    }",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "Inherited handler chooses a highest record using local values and calls.",
+      "dhh_lens": "Record selection is a meaningful local operation.",
+      "otwell_lens": "No repeated owned-state decision is present.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "Inherited handler chooses a highest record using local values and calls."
+    },
+    {
+      "rule": "no_repeated_compound_conditions",
+      "file": "src/Monolog/Formatter/LineFormatter.php",
+      "class": "Monolog\\Formatter\\LineFormatter",
+      "line": 26,
+      "source_sha256": "090d4517489f412e246a82a99135c03e944c0cbc8ed1804b93c5ff126d0bbc98",
+      "declaration": "class LineFormatter extends NormalizerFormatter",
+      "project": "monolog",
+      "partition": "discovery",
+      "review_id": 27,
+      "method_locations": [
+        {
+          "method": "convertToString",
+          "line": 224
+        },
+        {
+          "method": "replaceNewlines",
+          "line": 237
+        },
+        {
+          "method": "formatException",
+          "line": 255
+        },
+        {
+          "method": "stacktracesParserCustom",
+          "line": 313
+        }
+      ],
+      "excerpt": "    protected function convertToString($data): string\n    {\n        if (null === $data || \\is_bool($data)) {\n            return var_export($data, true);\n        }\n\n        if (\\is_scalar($data)) {\n            return (string) $data;\n        }",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "Inherited formatter has distinct scalar, newline and exception checks.",
+      "dhh_lens": "These are related formatting concerns.",
+      "otwell_lens": "Coincidental boolean syntax does not mean one decision.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "Inherited formatter has distinct scalar, newline and exception checks."
+    },
+    {
+      "rule": "no_repeated_compound_conditions",
+      "file": "src/Monolog/Formatter/JsonFormatter.php",
+      "class": "Monolog\\Formatter\\JsonFormatter",
+      "line": 25,
+      "source_sha256": "abc0553e21fdd0ec9fdacfbf4fbb50321be8111e2ac2abcff3bf7c9596d5ac1d",
+      "declaration": "class JsonFormatter extends NormalizerFormatter",
+      "project": "monolog",
+      "partition": "discovery",
+      "review_id": 28,
+      "method_locations": [
+        {
+          "method": "normalizeRecord",
+          "line": 106
+        },
+        {
+          "method": "normalize",
+          "line": 161
+        }
+      ],
+      "excerpt": "        $normalized = parent::normalizeRecord($record);\n\n        if (isset($normalized['context']) && $normalized['context'] === []) {\n            if ($this->ignoreEmptyContextAndExtra) {\n                unset($normalized['context']);\n            } else {\n                $normalized['context'] = new \\stdClass;\n            }\n        }",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "Inherited formatter checks array context and scalar input.",
+      "dhh_lens": "Preserve the formatting protocol.",
+      "otwell_lens": "Arrays and calls lie outside the supported vocabulary.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "Inherited formatter checks array context and scalar input."
+    },
+    {
+      "rule": "no_repeated_compound_conditions",
+      "file": "src/Monolog/Handler/FingersCrossedHandler.php",
+      "class": "Monolog\\Handler\\FingersCrossedHandler",
+      "line": 40,
+      "source_sha256": "4ae206acb6cc4630b8a1464fcfcde7dcd4c56ce15d6e17b45912248fdcb77bce",
+      "declaration": "class FingersCrossedHandler extends Handler implements ProcessableHandlerInterface, ResettableInterface, FormattableHandlerInterface",
+      "project": "monolog",
+      "partition": "discovery",
+      "review_id": 29,
+      "method_locations": [
+        {
+          "method": "handle",
+          "line": 125
+        }
+      ],
+      "excerpt": "        if ($this->buffering) {\n            $this->buffer[] = $record;\n            if ($this->bufferSize > 0 && \\count($this->buffer) > $this->bufferSize) {\n                array_shift($this->buffer);\n            }\n            if ($this->activationStrategy->isHandlerActivated($record)) {\n                $this->activate();\n            }\n        } else {",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "Inherited handler compares buffer size and count(buffer).",
+      "dhh_lens": "Buffer management belongs to the handler.",
+      "otwell_lens": "Runtime count and ordering need context.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "Inherited handler compares buffer size and count(buffer)."
+    },
+    {
+      "rule": "no_repeated_compound_conditions",
+      "file": "./Attribute/Interact.php",
+      "class": "Symfony\\Component\\Console\\Attribute\\Interact",
+      "line": 16,
+      "source_sha256": "2e369ba664abbdc03acba2a89976a2e6c9e1cd7c43774953b50ee9d2a6b19c08",
+      "declaration": "#[\\Attribute(\\Attribute::TARGET_METHOD)]",
+      "project": "symfony-console",
+      "partition": "held-out",
+      "review_id": 30,
+      "method_locations": [
+        {
+          "method": "tryFrom",
+          "line": 24
+        }
+      ],
+      "excerpt": "        }\n\n        if (!$method->isPublic() || $method->isStatic()) {\n            throw new LogicException(\\sprintf('The interactive method \"%s::%s()\" must be public and non-static.', $method->class, $method->getName()));\n        }\n\n        if ('__invoke' === $method->getName()) {\n            throw new LogicException(\\sprintf('The \"%s::__invoke()\" method cannot be used as an interactive method.', $method->class));\n        }",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "Reflection-method validation uses method calls and an external receiver.",
+      "dhh_lens": "The helper validates a specific callable contract.",
+      "otwell_lens": "No owned-state predicate is repeated.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "Reflection-method validation uses method calls and an external receiver."
+    },
+    {
+      "rule": "no_repeated_compound_conditions",
+      "file": "./Input/Input.php",
+      "class": "Symfony\\Component\\Console\\Input\\Input",
+      "line": 28,
+      "source_sha256": "1274307e4db1bed18de3eea23094e2d2fdbef8e0f13d8e158134741c9739d417",
+      "declaration": "abstract class Input implements RawInputInterface, StreamableInputInterface",
+      "project": "symfony-console",
+      "partition": "held-out",
+      "review_id": 31,
+      "method_locations": [
+        {
+          "method": "validate",
+          "line": 61
+        },
+        {
+          "method": "hasOption",
+          "line": 146
+        }
+      ],
+      "excerpt": "        $givenArguments = $this->arguments;\n\n        $missingArguments = array_filter(array_keys($definition->getArguments()), static fn ($argument) => !\\array_key_exists($argument, $givenArguments) && $definition->getArgument($argument)->isRequired());\n\n        if ($missingArguments) {\n            throw new RuntimeException(\\sprintf('Not enough arguments (missing: \"%s\").', implode(', ', $missingArguments)));\n        }\n    }",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "Validation uses a nested callback; hasOption calls methods on a nested receiver.",
+      "dhh_lens": "Input exposes an already named API.",
+      "otwell_lens": "Calls and nested receivers cannot be treated as pure property reads.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "Validation uses a nested callback; hasOption calls methods on a nested receiver."
+    },
+    {
+      "rule": "no_repeated_compound_conditions",
+      "file": "./Command/DumpCompletionCommand.php",
+      "class": "Symfony\\Component\\Console\\Command\\DumpCompletionCommand",
+      "line": 27,
+      "source_sha256": "da1da66d28451d4cc7fdfd0c10d7c141d0ac9195706c74829247ce49b2099096",
+      "declaration": "#[AsCommand(name: 'completion', description: 'Dump the shell completion script')]",
+      "project": "symfony-console",
+      "partition": "held-out",
+      "review_id": 32,
+      "method_locations": [
+        {
+          "method": "getSupportedShells",
+          "line": 134
+        }
+      ],
+      "excerpt": "\n        foreach (new \\DirectoryIterator(__DIR__.'/../Resources/') as $file) {\n            if (str_starts_with($file->getBasename(), 'completion.') && $file->isFile()) {\n                $shells[] = $file->getExtension();\n            }\n        }\n        sort($shells);\n\n        return $this->supportedShells = $shells;",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "Inherited command discovers shell resources using calls on directory entries.",
+      "dhh_lens": "The operation has an explicit command purpose.",
+      "otwell_lens": "No shared own-state condition is established.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "Inherited command discovers shell resources using calls on directory entries."
+    },
+    {
+      "rule": "no_repeated_compound_conditions",
+      "file": "./Question/ChoiceQuestion.php",
+      "class": "Symfony\\Component\\Console\\Question\\ChoiceQuestion",
+      "line": 21,
+      "source_sha256": "a0b033593162604a8648d0240ff6f6c8859da449e7dd03c8ad4ec7f25a28e7a9",
+      "declaration": "class ChoiceQuestion extends Question",
+      "project": "symfony-console",
+      "partition": "held-out",
+      "review_id": 33,
+      "method_locations": [
+        {
+          "method": "getDefaultValidator",
+          "line": 113
+        }
+      ],
+      "excerpt": "                        $result = $choices[$value];\n                    }\n                } elseif (false === $result && isset($choices[$value])) {\n                    $result = $value;\n                }\n\n                if (false === $result) {\n                    throw new InvalidArgumentException(\\sprintf($errorMessage, $value));\n                }",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "Inherited question uses local variables inside a returned closure.",
+      "dhh_lens": "Validation stays with the question.",
+      "otwell_lens": "Moving closure decisions would change captured-context handling.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "Inherited question uses local variables inside a returned closure."
+    },
+    {
+      "rule": "no_repeated_compound_conditions",
+      "file": "./Question/Question.php",
+      "class": "Symfony\\Component\\Console\\Question\\Question",
+      "line": 23,
+      "source_sha256": "4568f68304a28b8002ccfb1fb32b938ff0c43c743aa7ef6d8f933ac84184375d",
+      "declaration": "class Question",
+      "project": "symfony-console",
+      "partition": "held-out",
+      "review_id": 34,
+      "method_locations": [
+        {
+          "method": "setAutocompleterCallback",
+          "line": 217
+        },
+        {
+          "method": "setMaxAttempts",
+          "line": 261
+        }
+      ],
+      "excerpt": "    public function setAutocompleterCallback(?callable $callback): static\n    {\n        if ($this->hidden && null !== $callback) {\n            throw new LogicException('A hidden question cannot use the autocompleter.');\n        }\n\n        $this->autocompleterCallback = null === $callback ? null : $callback(...);\n\n        return $this;",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "Conditions combine $this->hidden with a callback parameter, or validate local attempts.",
+      "dhh_lens": "Each setter protects its own input contract.",
+      "otwell_lens": "These are different decisions, not one repeated state predicate.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "Conditions combine $this->hidden with a callback parameter, or validate local attempts."
+    },
+    {
+      "rule": "no_repeated_compound_conditions",
+      "file": "src/Utils.php",
+      "class": "GuzzleHttp\\Utils",
+      "line": 19,
+      "source_sha256": "fabaffe4c5e31ffc91c0bbb974205c668c75c8de37c197d1fb9b08a67d02a551",
+      "declaration": "final class Utils",
+      "project": "guzzle",
+      "partition": "held-out",
+      "review_id": 35,
+      "method_locations": [
+        {
+          "method": "chooseHandler",
+          "line": 73
+        },
+        {
+          "method": "createCurlHandler",
+          "line": 143
+        },
+        {
+          "method": "connectionCapOptions",
+          "line": 212
+        },
+        {
+          "method": "normalizeProtocols",
+          "line": 275
+        }
+      ],
+      "excerpt": "        $sharedPoolCapsSupported = CurlVersion::supportsSharedPoolConnectionCaps();\n\n        if ($connectionCapsRequired && !$sharedPoolCapsSupported && $sharingMode === TransportSharing::PERSISTENT_REQUIRE) {\n            throw new InvalidArgumentException(\\sprintf('The \"max_host_connections\" and \"max_total_connections\" options cannot be combined with required persistent transport sharing because applying connection caps to shared connection pools requires libcurl %s or higher.', CurlVersion::SHARED_POOL_CONNECTION_CAP_VERSION));\n        }\n\n        if ($connectionCapsRequired && !$sharedPoolCapsSupported && $sharingMode === TransportSharing::PERSISTENT_PREFER) {\n            // libcurl below 8.22.0 does not apply cURL multi connection caps to\n            // transfers using a shared connection pool (curl #22265), so the",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "Handler selection and protocol checks use locals, calls and constants.",
+      "dhh_lens": "Named selection helpers express platform policy.",
+      "otwell_lens": "Combining distinct capability checks would obscure their inputs.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "Handler selection and protocol checks use locals, calls and constants."
+    },
+    {
+      "rule": "no_repeated_compound_conditions",
+      "file": "src/Handler/StreamTlsSessionCache.php",
+      "class": "GuzzleHttp\\Handler\\StreamTlsSessionCache",
+      "line": 32,
+      "source_sha256": "236edc12dad7f036bc83c0c670b492cc1b12b9c05f4a404145e4ff24d039244d",
+      "declaration": "final class StreamTlsSessionCache",
+      "project": "guzzle",
+      "partition": "held-out",
+      "review_id": 36,
+      "method_locations": [
+        {
+          "method": "isSupported",
+          "line": 133
+        },
+        {
+          "method": "unsupportedContextReason",
+          "line": 145
+        },
+        {
+          "method": "credentialFingerprint",
+          "line": 241
+        },
+        {
+          "method": "isTls13",
+          "line": 349
+        },
+        {
+          "method": "expiryFromLifetimes",
+          "line": 389
+        },
+        {
+          "method": "canonicalPeerSslContext",
+          "line": 445
+        },
+        {
+          "method": "isCanonicalScalar",
+          "line": 495
+        },
+        {
+          "method": "isPeerFingerprint",
+          "line": 507
+        }
+      ],
+      "excerpt": "        // builds; the class check keeps unstable builds that do not carry\n        // the final API fail-closed.\n        return \\PHP_VERSION_ID >= 80600 && \\class_exists(Session::class, false);\n    }",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "TLS context and lifetime decisions depend on locals, arrays and function calls.",
+      "dhh_lens": "Cache policy is cohesive despite multiple conditions.",
+      "otwell_lens": "Do not merge protocol decisions by superficial similarity.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "TLS context and lifetime decisions depend on locals, arrays and function calls."
+    },
+    {
+      "rule": "no_repeated_compound_conditions",
+      "file": "src/Handler/CurlMultiHandler.php",
+      "class": "GuzzleHttp\\Handler\\CurlMultiHandler",
+      "line": 29,
+      "source_sha256": "17b267bbc62a7be1f4fdc504402ba8157d56cab24bfc72e6ab4b409ca71702aa",
+      "declaration": "final class CurlMultiHandler",
+      "project": "guzzle",
+      "partition": "held-out",
+      "review_id": 37,
+      "method_locations": [
+        {
+          "method": "__construct",
+          "line": 173
+        },
+        {
+          "method": "__invoke",
+          "line": 276
+        },
+        {
+          "method": "rejectDisabledMultiplexConflict",
+          "line": 365
+        },
+        {
+          "method": "applyMultiplexNone",
+          "line": 407
+        },
+        {
+          "method": "addConnectionCapOptions",
+          "line": 503
+        },
+        {
+          "method": "formatCurlMultiOption",
+          "line": 531
+        },
+        {
+          "method": "applyProxyTunnelOwnership",
+          "line": 594
+        },
+        {
+          "method": "addHandleToMulti",
+          "line": 634
+        },
+        {
+          "method": "isolateFromForeignActiveProxyTunnel",
+          "line": 666
+        },
+        {
+          "method": "tickFor",
+          "line": 758
+        },
+        {
+          "method": "tickInQueue",
+          "line": 840
+        },
+        {
+          "method": "execute",
+          "line": 867
+        },
+        {
+          "method": "executeUntil",
+          "line": 901
+        },
+        {
+          "method": "hasRequest",
+          "line": 953
+        },
+        {
+          "method": "assertOpen",
+          "line": 973
+        },
+        {
+          "method": "doClose",
+          "line": 982
+        },
+        {
+          "method": "deferClose",
+          "line": 1014
+        },
+        {
+          "method": "cleanupPendingTransfers",
+          "line": 1082
+        },
+        {
+          "method": "closeOwnedFactory",
+          "line": 1129
+        },
+        {
+          "method": "finishDeferredWork",
+          "line": 1161
+        },
+        {
+          "method": "disposeEasyHandle",
+          "line": 1294
+        },
+        {
+          "method": "cancel",
+          "line": 1431
+        },
+        {
+          "method": "cleanupDeferredCancels",
+          "line": 1469
+        },
+        {
+          "method": "processMessages",
+          "line": 1493
+        }
+      ],
+      "excerpt": "\n        $handlerMultiplex = $options['multiplex'] ?? null;\n        if (null !== $handlerMultiplex && Multiplexing::NONE !== $handlerMultiplex) {\n            if (\\in_array($handlerMultiplex, [Multiplexing::EAGER, Multiplexing::WAIT, Multiplexing::REQUIRE_EAGER, Multiplexing::REQUIRE_WAIT], true)) {\n                throw new InvalidArgumentException('The \"multiplex\" CurlMultiHandler option only accepts Multiplexing::NONE; the eager, wait, and required modes are request options.');\n            }\n\n            throw new InvalidArgumentException(\\sprintf('The \"multiplex\" CurlMultiHandler option must be null or Multiplexing::NONE; received %s.', \\get_debug_type($handlerMultiplex)));\n        }",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "closed || closing appears in assertOpen and doClose (two methods); other repeated guards include calls or differ structurally.",
+      "dhh_lens": "A future named open/closing predicate merits review, not an automatic claim.",
+      "otwell_lens": "This is a concrete coverage limit: default requires three methods and excludes calls.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "closed || closing appears in assertOpen and doClose (two methods); other repeated guards include calls or differ structurally."
+    },
+    {
+      "rule": "no_repeated_compound_conditions",
+      "file": "src/ProxySelection.php",
+      "class": "GuzzleHttp\\ProxySelection",
+      "line": 7,
+      "source_sha256": "f803884ad5a746373d94dafb7ae85b5b430e013cd2f10cda8f7e28994118f39f",
+      "declaration": "final class ProxySelection",
+      "project": "guzzle",
+      "partition": "held-out",
+      "review_id": 38,
+      "method_locations": [
+        {
+          "method": "shouldDisableProxy",
+          "line": 62
+        }
+      ],
+      "excerpt": "    public function shouldDisableProxy(): bool\n    {\n        return $this->bypassed || $this->disabled;\n    }",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "bypassed || disabled is returned by one already named predicate.",
+      "dhh_lens": "shouldDisableProxy already supplies the intended API.",
+      "otwell_lens": "Another extraction would add indirection.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "bypassed || disabled is returned by one already named predicate."
+    },
+    {
+      "rule": "no_repeated_compound_conditions",
+      "file": "src/Middleware.php",
+      "class": "GuzzleHttp\\Middleware",
+      "line": 19,
+      "source_sha256": "2584855bbcbb2bd4b66046c3889132dd0f85e0f31afdfc93c89df68c32b0d6e3",
+      "declaration": "final class Middleware",
+      "project": "guzzle",
+      "partition": "held-out",
+      "review_id": 39,
+      "method_locations": [
+        {
+          "method": "history",
+          "line": 126
+        }
+      ],
+      "excerpt": "    public static function history(&$container): callable\n    {\n        if (!\\is_array($container) && !$container instanceof \\ArrayAccess) {\n            throw new \\InvalidArgumentException('history container must be an array or object implementing ArrayAccess');\n        }\n\n        return static function (callable $handler) use (&$container): callable {\n            return static function (\n                #[\\SensitiveParameter]",
+      "verdict": "appropriate_nonfinding_within_v1_scope",
+      "observation": "history validates a parameter with is_array and instanceof in one method.",
+      "dhh_lens": "Validation belongs to the middleware helper.",
+      "otwell_lens": "There is no repeated own-state condition to consolidate.",
+      "suggested_change": "None required by this candidate.",
+      "counterexample": "history validates a parameter with is_array and instanceof in one method."
+    }
+  ]
+}

@@ -1297,3 +1297,27 @@ The proposed disconnected-groups threshold was rejected after inspecting real
 fluent objects, concerns and protocol implementations; it is not a built-in rule.
 Constructor/static/abstract exclusions, trait composition and unknown cases are
 specified in [Research Metrics](RESEARCH_METRICS.md).
+
+### no_trivial_factories
+
+Enabled by default. `new NoTrivialFactories()` reports a named `final` class
+marked `@internal` whose sole public instance `create` method returns
+`new ConcreteClass(...)`, forwarding all mandatory parameters unchanged and in
+order. Classes with state, inheritance, traits, interfaces or attributes are
+excluded, as are references, defaults, named/unpacked arguments and dynamic types.
+
+```php
+/** @internal */
+final class ReceiptFactory
+{
+    public function create(int $amount): Receipt
+    {
+        return new Receipt($amount);
+    }
+}
+```
+
+Consider `new Receipt($amount)` at the call site. Preserve argument names, input
+and return type contracts and useful integration boundaries. A factory that
+transforms data or a named constructor such as `Money::euros()` is allowed.
+There is no automatic fix. See the [RFC and corpus limitations](rfcs/explicit-behavior-rules.md).

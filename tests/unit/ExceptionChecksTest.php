@@ -89,6 +89,6 @@ final class ExceptionChecksTest extends TestCase
             self::assertNotContains($id, $ids);
             self::assertNotContains($id, $section);
         }
-        self::assertCount(69, $ids);
+        self::assertCount(71, $ids);
     }
 }
