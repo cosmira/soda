@@ -67,7 +67,9 @@ final class NoComplexControlConditions extends Check
                 value: 1,
                 threshold: 0,
                 line: $occurrence['line'],
-                message: 'A control condition must contain at most one comparison, call, or logical operation. Extract a named predicate or intermediate value.');
+                message: $occurrence['reason'] === 'mixed_logic'
+                    ? 'Mixed logical operators obscure this condition. Name the distinct decision before combining it.'
+                    : 'Nested computation obscures this condition. Prepare the value locally or name the query before testing it.');
         }
 
         return $violations;

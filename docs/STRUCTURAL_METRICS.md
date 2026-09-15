@@ -1073,45 +1073,32 @@ The rule targets only PHP `else` and `elseif` statements. Ternary expressions, `
 
 ### no_complex_control_conditions
 
-Keeps `if`, `elseif`, `while`, `do while`, `for`, and ternary conditions directly readable and easy to inspect in a debugger. A condition may contain at most one comparison, call, logical operator, `instanceof`, `isset`, `empty`, or negation operation.
+Keeps `if`, `elseif`, `while`, `do while`, every `for` condition, and ternary conditions readable. Configure it with `new NoComplexControlConditions()` as before.
+
+Simple values, predicates, negations, `isset`, `empty`, `instanceof`, and comparisons can stay inline. A comparison operand may be a single call. Homogeneous `&&`/`and` or `||`/`or` chains are accepted; parentheses and negation add no complexity.
 
 ```php
-// soda.php
-new NoComplexControlConditions()
+if (! $user->isActive()) {}
+if ($user->age() >= 18 && $user->isVerified()) {}
+if (count($items) > 0) {}
 ```
+
+Two reasons require simplification:
+
+- `mixed_logic`: a condition combines AND and OR, or uses XOR.
+- `nested_computation`: a call has a computed receiver or argument, comparisons are nested, arithmetic computes an operand, or a ternary or `match` computes part of the condition.
 
 ```php
-// ❌ Bad — two comparisons plus a logical operation
-if ($a > $b && $a > $c) {
-    // ...
-}
+// Mixed decisions: name the distinct decision.
+if ($active && ($admin || $owner)) {}
 
-// ❌ Bad — query execution is hidden inside control flow
-while (File::query()->where('status', File::STATUS_NEW)->count() >= $this->threshold()) {
-    // ...
-}
+// Nested query: prepare its result before testing it.
+if (Order::query()->pending()->count() > $limit) {}
 ```
 
-```php
-// ✅ Good — the value can be inspected and logged
-$count = $this->newFilesQuery()->count();
+Simple call arguments include literals, variables, constants, property/index access, and arrays of these values. Simple casts and null coalescing are supported. Negating or casting a predicate does not turn it into nested work. Callable bodies do not contribute to the surrounding condition; their own control conditions are checked separately.
 
-if ($count <= $threshold) {
-    break;
-}
-
-// ✅ Good — a named predicate communicates intent
-while ($this->hasTooManyNewFiles()) {
-    // ...
-}
-
-// ✅ Good — one comparison
-if ($a > $b) {
-    // ...
-}
-```
-
-The rule targets control-flow predicates, not boolean helper implementations. A homogeneous expression composed only of `||` or only of `&&` may still contain many operations when used in `return`; move it behind a named predicate before using it in control flow.
+`MaxBooleanConditions` still limits chain length with its existing formula. Assignments remain the responsibility of `NoAssignmentInCondition`; assigning an otherwise simple predicate does not itself add a complexity finding. Other computations in that predicate still do.
 
 ## Architectural escape hatches
 
