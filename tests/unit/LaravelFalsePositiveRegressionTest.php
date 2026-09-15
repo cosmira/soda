@@ -63,7 +63,7 @@ final class LaravelFalsePositiveRegressionTest extends TestCase
         ];
         yield 'Prompts: immediately invoked closure has an explicit target' => [
             'function resetState() { return (function () { clearState(); return 1; })(); }',
-            'function resetState($callback) { return $callback(); }',
+            'function resetState($callback) { return call_user_func($callback); }',
             ['no_dynamic_invocation'],
         ];
         yield 'Strict policy: exhaustive branches still forbid else' => [

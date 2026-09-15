@@ -176,12 +176,13 @@ final class AdversarialDemoTest extends TestCase
 
         $this->assertSame(1, $status);
         $iterationFiles = glob($root.'/demo-app/iterations/*.php') ?: [];
-        $this->assertStringContainsString((count($iterationFiles) + 2).' issues', $report);
+        $this->assertStringContainsString((count($iterationFiles) + 1).' issues', $report);
         $this->assertStringContainsString('$service', $report);
         $this->assertStringContainsString('Private property ledger is never read', $report);
 
         foreach ($iterationFiles as $iterationFile) {
-            $this->assertSame(1, substr_count($report, 'demo-app/iterations/'.basename($iterationFile)));
+            $expectedMentions = basename($iterationFile) === '45-prototype-copy.php' ? 0 : 1;
+            $this->assertSame($expectedMentions, substr_count($report, 'demo-app/iterations/'.basename($iterationFile)));
         }
     }
 

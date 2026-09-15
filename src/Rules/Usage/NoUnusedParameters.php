@@ -6,6 +6,7 @@ namespace Cosmira\Soda\Rules\Usage;
 
 use Cosmira\Soda\Analysis\Dependencies\ExternalParameterContracts;
 use Cosmira\Soda\Analysis\FileFacts;
+use Cosmira\Soda\Analysis\Frameworks\LaravelMiddlewareContracts;
 use Cosmira\Soda\Analysis\InheritedParameterContracts;
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Reporting\Violation;
@@ -31,7 +32,7 @@ final class NoUnusedParameters extends Check
         }
 
         $types = InheritedParameterContracts::collect($file->nodes);
-        yield from $this->findings($file->path, ParameterInputFacts::collect($file->nodes), new InheritedParameterContracts($types));
+        yield from $this->findings($file->path, ParameterInputFacts::collect($file->nodes), new InheritedParameterContracts($types), LaravelMiddlewareContracts::collect($file->nodes));
     }
 
     /**
@@ -40,26 +41,31 @@ final class NoUnusedParameters extends Check
     public function checkProject(ProjectFacts $project): iterable
     {
         $types = [];
+        $middleware = [];
         foreach ($project->files as $facts) {
             $types += $facts['parameterContracts'] ?? [];
+            $middleware += $facts['registeredMiddleware'] ?? [];
         }
 
         $types = ExternalParameterContracts::resolve($types, array_keys($project->files));
         $inherited = new InheritedParameterContracts($types);
         foreach ($project->files as $path => $facts) {
-            yield from $this->findings($path, $facts['parameterInputs'] ?? [], $inherited);
+            yield from $this->findings($path, $facts['parameterInputs'] ?? [], $inherited, $middleware);
         }
     }
 
     /**
      * Preserve required positions without exempting extra inputs on the same method.
      */
-    private function findings(string $path, array $candidates, InheritedParameterContracts $inherited): iterable
+    private function findings(string $path, array $candidates, InheritedParameterContracts $inherited, array $middleware): iterable
     {
         $contracts = array_fill_keys(array_map(strtolower(...), $this->contracts), true);
         foreach ($candidates as $candidate) {
             $identity = $candidate['identity'];
             $arity = $inherited->arity($candidate['class'], $candidate['method']);
+            $registered = isset($middleware[strtolower($candidate['class'] ?? '')]);
+            $terminate = $registered && strtolower($candidate['method'] ?? '') === 'terminate' && ($candidate['publicInstance'] ?? false);
+            $arity = max($arity, $terminate ? 2 : 0);
             $isExternal = isset($contracts[strtolower($identity)]);
             $isPolymorphic = $inherited->isUsedByOverride($candidate['class'], $candidate['method'], $candidate['position']);
             if ($isExternal || $candidate['position'] < $arity || $isPolymorphic) {

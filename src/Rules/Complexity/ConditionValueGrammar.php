@@ -69,7 +69,7 @@ final class ConditionValueGrammar
         $isValue = $node instanceof Node\Scalar || in_array($node->getType(), [
             'Name', 'Name_FullyQualified', 'Name_Relative', 'Identifier', 'VarLikeIdentifier', 'Arg', 'VariadicPlaceholder',
             'Scalar_String', 'Scalar_Int', 'Scalar_Float', 'Scalar_InterpolatedString', 'InterpolatedStringPart',
-            'Expr_Variable', 'Expr_ConstFetch', 'Expr_ClassConstFetch', 'Expr_PropertyFetch', 'Expr_NullsafePropertyFetch',
+            'Expr_Clone', 'Expr_Variable', 'Expr_ConstFetch', 'Expr_ClassConstFetch', 'Expr_PropertyFetch', 'Expr_NullsafePropertyFetch',
             'Expr_Cast_Int', 'Expr_Cast_String', 'Expr_Cast_Double', 'Expr_Cast_Bool', 'Expr_Cast_Array', 'Expr_Cast_Object',
             'Expr_Assign', 'Expr_AssignRef', 'Expr_BinaryOp_Coalesce', 'Expr_StaticPropertyFetch', 'Expr_ArrayDimFetch', 'Expr_Array', 'ArrayItem', 'Expr_UnaryMinus', 'Expr_UnaryPlus',
         ], true);

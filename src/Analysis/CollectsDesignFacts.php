@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Cosmira\Soda\Analysis;
 
 use Cosmira\Soda\Analysis\Composition\ClassBehaviorFacts;
+use Cosmira\Soda\Analysis\Frameworks\LaravelMiddlewareContracts;
 use Cosmira\Soda\Rules\Architecture\Cohesion;
 use Cosmira\Soda\Rules\Complexity\CognitiveComplexity;
 use Cosmira\Soda\Rules\Usage\ParameterInputFacts;
@@ -36,6 +37,11 @@ trait CollectsDesignFacts
         if (self::isRequired($required, 'parameterInputs')) {
             $metrics['parameterInputs'] = ParameterInputFacts::collect($nodes);
             $metrics['parameterContracts'] = InheritedParameterContracts::collect($nodes);
+            $metrics['registeredMiddleware'] = LaravelMiddlewareContracts::collect($nodes);
+        }
+
+        if (self::isRequired($required, 'argumentContracts')) {
+            $metrics['argumentContracts'] = NativeStreamContract::signatures($nodes);
         }
 
         $metrics['classBehavior'] = self::isRequired($required, 'classBehavior') ? ClassBehaviorFacts::collect($nodes) : [];

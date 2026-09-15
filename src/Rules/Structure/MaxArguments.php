@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace Cosmira\Soda\Rules\Structure;
 
+use Cosmira\Soda\Analysis\Composition\BehaviorComposition;
+use Cosmira\Soda\Analysis\Dependencies\ExternalParameterContracts;
 use Cosmira\Soda\Analysis\FileFacts;
+use Cosmira\Soda\Analysis\InheritedParameterContracts;
 use Cosmira\Soda\Analysis\NativeStreamContract;
+use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Reporting\Violation;
 use Cosmira\Soda\Rules\Check;
 use Cosmira\Soda\Rules\ExpressionCheck;
@@ -30,7 +34,19 @@ final class MaxArguments extends ExpressionCheck
      */
     public function checkFile(FileFacts $file): iterable
     {
-        $nativeContracts = NativeStreamContract::signatures($file->nodes);
+        if (array_key_exists('parameterContracts', $file->metrics)) {
+            return;
+        }
+
+        yield from $this->findings($file);
+    }
+
+    /**
+     * Apply local data and explicit protocol exceptions to candidate measurements.
+     */
+    private function findings(FileFacts $file): iterable
+    {
+        $nativeContracts = $file->metrics['argumentContracts'] ?? NativeStreamContract::signatures($file->nodes);
         $contracts = array_fill_keys(array_map(static fn (string $name): string => strtolower(ltrim($name, '\\')), $this->contracts), true);
         foreach (parent::checkFile($file) as $violation) {
             $identity = strtolower(ltrim($violation->method ?? '', '\\'));
@@ -49,6 +65,48 @@ final class MaxArguments extends ExpressionCheck
 
             yield $violation;
         }
+    }
+
+    /**
+     * Resolve inherited signatures, including the class that imports a trait method.
+     */
+    public function checkProject(ProjectFacts $project): iterable
+    {
+        $types = [];
+        foreach ($project->files as $facts) {
+            $types += $facts['parameterContracts'] ?? [];
+        }
+
+        $contracts = new InheritedParameterContracts(ExternalParameterContracts::resolve($types, array_keys($project->files)));
+        $arities = [];
+        foreach ((new BehaviorComposition)->project($project) as $class => $surface) {
+            foreach ($surface['methods'] as $name => $method) {
+                $origin = $method['origin'];
+                $arities[$origin] = max($arities[$origin] ?? 0, $contracts->arity($class, $name));
+            }
+        }
+
+        foreach ($project->files as $path => $facts) {
+            foreach ($this->findings(new FileFacts($path, '', [], $facts)) as $finding) {
+                $identity = strtolower($finding->method ?? '');
+                $method = str_contains($identity, '::') ? substr($identity, strpos($identity, '::') + 2) : null;
+                $forwarded = $method === '__construct' ? $contracts->forwardedConstructorArity($finding->class) : 0;
+                $arity = max($arities[$identity] ?? 0, $contracts->arity($finding->class, $method), $forwarded);
+                if ($finding->value <= $arity) {
+                    continue;
+                }
+
+                yield $finding;
+            }
+        }
+    }
+
+    /**
+     * Collect signatures and trait provenance for the project pass.
+     */
+    public function requiredAnalyses(): array
+    {
+        return [...parent::requiredAnalyses(), 'parameterInputs', 'classBehavior', 'argumentContracts'];
     }
 
     /**

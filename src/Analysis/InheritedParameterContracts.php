@@ -37,16 +37,39 @@ final readonly class InheritedParameterContracts
                 $methods[strtolower($method->name->toString())] = [
                     'arity'               => count($method->params), 'private' => $method->isPrivate(),
                     'constructorContract' => $class instanceof Stmt\Interface_ || $method->isAbstract(),
+                    'forwardsParent'      => ForwardedParentConstructor::doesForward($method),
                     'reads'               => array_keys(array_filter($method->params, static fn (Node\Param $input): bool => (new ParameterUseAnalysis($input))->isUsed($method))),
                 ];
             }
 
             $name = strtolower($class->namespacedName?->toString() ?? $class->name->toString());
             $parentNames = array_map(static fn (Name $parent): string => $parent->toString(), $parents);
-            $types[$name] = ['parentNames' => $parentNames, 'parents' => array_map(strtolower(...), $parentNames), 'methods' => $methods, 'factoryDispatch' => FactoryDispatchPatterns::collect($class)];
+            $traitNames = [];
+            foreach ($class->getTraitUses() as $use) {
+                foreach ($use->traits as $trait) {
+                    $traitNames[] = $trait->toString();
+                }
+            }
+
+            $types[$name] = [
+                'parentClass'     => self::parentClass($class),
+                'traitNames'      => $traitNames,
+                'parentNames'     => $parentNames,
+                'parents'         => array_map(strtolower(...), $parentNames),
+                'methods'         => $methods,
+                'factoryDispatch' => FactoryDispatchPatterns::collect($class),
+            ];
         }
 
         return $types;
+    }
+
+    /**
+     * Distinguish a concrete parent edge from implemented interface contracts.
+     */
+    private static function parentClass(Stmt\ClassLike $class): ?string
+    {
+        return $class instanceof Stmt\Class_ ? $class->extends?->toLowerString() : null;
     }
 
     /**
@@ -64,6 +87,34 @@ final readonly class InheritedParameterContracts
         }
 
         return $this->inherited(strtolower($class), strtolower($method), []);
+    }
+
+    /**
+     * A transparent constructor adapter preserves only the actual parent's arity.
+     */
+    public function forwardedConstructorArity(?string $class): int
+    {
+        $declaration = $this->types[strtolower($class ?? '')] ?? [];
+        $methods = $declaration['methods'] ?? [];
+        $constructor = $methods['__construct'] ?? [];
+        if (! ($constructor['forwardsParent'] ?? false)) {
+            return 0;
+        }
+
+        $parent = $declaration['parentClass'] ?? null;
+        $seen = [];
+        while ($parent !== null && ! isset($seen[$parent])) {
+            $seen[$parent] = true;
+            $signature = $this->signature($parent, '__construct', []);
+            if ($signature !== []) {
+                return ($signature['private'] ?? true) ? 0 : $signature['arity'];
+            }
+
+            $declaration = $this->types[$parent] ?? [];
+            $parent = $declaration['parentClass'] ?? null;
+        }
+
+        return 0;
     }
 
     /**
@@ -123,6 +174,33 @@ final readonly class InheritedParameterContracts
     }
 
     /**
+     * Find an ancestor's effective declaration, including its imported trait methods.
+     */
+    private function signature(string $type, string $method, array $seen): array
+    {
+        if (isset($seen[$type])) {
+            return [];
+        }
+
+        $seen[$type] = true;
+        $declaration = $this->types[$type] ?? [];
+        $methods = $declaration['methods'] ?? [];
+        if (isset($methods[$method])) {
+            return $methods[$method];
+        }
+
+        $matches = [];
+        foreach ($declaration['traitNames'] ?? [] as $trait) {
+            $signature = $this->signature(strtolower($trait), $method, $seen);
+            if ($signature !== []) {
+                $matches[] = $signature;
+            }
+        }
+
+        return count($matches) === 1 ? reset($matches) : [];
+    }
+
+    /**
      * Traverse inherited contracts with cycle protection for incomplete source.
      */
     private function inherited(string $class, string $method, array $visited): int
@@ -135,9 +213,7 @@ final readonly class InheritedParameterContracts
         $arity = 0;
         $declaration = $this->types[$class] ?? [];
         foreach ($declaration['parents'] ?? [] as $parent) {
-            $parentType = $this->types[$parent] ?? [];
-            $methods = $parentType['methods'] ?? [];
-            $signature = $methods[$method] ?? [];
+            $signature = $this->signature($parent, $method, []);
             $isContract = ! ($signature['private'] ?? true);
             if ($method === '__construct') {
                 $isContract = $isContract && ($signature['constructorContract'] ?? false);

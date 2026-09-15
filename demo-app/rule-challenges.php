@@ -62,7 +62,6 @@ return [
     'no_runtime_type_aliases'            => ['iteration' => 41, 'attack' => 'Keep legacy consumers alive through runtime class_alias().'],
     'no_dynamic_properties'              => ['iteration' => 42, 'attack' => 'Model partner payloads with AllowDynamicProperties.'],
     'no_anonymous_classes'               => ['iteration' => 43, 'attack' => 'Hide strategy types inside anonymous class expressions.'],
-    'no_object_cloning'                  => ['iteration' => 45, 'attack' => 'Call clone an immutable prototype-forking protocol.'],
     'no_closure_rebinding'               => ['iteration' => 46, 'attack' => 'Use Closure bind APIs to bypass visible scope ownership.'],
     'no_runtime_contract_probes'         => ['iteration' => 48, 'attack' => 'Negotiate capabilities with method/property/callable probes.'],
     'no_global_state'                    => ['iteration' => 5, 'attack' => 'Move process-wide mutation into a static property.'],

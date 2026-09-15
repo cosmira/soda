@@ -30,9 +30,10 @@ final readonly class ParameterInputFacts
             [$class, $method, $identity] = self::identity($callable);
             foreach (self::unusedInputs($callable) as $position => $parameter) {
                 $candidates[] = [
-                    'class'    => $class, 'method' => $method, 'identity' => $identity,
-                    'position' => $position, 'name' => $parameter->var->name,
-                    'line'     => $parameter->getStartLine(),
+                    'class'          => $class, 'method' => $method, 'identity' => $identity,
+                    'publicInstance' => $callable instanceof Stmt\ClassMethod && $callable->isPublic() && ! $callable->isStatic(),
+                    'position'       => $position, 'name' => $parameter->var->name,
+                    'line'           => $parameter->getStartLine(),
                 ];
             }
         }

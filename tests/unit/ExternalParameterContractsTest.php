@@ -6,6 +6,7 @@ namespace Cosmira\Soda;
 
 use Cosmira\Soda\Analysis\Runner;
 use Cosmira\Soda\Config\Soda;
+use Cosmira\Soda\Rules\Structure\MaxArguments;
 use Cosmira\Soda\Rules\Usage\NoUnusedParameters;
 use PHPUnit\Framework\TestCase;
 
@@ -44,6 +45,21 @@ final class ExternalParameterContractsTest extends TestCase
             $this->write($root, 'vendor/vendor/api/src/Scope.php', '<?php broken syntax !!!');
             $this->write($root, 'src/OwnScope.php', '<?php namespace App; class OwnScope implements \Vendor\Api\Scope { public function apply($builder, $model) {} }');
             self::assertCount(2, $this->findings([$path]));
+        });
+    }
+
+    public function testArgumentLimitUsesInstalledParentTraitWithoutExecutingIt(): void
+    {
+        $this->withProject(function (string $root): void {
+            $this->write($root, 'vendor/vendor/api/src/Relations.php', '<?php namespace Vendor\Api; throw new \RuntimeException("Do not execute"); trait Relations { protected function relation($a, $b, $c, $d) {} }');
+            $this->write($root, 'vendor/vendor/api/src/Model.php', '<?php namespace Vendor\Api; class Model { use Relations; }');
+            $trait = $this->write($root, 'src/Relations.php', '<?php namespace App; trait Relations { protected function relation($a, $b, $c, $d) {} }');
+            $host = $this->write($root, 'src/Model.php', '<?php namespace App; class Model extends \Vendor\Api\Model { use Relations; }');
+            $config = Soda::configure()->with([new MaxArguments(3)]);
+            self::assertTrue((new Runner)->check([$trait, $host], $config)->isPassing());
+            self::assertTrue((new Runner)->check([$host, $trait], $config)->isPassing());
+            file_put_contents($trait, '<?php namespace App; trait Relations { protected function relation($a, $b, $c, $d, $extra) {} }');
+            self::assertCount(1, (new Runner)->check([$trait, $host], $config)->violations);
         });
     }
 

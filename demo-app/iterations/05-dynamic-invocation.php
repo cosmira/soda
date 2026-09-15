@@ -11,7 +11,7 @@ final class PolymorphicMessageBus
     {
         $handler = strtoupper(...);
 
-        return $handler($message);
+        return call_user_func($handler, $message);
     }
 }
 

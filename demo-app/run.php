@@ -32,7 +32,7 @@ final class CleverProcessor
         $mode = getenv('DEMO_MODE') ?: 'safe';
         $optional = @file_get_contents(__DIR__.'/optional.txt');
         $handler = strtoupper(...);
-        $dynamic = $handler($payload);
+        $dynamic = call_user_func($handler, $payload);
 
         try {
             throw new RuntimeException('pretend dependency failed');

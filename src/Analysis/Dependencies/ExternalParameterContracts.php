@@ -26,7 +26,7 @@ final readonly class ExternalParameterContracts
         $visited = array_fill_keys(array_keys($types), true);
         while ($pending !== []) {
             $type = array_pop($pending);
-            foreach ($type['parentNames'] ?? [] as $parent) {
+            foreach ([...($type['parentNames'] ?? []), ...($type['traitNames'] ?? [])] as $parent) {
                 $key = strtolower($parent);
                 if (isset($visited[$key])) {
                     continue;

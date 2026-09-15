@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Cosmira\Soda;
 
 use Cosmira\Soda\Analysis\FactCollector;
+use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Rules\Structure\MaxArguments;
 use PHPUnit\Framework\TestCase;
 
@@ -51,6 +52,21 @@ PHP;
         self::assertCount(1, $this->findings('<?php class Stream { public function stream_open($path, $mode, $options, &$opened, $extra) {} '.$registration.' }'));
     }
 
+    public function testForwardingConstructorRequiresTheActualParentContract(): void
+    {
+        $parent = 'class BaseRelation { function __construct($a, $b, $c, $d = null) {} }';
+        $adapter = 'class Relation extends BaseRelation { function __construct(public readonly mixed $a, $b, $c, $d = null) { parent::__construct($a, $b, $c, $d); } }';
+        self::assertSame(['BaseRelation::__construct'], array_column($this->findings('<?php '.$parent.$adapter), 'method'));
+        self::assertSame(['BaseRelation::__construct'], array_column($this->findings('<?php '.$adapter.$parent), 'method'));
+        self::assertCount(2, $this->findings('<?php '.$parent.str_replace('parent::__construct($a, $b, $c, $d);', '', $adapter)));
+        self::assertCount(2, $this->findings('<?php '.$parent.str_replace('$a, $b, $c, $d);', '$b, $a, $c, $d);', $adapter)));
+        self::assertCount(2, $this->findings('<?php '.$parent.str_replace('$d = null)', '$d = null, $extra = null)', $adapter)));
+        self::assertCount(1, $this->findings('<?php '.$adapter));
+        $shorter = 'class BaseRelation { function __construct($a, $b) {} }';
+        self::assertCount(1, $this->findings('<?php '.$shorter.$adapter));
+        self::assertCount(2, $this->findings('<?php '.$parent.str_replace('{ parent::', '{ logChange(); parent::', $adapter)));
+    }
+
     private function findings(string $source, array $contracts = []): array
     {
         $rule = new MaxArguments(3, contracts: $contracts);
@@ -60,7 +76,10 @@ PHP;
         try {
             $facts = (new FactCollector)->collect($path, $rule->requiredAnalyses());
 
-            return iterator_to_array($rule->checkFile($facts));
+            $project = new ProjectFacts;
+            $project->add($facts);
+
+            return iterator_to_array($rule->checkProject($project));
         } finally {
             unlink($path);
         }

@@ -507,6 +507,7 @@ return [
     'no_object_cloning' => [
         'class'      => 'Cosmira\\Soda\\Rules\\Architecture\\NoObjectCloning',
         'arguments'  => [],
+        'standard'   => false,
         'section'    => 'structural',
         'severity'   => 'warning',
         'default'    => 0,

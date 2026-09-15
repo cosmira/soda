@@ -20,7 +20,7 @@ final class RuleCatalog
     }
 
     /**
-     * Keep experimental checks discoverable without enabling them in existing bundles.
+     * Keep optional checks discoverable without enabling them in the standard bundle.
      *
      * @return array<string, array{class: class-string<Check>, arguments: array, section: string, severity: string, default: int|float, label: string, advice: string, comparison: ?string, standard?: bool}>
      */
