@@ -1,0 +1,164 @@
+{
+  "scope": "All src PHP files, exact snapshot; external dependencies read without executing application code.",
+  "files": [
+    {
+      "path": "src/Backends/EloquentSandboxBackend.php",
+      "sha256": "8af1d76757d30ab8b166a4b9b84baef4d02bd0739307cfb5879a9c117e377a70"
+    },
+    {
+      "path": "src/Commands/BenchmarkSyncCommand.php",
+      "sha256": "17fdca5e4a24ac9cfce640d1e2e3ee42c4236c116b953c4e7847f065f778d5b4"
+    },
+    {
+      "path": "src/Commands/CommitSandboxCommand.php",
+      "sha256": "be99dfc001afa4e4a8b5ecb5b0fb8eed9dcf4aca3e94e7e881ecfb0023fa1257"
+    },
+    {
+      "path": "src/Commands/OpenSandboxCommand.php",
+      "sha256": "2dd1f92d7b2de6e9794d8fd1673b2ee9c95ae16982a0764fa026b0f01eef79ae"
+    },
+    {
+      "path": "src/Commands/RollbackSandboxCommand.php",
+      "sha256": "fabe9afbce48bdd6354cb1aba405e4c2f46c02eba3a91444ba459cfb320a8e29"
+    },
+    {
+      "path": "src/Commands/SaveSandboxCommand.php",
+      "sha256": "2103ccb3ce39fdc0ee160e7eb6ac24eeeb7d38053e1c7c9dcf1fd5e4b5b89f5e"
+    },
+    {
+      "path": "src/Commands/StatusSandboxCommand.php",
+      "sha256": "d73779316719524761a5e535f11ae88807623cbc1d29a8e9516df6a71c762cf1"
+    },
+    {
+      "path": "src/Contracts/SandboxBackend.php",
+      "sha256": "99aabe99fe18091c838ad0d1c68fb704031f7199692caa3f3bf5772f4ac2c455"
+    },
+    {
+      "path": "src/Database/Factories/SandboxStatusFactory.php",
+      "sha256": "e21e86c7e2778e40818540483e1de16e3aa40eddbd69eaf8d3dd6f849a878048"
+    },
+    {
+      "path": "src/Database/ProcedureCaller.php",
+      "sha256": "befabe1264459d14d0cb88b7b88461b52dbc83922e99725d32b5fbcd04daa9cd"
+    },
+    {
+      "path": "src/Enums/SandboxOperation.php",
+      "sha256": "80cb4e0b69edf75a41c5fa6ba4ab00b65159b0074e84d50980d0587f12cd0b92"
+    },
+    {
+      "path": "src/Enums/SandboxStatus.php",
+      "sha256": "ad45bbf1ff6f6953a2d2bc1ab0ce33e933bdd53ac9a5e26352848fafa2e214d1"
+    },
+    {
+      "path": "src/Events/SandboxCommitted.php",
+      "sha256": "408c1540873bef5539dd8b75c615843acadef7f397f2718c61b7d226e1546dc4"
+    },
+    {
+      "path": "src/Events/SandboxCommitting.php",
+      "sha256": "188a619df9587540d78ac0ebb50d1036d853427d7d45efceae3ca0368fc1f525"
+    },
+    {
+      "path": "src/Events/SandboxOpened.php",
+      "sha256": "9a2de5b7a0793a4ee5036e3e28370287c0e8cb81bc6b5e3c0af0e3fa9f4d51ff"
+    },
+    {
+      "path": "src/Events/SandboxResetting.php",
+      "sha256": "c61e2f9ce7820dd30c3c40cef3d970e21bbb590b87a9cb914313fe2d06006506"
+    },
+    {
+      "path": "src/Events/SandboxResolvingModels.php",
+      "sha256": "9970d360e5a7531fcff40e4e7afb53337cf23b3d606c1cffb6b33cfb64ecf758"
+    },
+    {
+      "path": "src/Events/SandboxRolledBack.php",
+      "sha256": "e634d108f81aaa7e44a6b21ae0109a02c28d5ad96e93bf26988ff6e4b285a8a6"
+    },
+    {
+      "path": "src/Events/SandboxRollingBack.php",
+      "sha256": "92ed1408cb94124104ed0d545a0cda225c3bc5eee11d0338183fd37baece3d4f"
+    },
+    {
+      "path": "src/Events/SandboxSaved.php",
+      "sha256": "63cdd8474462ad63e0298defe5a68bb24be6884041440b843c7c072656da3424"
+    },
+    {
+      "path": "src/Exceptions/SandboxException.php",
+      "sha256": "af71e1f312881da1b7b2339d70969dd5d9693a587a9e8114d0a5a142d5c6d4b1"
+    },
+    {
+      "path": "src/Facades/Sandbox.php",
+      "sha256": "b773e98ccb181a91268a87e79bf8eb9b50cf52a8767481c53b40f5ade4bb09a1"
+    },
+    {
+      "path": "src/HasSandbox.php",
+      "sha256": "ed55443c83b178638bd708207a37c285a52dbb29e2641b8c9cb809537ee4f94c"
+    },
+    {
+      "path": "src/Http/Middleware/SandboxMiddleware.php",
+      "sha256": "e4c1ee11857e5776dce0ec94952e244c970027d2b94b9f8fa32ab97ee0c472b7"
+    },
+    {
+      "path": "src/Http/Middleware/SandboxResponseRejected.php",
+      "sha256": "26bd8f0b7495c00a988d66151b15db06cde21c1b4e6249d9d34592851a2bcbce"
+    },
+    {
+      "path": "src/Models/SandboxStatus.php",
+      "sha256": "c8fa9733676944560e759b246771f3c128b687e4f95393301aaa905e7ae10bb4"
+    },
+    {
+      "path": "src/Relations/SandboxBelongsToMany.php",
+      "sha256": "be56278b3933c0c6c2e3c851aa79e1ac210a062911d5a3166e13f67932b3b428"
+    },
+    {
+      "path": "src/Sandbox.php",
+      "sha256": "2de2e7f5149f223f729d30d56a7a7e9185ac31bfe4698037ba3bcd15f09532ea"
+    },
+    {
+      "path": "src/SandboxBuilder.php",
+      "sha256": "bf74c7f3d7fa6d9ade9705ec181ef96b7d1f998dfaea809b14d84384f583b94a"
+    },
+    {
+      "path": "src/SandboxCopyRules.php",
+      "sha256": "caebc1fa797add8cdbfeba150527cdf3c215e6501d9bb32b6f2e4a350ed8e6eb"
+    },
+    {
+      "path": "src/SandboxServiceProvider.php",
+      "sha256": "a5c97c0990d9a77638f9b60cf0359ae626b10fbcfba05e2dd07645ced056897c"
+    },
+    {
+      "path": "src/SandboxTable.php",
+      "sha256": "2f33bd6ac2392581141aeef0135336be4d6f6b8de72ccb9aed7701b5e1330af0"
+    },
+    {
+      "path": "src/Support/SandboxModelRegistry.php",
+      "sha256": "1c8c07e78e8ff6e606ba2aee0868c141ba57b33672e6cc041a6d7c364c675fe5"
+    },
+    {
+      "path": "src/Support/SandboxRecordRestorer.php",
+      "sha256": "b726f4669e412ae56df73d3f7208bccf375ac39b960078b81552ab1bdee9b929"
+    },
+    {
+      "path": "src/Support/SandboxStatusLocker.php",
+      "sha256": "6ed0fa28317063d7d2e6a242a7610cbbc9ebf2270e9b522abb860968b39595dc"
+    },
+    {
+      "path": "src/Support/SandboxTableSynchronizer.php",
+      "sha256": "cf853ecb05b41274a4d3d2b5f88fe1b62cc454bde0b2dec7b8fe1f85424a8ccb"
+    },
+    {
+      "path": "src/Testing/SandboxTestHelpers.php",
+      "sha256": "40a7efca0abb5a543d1176653f2eb96d730b4fd3f147c9aa4fb6e9c00bfd3756"
+    }
+  ],
+  "before": 173,
+  "after": 169,
+  "resolved": 1,
+  "pending": 0,
+  "framework": {
+    "version": "v13.18.1",
+    "source_commit": "7d66044819e269f05924793a6800022dc181d850",
+    "file": "src/Illuminate/Database/Eloquent/Relations/BelongsToMany.php",
+    "sha256": "bb7a9084fd799d91cc5626cab6b76d8d4451141d16a4cbf2266de28a1892f85d"
+  },
+  "policy_withdrawn": 3
+}

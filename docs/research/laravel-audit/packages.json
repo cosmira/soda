@@ -351,8 +351,9 @@
           "sha256": "7ccc2f3fa7d8d3f8504785839a762028768775a492612a1c88a2f2a72e422e08"
         }
       ],
-      "findings": 914,
-      "review_status": "pending"
+      "findings": 864,
+      "review_status": "confirmed_policy_violations",
+      "initial_findings": 914
     },
     {
       "name": "laravel/sanctum",
@@ -440,8 +441,9 @@
           "sha256": "5b2c52e3317ece3d60e3a4b4431c5c543dc934d5aaf57769159d6f51cb2f76a5"
         }
       ],
-      "findings": 156,
-      "review_status": "pending"
+      "findings": 145,
+      "review_status": "confirmed_policy_violations",
+      "initial_findings": 156
     },
     {
       "name": "laravel/scout",
@@ -609,8 +611,9 @@
           "sha256": "73981a3b9687aa87bc3d30be17c42b89faa74b58b3ad6ac2a273c3374f9e6b4c"
         }
       ],
-      "findings": 629,
-      "review_status": "pending"
+      "findings": 608,
+      "review_status": "confirmed_policy_violations",
+      "initial_findings": 629
     },
     {
       "name": "laravel/pail",
@@ -678,8 +681,9 @@
           "sha256": "0acbfb93976935a6b00e8e0f6180a9b5430d400ef10182a624443effae399ece"
         }
       ],
-      "findings": 77,
-      "review_status": "pending"
+      "findings": 72,
+      "review_status": "confirmed_policy_violations",
+      "initial_findings": 77
     },
     {
       "name": "laravel/sail",
@@ -708,7 +712,8 @@
         }
       ],
       "findings": 64,
-      "review_status": "pending"
+      "review_status": "confirmed_policy_violations",
+      "initial_findings": 64
     },
     {
       "name": "laravel/serializable-closure",
@@ -768,8 +773,27 @@
           "sha256": "e25a2e489c87a0a326273bf31658c1fe4633d02e5a2ec37abc7427dab97d63cf"
         }
       ],
-      "findings": 407,
-      "review_status": "pending"
+      "findings": 403,
+      "review_status": "confirmed_policy_violations",
+      "initial_findings": 407
+    }
+  ],
+  "contract_dependencies": [
+    {
+      "name": "laravel/framework",
+      "version": "v12.66.0",
+      "source_commit": "82a53323c701a668f9054cbeb1d6b6cdbb6a5e10",
+      "purpose": "Historical source evidence for the reviewed Pipeline callbacks. Direct callback invocation is now outside the syntax prohibition, regardless of contract resolution.",
+      "files": [
+        {
+          "path": "src/Illuminate/Pipeline/Pipeline.php",
+          "sha256": "c9a4835e189aba69d39ca93f8616db96905aeb0d19d4f263974f0082c77ed974"
+        },
+        {
+          "path": "src/Illuminate/Routing/Pipeline.php",
+          "sha256": "766de2c81e882c5403b2a7d1954600b91b99e3e60f84709bf37cb5145db53ee7"
+        }
+      ]
     }
   ]
 }

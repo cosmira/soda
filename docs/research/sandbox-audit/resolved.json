@@ -1,0 +1,19 @@
+[
+  {
+    "diagnostic": {
+      "class": "Cosmira\\Sandbox\\Relations\\SandboxBelongsToMany",
+      "file": "src/Relations/SandboxBelongsToMany.php",
+      "line": null,
+      "message": null,
+      "method": "Cosmira\\Sandbox\\Relations\\SandboxBelongsToMany::__construct",
+      "recommendation": "Move behavior to the owner of its data. Use a value object when related arguments share meaning, operations or an invariant; avoid a wrapper solely to reduce this count.",
+      "rule": "max_arguments",
+      "threshold": 3,
+      "value": 8
+    },
+    "status": "fixed_false_positive",
+    "reason": "All eight incoming arguments are forwarded unchanged and in order to the actual Eloquent parent constructor with eight positions. Promoted readonly references do not create extra input positions. A replacement parameter object would require rewriting the inherited integration boundary.",
+    "source_sha256": "be56278b3933c0c6c2e3c851aa79e1ac210a062911d5a3166e13f67932b3b428",
+    "regression_test": "tests/unit/MaxArgumentsContractTest.php::testForwardingConstructorRequiresTheActualParentContract"
+  }
+]

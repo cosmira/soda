@@ -2,7 +2,7 @@
 
 Scope: strengthen existing checks with adversarial tests and add concrete prohibitions.
 Mandatory policy configuration, CI ownership and a general incomplete-analysis failure mode
-are outside this change. All eleven new checks belong to the standard catalog (82 checks).
+are outside this change. All eleven new checks belong to the standard catalog (81 checks).
 Existing explicit `with([...])` configurations retain their chosen checks.
 
 ## Strengthened rules
@@ -63,3 +63,6 @@ Completed on PHP 8.5.4:
 PHPStan and Rector ran with `--debug` because their parallel workers cannot bind a local
 socket in the execution sandbox. This changes execution mode, not the selected checks.
 Rector retains the repository's pre-existing warnings about deprecated/unregistered skips.
+
+The unconditional `NoObjectCloning` policy is no longer enabled by default. Existing
+explicit rule selections remain effective; remove that check to allow copying.

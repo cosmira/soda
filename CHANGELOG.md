@@ -4,9 +4,17 @@
 
 First stable release of Soda under `cosmira/soda`.
 
-- Count alternative branches at their owning if/try depth; preserve nested body levels.
-- Scope unused-interface advice to the analysed project and explicit external contracts.
+- Remove the unconditional clone ban from the standard catalog and generated configuration;
+  keep the explicit `NoObjectCloning` check compatible. Treat cloning a simple value as
+  a value expression in conditions, while retaining nested-call detection.
 
+- Report dynamic invocation only for explicit forbidden syntax; unresolved direct
+  callbacks are not violations. Remove callback inference and framework-specific
+  continuation exceptions that are unnecessary under this policy.
+- Preserve inherited argument contracts and registered middleware termination inputs.
+- Preserve transparent parent constructor forwarding without exempting arbitrary concrete constructors.
+- Manually audit every Sandbox finding and pin the reviewed source and diagnostic corpus.
+- Recheck six pinned Laravel packages with source hashes and exact diagnostic comparison.
 - Keep nested callable/class bodies outside assignment-in-condition analysis;
   continue checking their own conditions and outer call arguments.
 - Accept immediately invoked literal callables as explicit targets and single

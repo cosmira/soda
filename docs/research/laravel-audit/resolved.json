@@ -1127,6 +1127,1923 @@
         },
         "regression_test": "tests/unit/CallableNestingTest.php"
       }
+    },
+    {
+      "id": "8d41afe49dc5cd8e0471",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 55,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Concerns/FakesInputOutput.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "97e6feada9dcf5e6873c96719d40be4fb7702b2fa3d2b542f03fae74770f69e7",
+          "line": 55,
+          "excerpt": "$callable($key);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные.",
+          "correction": "Native Closure/callable declaration is an explicit invocation contract, including value captures and declared properties."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "97e6feada9dcf5e6873c96719d40be4fb7702b2fa3d2b542f03fae74770f69e7",
+          "line": 55,
+          "excerpt": "$callable($key);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      }
+    },
+    {
+      "id": "4e9b970b263351fb7ae8",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 35,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Concerns/TypedValue.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "896a7a12d5261ecc3ffcc86579b146e44ce6e2d0ce396c091f753d873c502020",
+          "line": 35,
+          "excerpt": "if ($ignore !== null && $ignore($key)) {",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные.",
+          "correction": "Native Closure/callable declaration is an explicit invocation contract, including value captures and declared properties."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "896a7a12d5261ecc3ffcc86579b146e44ce6e2d0ce396c091f753d873c502020",
+          "line": 35,
+          "excerpt": "if ($ignore !== null && $ignore($key)) {",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      }
+    },
+    {
+      "id": "dc0ed62e7cf5c951d239",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 54,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Concerns/TypedValue.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "896a7a12d5261ecc3ffcc86579b146e44ce6e2d0ce396c091f753d873c502020",
+          "line": 54,
+          "excerpt": "if ($ignore !== null && $ignore($key)) {",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные.",
+          "correction": "Native Closure/callable declaration is an explicit invocation contract, including value captures and declared properties."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "896a7a12d5261ecc3ffcc86579b146e44ce6e2d0ce396c091f753d873c502020",
+          "line": 54,
+          "excerpt": "if ($ignore !== null && $ignore($key)) {",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      }
+    },
+    {
+      "id": "d115d7ae36b2926d0e09",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 175,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/DataTablePrompt.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "cdfa9b6f314e240ff24d87caf36da32d24b1ce37b84f518a3df5b5615aceea66",
+          "line": 175,
+          "excerpt": "fn ($row) => ($this->filter)($row, $this->typedValue),",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные.",
+          "correction": "Native Closure/callable declaration is an explicit invocation contract, including value captures and declared properties."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "cdfa9b6f314e240ff24d87caf36da32d24b1ce37b84f518a3df5b5615aceea66",
+          "line": 175,
+          "excerpt": "fn ($row) => ($this->filter)($row, $this->typedValue),",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      }
+    },
+    {
+      "id": "115b4f8c3e53ceef7a9c",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 286,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/FormBuilder.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "de901ea391855a237b5bd9e7c306ea89ba385ef40780fce5b07aee06ba229eee",
+          "line": 286,
+          "excerpt": "return $prompt(...$arguments);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные.",
+          "correction": "Native Closure/callable declaration is an explicit invocation contract, including value captures and declared properties."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "de901ea391855a237b5bd9e7c306ea89ba385ef40780fce5b07aee06ba229eee",
+          "line": 286,
+          "excerpt": "return $prompt(...$arguments);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      }
+    },
+    {
+      "id": "82b1b7648438b6180850",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 33,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/FormStep.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "58535fad2bd770b106564b8c398d69a36f73b75a81951486dfd199319a93be15",
+          "line": 33,
+          "excerpt": "return ($this->step)($responses, $previousResponse, $this->name);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные.",
+          "correction": "Native Closure/callable declaration is an explicit invocation contract, including value captures and declared properties."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "58535fad2bd770b106564b8c398d69a36f73b75a81951486dfd199319a93be15",
+          "line": 33,
+          "excerpt": "return ($this->step)($responses, $previousResponse, $this->name);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      }
+    },
+    {
+      "id": "5b367c15f1efd158e1c4",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 43,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/FormStep.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "58535fad2bd770b106564b8c398d69a36f73b75a81951486dfd199319a93be15",
+          "line": 43,
+          "excerpt": "return ($this->condition)($responses);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные.",
+          "correction": "Native Closure/callable declaration is an explicit invocation contract, including value captures and declared properties."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "58535fad2bd770b106564b8c398d69a36f73b75a81951486dfd199319a93be15",
+          "line": 43,
+          "excerpt": "return ($this->condition)($responses);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      }
+    },
+    {
+      "id": "f7c2a295695a87e7d006",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 126,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/MultiSearchPrompt.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "d7a65acb7d14a8b8e2407a31015e109d7f18aec227a1ef9fc5c53c121e642a5d",
+          "line": 126,
+          "excerpt": "$matches = ($this->options)($this->typedValue);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные.",
+          "correction": "Native Closure/callable declaration is an explicit invocation contract, including value captures and declared properties."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "d7a65acb7d14a8b8e2407a31015e109d7f18aec227a1ef9fc5c53c121e642a5d",
+          "line": 126,
+          "excerpt": "$matches = ($this->options)($this->typedValue);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      }
+    },
+    {
+      "id": "17256ee66ef289cb28d7",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 70,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Progress.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "6fcd3fdf7e21955efea0aba8d25db2ef4d2556acf9c67edb6712204f723c6ae7",
+          "line": 70,
+          "excerpt": "$result[] = $callback($i, $this);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные.",
+          "correction": "Native Closure/callable declaration is an explicit invocation contract, including value captures and declared properties."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "6fcd3fdf7e21955efea0aba8d25db2ef4d2556acf9c67edb6712204f723c6ae7",
+          "line": 70,
+          "excerpt": "$result[] = $callback($i, $this);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      }
+    },
+    {
+      "id": "508ce7883a24625fab1b",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 75,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Progress.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "6fcd3fdf7e21955efea0aba8d25db2ef4d2556acf9c67edb6712204f723c6ae7",
+          "line": 75,
+          "excerpt": "$result[] = $callback($step, $this);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные.",
+          "correction": "Native Closure/callable declaration is an explicit invocation contract, including value captures and declared properties."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "6fcd3fdf7e21955efea0aba8d25db2ef4d2556acf9c67edb6712204f723c6ae7",
+          "line": 75,
+          "excerpt": "$result[] = $callback($step, $this);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      }
+    },
+    {
+      "id": "2ab366765d24b8f68839",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 179,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Prompt.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "8bfb3c37b3c8473c3aaa36e991b296bea19efd0b60df439b8aba2e7ddfe35adb",
+          "line": 179,
+          "excerpt": "$result = $callable($key);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные.",
+          "correction": "Native Closure/callable declaration is an explicit invocation contract, including value captures and declared properties."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "8bfb3c37b3c8473c3aaa36e991b296bea19efd0b60df439b8aba2e7ddfe35adb",
+          "line": 179,
+          "excerpt": "$result = $callable($key);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      }
+    },
+    {
+      "id": "d4f5852e728cd24c5726",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 107,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/SearchPrompt.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "abfcd7c50600e32a68b2a668c2b08386281f5f5ac0dad3a01930cd6efa96bdcc",
+          "line": 107,
+          "excerpt": "return $this->matches = ($this->options)($this->typedValue);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные.",
+          "correction": "Native Closure/callable declaration is an explicit invocation contract, including value captures and declared properties."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "abfcd7c50600e32a68b2a668c2b08386281f5f5ac0dad3a01930cd6efa96bdcc",
+          "line": 107,
+          "excerpt": "return $this->matches = ($this->options)($this->typedValue);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      }
+    },
+    {
+      "id": "afb1b96ca7cf362b3896",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 73,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Spinner.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "21dfc0504c72d0c2273fc1d23a236dedd229e0dfaa6eb6be2c89efbdb355b78d",
+          "line": 73,
+          "excerpt": "$result = $callback();",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные.",
+          "correction": "Native Closure/callable declaration is an explicit invocation contract, including value captures and declared properties."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "21dfc0504c72d0c2273fc1d23a236dedd229e0dfaa6eb6be2c89efbdb355b78d",
+          "line": 73,
+          "excerpt": "$result = $callback();",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      }
+    },
+    {
+      "id": "ea0bdcde69cffa0a21f7",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 113,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Spinner.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "21dfc0504c72d0c2273fc1d23a236dedd229e0dfaa6eb6be2c89efbdb355b78d",
+          "line": 113,
+          "excerpt": "$result = $callback();",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные.",
+          "correction": "Native Closure/callable declaration is an explicit invocation contract, including value captures and declared properties."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "21dfc0504c72d0c2273fc1d23a236dedd229e0dfaa6eb6be2c89efbdb355b78d",
+          "line": 113,
+          "excerpt": "$result = $callback();",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      }
+    },
+    {
+      "id": "b256ceb26821daa33728",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 20,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Support/Utils.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "ec4b177447255d437d8d9db09783b2b51bc2ac48e253a4417606b792145f9207",
+          "line": 20,
+          "excerpt": "if (! $callback($value, $key)) {",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные.",
+          "correction": "Native Closure/callable declaration is an explicit invocation contract, including value captures and declared properties."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "ec4b177447255d437d8d9db09783b2b51bc2ac48e253a4417606b792145f9207",
+          "line": 20,
+          "excerpt": "if (! $callback($value, $key)) {",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      }
+    },
+    {
+      "id": "4b6ed362dfa41f6d1062",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 46,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Support/Utils.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "ec4b177447255d437d8d9db09783b2b51bc2ac48e253a4417606b792145f9207",
+          "line": 46,
+          "excerpt": "if ($callback($value, $key)) {",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные.",
+          "correction": "Native Closure/callable declaration is an explicit invocation contract, including value captures and declared properties."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "ec4b177447255d437d8d9db09783b2b51bc2ac48e253a4417606b792145f9207",
+          "line": 46,
+          "excerpt": "if ($callback($value, $key)) {",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      }
+    },
+    {
+      "id": "0650b92f8e44a70cd19e",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 152,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Task.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "cbcaa4e97740d908602e755b458655929311c332db80efce4678789d2aa95d10",
+          "line": 152,
+          "excerpt": "$result = $callback($logger);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные.",
+          "correction": "Native Closure/callable declaration is an explicit invocation contract, including value captures and declared properties."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "cbcaa4e97740d908602e755b458655929311c332db80efce4678789d2aa95d10",
+          "line": 152,
+          "excerpt": "$result = $callback($logger);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      }
+    },
+    {
+      "id": "9864f3d0c754f826b6b8",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 347,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Task.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "cbcaa4e97740d908602e755b458655929311c332db80efce4678789d2aa95d10",
+          "line": 347,
+          "excerpt": "$result = $callback($logger);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные.",
+          "correction": "Native Closure/callable declaration is an explicit invocation contract, including value captures and declared properties."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "cbcaa4e97740d908602e755b458655929311c332db80efce4678789d2aa95d10",
+          "line": 347,
+          "excerpt": "$result = $callback($logger);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      }
+    },
+    {
+      "id": "d90c08cf09cb879783bb",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 85,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Themes/Default/Renderer.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "7aa4b9c2cbbd7b694f327f7b5d0d0c35e5e30ba8a4ce4f91526b59e379d1a199",
+          "line": 85,
+          "excerpt": "$callback($this);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные.",
+          "correction": "Native Closure/callable declaration is an explicit invocation contract, including value captures and declared properties."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "7aa4b9c2cbbd7b694f327f7b5d0d0c35e5e30ba8a4ce4f91526b59e379d1a199",
+          "line": 85,
+          "excerpt": "$callback($this);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      }
+    },
+    {
+      "id": "0e263ecd2c5097c84e1e",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 87,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Themes/Default/Renderer.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "7aa4b9c2cbbd7b694f327f7b5d0d0c35e5e30ba8a4ce4f91526b59e379d1a199",
+          "line": 87,
+          "excerpt": "$default($this);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные.",
+          "correction": "Native Closure/callable declaration is an explicit invocation contract, including value captures and declared properties."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "7aa4b9c2cbbd7b694f327f7b5d0d0c35e5e30ba8a4ce4f91526b59e379d1a199",
+          "line": 87,
+          "excerpt": "$default($this);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      }
+    },
+    {
+      "id": "9afa06be973521c1c79d",
+      "package": "laravel/sanctum",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 35,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Http/Middleware/AuthenticateSession.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "29c95faa5740d16fcb75f3929dc917765bafc5b8ee5728ec80dd4b3dcd360aef",
+          "line": 35,
+          "excerpt": "return $next($request);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные.",
+          "correction": "Native Closure/callable declaration is an explicit invocation contract, including value captures and declared properties."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "29c95faa5740d16fcb75f3929dc917765bafc5b8ee5728ec80dd4b3dcd360aef",
+          "line": 35,
+          "excerpt": "return $next($request);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      }
+    },
+    {
+      "id": "628af2ff44a1c58bfde3",
+      "package": "laravel/sanctum",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 60,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Http/Middleware/AuthenticateSession.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "29c95faa5740d16fcb75f3929dc917765bafc5b8ee5728ec80dd4b3dcd360aef",
+          "line": 60,
+          "excerpt": "return tap($next($request), function () use ($request, $guards) {",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные.",
+          "correction": "Native Closure/callable declaration is an explicit invocation contract, including value captures and declared properties."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "29c95faa5740d16fcb75f3929dc917765bafc5b8ee5728ec80dd4b3dcd360aef",
+          "line": 60,
+          "excerpt": "return tap($next($request), function () use ($request, $guards) {",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      }
+    },
+    {
+      "id": "08bd8e4f62737141cee9",
+      "package": "laravel/scout",
+      "diagnostic": {
+        "rule": "max_arguments",
+        "method": "Laravel\\Scout\\Engines\\DatabaseEngine::paginateUsingDatabase",
+        "class": "Laravel\\Scout\\Engines\\DatabaseEngine",
+        "line": null,
+        "value": 4,
+        "threshold": 3,
+        "message": null,
+        "recommendation": "Move behavior to the owner of its data. Use a value object when related arguments share meaning, operations or an invariant; avoid a wrapper solely to reduce this count.",
+        "file": "src/Engines/DatabaseEngine.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "source_measurement",
+          "source_sha256": "2fb3e1296c3d752f077ce78e6757847247247332147b746fb75f6e4a654d5735",
+          "line": 114,
+          "observation": "4 declared parameters > 3",
+          "parameters": [
+            "\\Laravel\\Scout\\Builder $builder",
+            "$perPage",
+            "$pageName",
+            "$page"
+          ],
+          "policy": "Превышен предел числа объявленных параметров. Сигнатуры принадлежат пакету; для реализаций локального интерфейса изменение должно согласовываться с этим интерфейсом. Сообщение не разрешает нарушать совместимость контрактов.",
+          "correction": "Implementation matches four parameter positions required by PaginatesEloquentModelsUsingDatabase; the declaring interface remains subject to the limit."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_measurement",
+          "source_sha256": "2fb3e1296c3d752f077ce78e6757847247247332147b746fb75f6e4a654d5735",
+          "line": 114,
+          "observation": "4 declared parameters > 3",
+          "parameters": [
+            "\\Laravel\\Scout\\Builder $builder",
+            "$perPage",
+            "$pageName",
+            "$page"
+          ],
+          "policy": "Превышен предел числа объявленных параметров. Сигнатуры принадлежат пакету; для реализаций локального интерфейса изменение должно согласовываться с этим интерфейсом. Сообщение не разрешает нарушать совместимость контрактов."
+        },
+        "regression_test": "tests/unit/MaxArgumentsContractTest.php"
+      }
+    },
+    {
+      "id": "44ec87f26cb030f516f5",
+      "package": "laravel/scout",
+      "diagnostic": {
+        "rule": "max_arguments",
+        "method": "Laravel\\Scout\\Engines\\DatabaseEngine::simplePaginateUsingDatabase",
+        "class": "Laravel\\Scout\\Engines\\DatabaseEngine",
+        "line": null,
+        "value": 4,
+        "threshold": 3,
+        "message": null,
+        "recommendation": "Move behavior to the owner of its data. Use a value object when related arguments share meaning, operations or an invariant; avoid a wrapper solely to reduce this count.",
+        "file": "src/Engines/DatabaseEngine.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "source_measurement",
+          "source_sha256": "2fb3e1296c3d752f077ce78e6757847247247332147b746fb75f6e4a654d5735",
+          "line": 152,
+          "observation": "4 declared parameters > 3",
+          "parameters": [
+            "\\Laravel\\Scout\\Builder $builder",
+            "$perPage",
+            "$pageName",
+            "$page"
+          ],
+          "policy": "Превышен предел числа объявленных параметров. Сигнатуры принадлежат пакету; для реализаций локального интерфейса изменение должно согласовываться с этим интерфейсом. Сообщение не разрешает нарушать совместимость контрактов.",
+          "correction": "Implementation matches four parameter positions required by PaginatesEloquentModelsUsingDatabase; the declaring interface remains subject to the limit."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_measurement",
+          "source_sha256": "2fb3e1296c3d752f077ce78e6757847247247332147b746fb75f6e4a654d5735",
+          "line": 152,
+          "observation": "4 declared parameters > 3",
+          "parameters": [
+            "\\Laravel\\Scout\\Builder $builder",
+            "$perPage",
+            "$pageName",
+            "$page"
+          ],
+          "policy": "Превышен предел числа объявленных параметров. Сигнатуры принадлежат пакету; для реализаций локального интерфейса изменение должно согласовываться с этим интерфейсом. Сообщение не разрешает нарушать совместимость контрактов."
+        },
+        "regression_test": "tests/unit/MaxArgumentsContractTest.php"
+      }
+    },
+    {
+      "id": "a17922cc8edcecca574c",
+      "package": "laravel/scout",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 180,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/ModelObserver.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "9c006021df4a6ce2adc450605fe96421f55ae03fa94f0ac8bae83d265869a700",
+          "line": 180,
+          "excerpt": "return $callback();",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные.",
+          "correction": "Native Closure/callable declaration is an explicit invocation contract, including value captures and declared properties."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "9c006021df4a6ce2adc450605fe96421f55ae03fa94f0ac8bae83d265869a700",
+          "line": 180,
+          "excerpt": "return $callback();",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      }
+    },
+    {
+      "id": "508d3c2538cef1cd8ec9",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 151,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/AutoCompletePrompt.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "reviewed_callable_contract",
+          "source_sha256": "36629d4c2eab956cc00cacaa5cb97d7d03011f2f603b807ffa19d9d0316c762b",
+          "line": 151,
+          "excerpt": "            return $this->matches;\n        }\n\n        if ($this->options instanceof Closure) {\n            $options = ($this->options)($this->value());\n",
+          "observation": "The call is inside the positive $this->options instanceof Closure branch."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "36629d4c2eab956cc00cacaa5cb97d7d03011f2f603b807ffa19d9d0316c762b",
+          "line": 151,
+          "excerpt": "$options = ($this->options)($this->value());",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      },
+      "reopened_review": {
+        "status": "pending",
+        "reason": "Re-review required: the previous audit classified computed syntax as a strict violation without fully resolving callable contracts."
+      }
+    },
+    {
+      "id": "4dbd725ad94e3305e5c3",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 30,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Concerns/Events.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "reviewed_callable_contract",
+          "source_sha256": "facce7c48fdbc5f30b5fc10234d0657872b670fa8ca975c74cdd199bf4de4b75",
+          "line": 30,
+          "excerpt": "     */\n    public function emit(string $event, mixed ...$data): void\n    {\n        foreach ($this->listeners[$event] ?? [] as $listener) {\n            $listener(...$data);\n        }",
+          "observation": "listeners declares array<string, array<int, Closure>>; indexing by event and iterating values selects a Closure."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "facce7c48fdbc5f30b5fc10234d0657872b670fa8ca975c74cdd199bf4de4b75",
+          "line": 30,
+          "excerpt": "$listener(...$data);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      },
+      "reopened_review": {
+        "status": "pending",
+        "reason": "Re-review required: the previous audit classified computed syntax as a strict violation without fully resolving callable contracts."
+      }
+    },
+    {
+      "id": "b452c65843b1a5a17936",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 59,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Concerns/Fallback.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "reviewed_callable_contract",
+          "source_sha256": "3ae3aaaceaf6de37d89f8135918c11a6763ef1d23e46a3ccee81b78ffa380a4c",
+          "line": 59,
+          "excerpt": "        if ($fallback === null) {\n            throw new RuntimeException('No fallback implementation registered for ['.static::class.']');\n        }\n\n        return $fallback($this);\n    }",
+          "observation": "fallbacks declares array<class-string, Closure($this): mixed>; the sole local assignment selects an element and the null guard rejects absence."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "3ae3aaaceaf6de37d89f8135918c11a6763ef1d23e46a3ccee81b78ffa380a4c",
+          "line": 59,
+          "excerpt": "return $fallback($this);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      },
+      "reopened_review": {
+        "status": "pending",
+        "reason": "Re-review required: the previous audit classified computed syntax as a strict violation without fully resolving callable contracts."
+      }
+    },
+    {
+      "id": "44338852786b9afab987",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 15,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Concerns/HasInfo.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "reviewed_callable_contract",
+          "source_sha256": "5c041bdcfae40f6b8d7e12338300e1dffd52f377a01a946337e7c857466213d6",
+          "line": 15,
+          "excerpt": "     */\n    public function infoText(): string\n    {\n        if ($this->info instanceof Closure) {\n            return ($this->info)($this->highlightedValue()) ?? '';\n        }",
+          "observation": "The call is inside the positive $this->info instanceof Closure branch."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "5c041bdcfae40f6b8d7e12338300e1dffd52f377a01a946337e7c857466213d6",
+          "line": 15,
+          "excerpt": "return ($this->info)($this->highlightedValue()) ?? '';",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      },
+      "reopened_review": {
+        "status": "pending",
+        "reason": "Re-review required: the previous audit classified computed syntax as a strict violation without fully resolving callable contracts."
+      }
+    },
+    {
+      "id": "7dc13d420cb43db263e3",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 143,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Concerns/Themes.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "reviewed_callable_contract",
+          "source_sha256": "f13e6d932f8d99202040f6cab49717985233e2f74b86b6197417b88794829c9b",
+          "line": 143,
+          "excerpt": "    protected function renderTheme(): string\n    {\n        $renderer = $this->getRenderer();\n\n        return $renderer($this);\n    }",
+          "observation": "The sole local assignment calls getRenderer(), whose native return type is callable."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "f13e6d932f8d99202040f6cab49717985233e2f74b86b6197417b88794829c9b",
+          "line": 143,
+          "excerpt": "return $renderer($this);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      },
+      "reopened_review": {
+        "status": "pending",
+        "reason": "Re-review required: the previous audit classified computed syntax as a strict violation without fully resolving callable contracts."
+      }
+    },
+    {
+      "id": "4d66c2ad41c3dd9457c7",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 68,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/NumberPrompt.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "reviewed_callable_contract",
+          "source_sha256": "e8608361a10abfc29cd105bf0aabc1ecc38add9cb1a262c08c41af846d66206c",
+          "line": 68,
+          "excerpt": "                return null;\n            }\n\n            return match (true) {\n                is_callable($validate) => ($validate)($value),\n                isset(static::$validateUsing) => (static::$validateUsing)($this),",
+          "observation": "The matching match(true) arm first establishes is_callable($validate)."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "e8608361a10abfc29cd105bf0aabc1ecc38add9cb1a262c08c41af846d66206c",
+          "line": 68,
+          "excerpt": "is_callable($validate) => ($validate)($value),",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      },
+      "reopened_review": {
+        "status": "pending",
+        "reason": "Re-review required: the previous audit classified computed syntax as a strict violation without fully resolving callable contracts."
+      }
+    },
+    {
+      "id": "b14a8c0b33379cf59dc3",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 69,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/NumberPrompt.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "reviewed_callable_contract",
+          "source_sha256": "e8608361a10abfc29cd105bf0aabc1ecc38add9cb1a262c08c41af846d66206c",
+          "line": 69,
+          "excerpt": "            }\n\n            return match (true) {\n                is_callable($validate) => ($validate)($value),\n                isset(static::$validateUsing) => (static::$validateUsing)($this),\n                default => throw new RuntimeException('The validation logic is missing.'),",
+          "observation": "Inherited Prompt::$validateUsing has the native ?Closure declaration."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "e8608361a10abfc29cd105bf0aabc1ecc38add9cb1a262c08c41af846d66206c",
+          "line": 69,
+          "excerpt": "isset(static::$validateUsing) => (static::$validateUsing)($this),",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      },
+      "reopened_review": {
+        "status": "pending",
+        "reason": "Re-review required: the previous audit classified computed syntax as a strict violation without fully resolving callable contracts."
+      }
+    },
+    {
+      "id": "84ba7c85ab6453c158b6",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 139,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Prompt.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "reviewed_callable_contract",
+          "source_sha256": "8bfb3c37b3c8473c3aaa36e991b296bea19efd0b60df439b8aba2e7ddfe35adb",
+          "line": 139,
+          "excerpt": "\n                if ($continue === false || $key === Key::CTRL_C) {\n                    if ($key === Key::CTRL_C) {\n                        if (isset(static::$cancelUsing)) {\n                            return Result::from((static::$cancelUsing)());\n                        } else {",
+          "observation": "Prompt::$cancelUsing has the native ?Closure declaration."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "8bfb3c37b3c8473c3aaa36e991b296bea19efd0b60df439b8aba2e7ddfe35adb",
+          "line": 139,
+          "excerpt": "return Result::from((static::$cancelUsing)());",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      },
+      "reopened_review": {
+        "status": "pending",
+        "reason": "Re-review required: the previous audit classified computed syntax as a strict violation without fully resolving callable contracts."
+      }
+    },
+    {
+      "id": "45f17fc7de33239e2ecb",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 406,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Prompt.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "reviewed_callable_contract",
+          "source_sha256": "8bfb3c37b3c8473c3aaa36e991b296bea19efd0b60df439b8aba2e7ddfe35adb",
+          "line": 406,
+          "excerpt": "            return;\n        }\n\n        $error = match (true) {\n            is_callable($this->validate) => ($this->validate)($value),\n            isset(static::$validateUsing) => (static::$validateUsing)($this),",
+          "observation": "The matching match(true) arm first establishes is_callable($this->validate)."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "8bfb3c37b3c8473c3aaa36e991b296bea19efd0b60df439b8aba2e7ddfe35adb",
+          "line": 406,
+          "excerpt": "is_callable($this->validate) => ($this->validate)($value),",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      },
+      "reopened_review": {
+        "status": "pending",
+        "reason": "Re-review required: the previous audit classified computed syntax as a strict violation without fully resolving callable contracts."
+      }
+    },
+    {
+      "id": "8144b9c351b174a4aa1e",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 407,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Prompt.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "reviewed_callable_contract",
+          "source_sha256": "8bfb3c37b3c8473c3aaa36e991b296bea19efd0b60df439b8aba2e7ddfe35adb",
+          "line": 407,
+          "excerpt": "        }\n\n        $error = match (true) {\n            is_callable($this->validate) => ($this->validate)($value),\n            isset(static::$validateUsing) => (static::$validateUsing)($this),\n            default => throw new RuntimeException('The validation logic is missing.'),",
+          "observation": "Prompt::$validateUsing has the native ?Closure declaration."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "8bfb3c37b3c8473c3aaa36e991b296bea19efd0b60df439b8aba2e7ddfe35adb",
+          "line": 407,
+          "excerpt": "isset(static::$validateUsing) => (static::$validateUsing)($this),",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      },
+      "reopened_review": {
+        "status": "pending",
+        "reason": "Re-review required: the previous audit classified computed syntax as a strict violation without fully resolving callable contracts."
+      }
+    },
+    {
+      "id": "f2d2b6a1a233cbdb96f0",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 65,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Stream.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "reviewed_callable_contract",
+          "source_sha256": "75c87faa70bf3008150b02b063c0444f4ddd2a50f832684ecfe53bd8d0848871",
+          "line": 65,
+          "excerpt": "    {\n        $toFadeIn = [];\n\n        foreach ($this->currentlyFading as $index => $message) {\n            $toFadeIn[] = $this->fadingOutColors[$index]($message);\n        }",
+          "observation": "fadingOutColors declares array<int, Closure(string): string>; one index selects the declared callback."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "75c87faa70bf3008150b02b063c0444f4ddd2a50f832684ecfe53bd8d0848871",
+          "line": 65,
+          "excerpt": "$toFadeIn[] = $this->fadingOutColors[$index]($message);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      },
+      "reopened_review": {
+        "status": "pending",
+        "reason": "Re-review required: the previous audit classified computed syntax as a strict violation without fully resolving callable contracts."
+      }
+    },
+    {
+      "id": "712d72bceb577450f093",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 109,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/SuggestPrompt.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "reviewed_callable_contract",
+          "source_sha256": "dfc987ba904409c4ba890588d12d8c2da204bc66cf7771a7a4aa962a792899e5",
+          "line": 109,
+          "excerpt": "            return $this->matches;\n        }\n\n        if ($this->options instanceof Closure) {\n            $matches = ($this->options)($this->value());\n",
+          "observation": "The call is inside the positive $this->options instanceof Closure branch."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "dfc987ba904409c4ba890588d12d8c2da204bc66cf7771a7a4aa962a792899e5",
+          "line": 109,
+          "excerpt": "$matches = ($this->options)($this->value());",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      },
+      "reopened_review": {
+        "status": "pending",
+        "reason": "Re-review required: the previous audit classified computed syntax as a strict violation without fully resolving callable contracts."
+      }
+    },
+    {
+      "id": "d86998caea9fada536d4",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 209,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Terminal.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "reviewed_callable_contract",
+          "source_sha256": "163c4ba7e95ac95213a762dc6792f95b40c8ebdf88314cc1d99cbeabbf3d2688",
+          "line": 209,
+          "excerpt": "            (int) (hexdec($m[2]) / (strlen($m[2]) === 4 ? 257 : 1)),\n            (int) (hexdec($m[3]) / (strlen($m[3]) === 4 ? 257 : 1)),\n        ];\n\n        static::$foregroundColor = isset($matches[0]) ? $parse($matches[0]) : [204, 204, 204];\n        static::$backgroundColor = isset($matches[1]) ? $parse($matches[1]) : [0, 0, 0];",
+          "observation": "The sole dominating definition assigns an arrow function to $parse."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "163c4ba7e95ac95213a762dc6792f95b40c8ebdf88314cc1d99cbeabbf3d2688",
+          "line": 209,
+          "excerpt": "static::$foregroundColor = isset($matches[0]) ? $parse($matches[0]) : [204, 204, 204];",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      },
+      "reopened_review": {
+        "status": "pending",
+        "reason": "Re-review required: the previous audit classified computed syntax as a strict violation without fully resolving callable contracts."
+      }
+    },
+    {
+      "id": "c8c0f63c507802a097ad",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 210,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Terminal.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "reviewed_callable_contract",
+          "source_sha256": "163c4ba7e95ac95213a762dc6792f95b40c8ebdf88314cc1d99cbeabbf3d2688",
+          "line": 210,
+          "excerpt": "            (int) (hexdec($m[3]) / (strlen($m[3]) === 4 ? 257 : 1)),\n        ];\n\n        static::$foregroundColor = isset($matches[0]) ? $parse($matches[0]) : [204, 204, 204];\n        static::$backgroundColor = isset($matches[1]) ? $parse($matches[1]) : [0, 0, 0];\n    }",
+          "observation": "The sole dominating definition assigns an arrow function to $parse."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "163c4ba7e95ac95213a762dc6792f95b40c8ebdf88314cc1d99cbeabbf3d2688",
+          "line": 210,
+          "excerpt": "static::$backgroundColor = isset($matches[1]) ? $parse($matches[1]) : [0, 0, 0];",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      },
+      "reopened_review": {
+        "status": "pending",
+        "reason": "Re-review required: the previous audit classified computed syntax as a strict violation without fully resolving callable contracts."
+      }
+    },
+    {
+      "id": "06735079844fa583730f",
+      "package": "laravel/sanctum",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 86,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Guard.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "reviewed_callable_contract",
+          "source_sha256": "70b7463156c0687bdfecd21a8c74303fc46b3d28eb260096b778c3b3911f83ca",
+          "line": 86,
+          "excerpt": "     */\n    protected function getTokenFromRequest(Request $request)\n    {\n        if (is_callable(Sanctum::$accessTokenRetrievalCallback)) {\n            return (string) (Sanctum::$accessTokenRetrievalCallback)($request);\n        }",
+          "observation": "The enclosing if establishes is_callable(Sanctum::$accessTokenRetrievalCallback)."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "70b7463156c0687bdfecd21a8c74303fc46b3d28eb260096b778c3b3911f83ca",
+          "line": 86,
+          "excerpt": "return (string) (Sanctum::$accessTokenRetrievalCallback)($request);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      },
+      "reopened_review": {
+        "status": "pending",
+        "reason": "Re-review required: the previous audit classified computed syntax as a strict violation without fully resolving callable contracts."
+      }
+    },
+    {
+      "id": "267405e65e70387cd3d3",
+      "package": "laravel/sanctum",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 133,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Guard.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "reviewed_callable_contract",
+          "source_sha256": "70b7463156c0687bdfecd21a8c74303fc46b3d28eb260096b778c3b3911f83ca",
+          "line": 133,
+          "excerpt": "            && (! $accessToken->expires_at || ! $accessToken->expires_at->isPast())\n            && $this->hasValidProvider($accessToken->tokenable);\n\n        if (is_callable(Sanctum::$accessTokenAuthenticationCallback)) {\n            $isValid = (bool) (Sanctum::$accessTokenAuthenticationCallback)($accessToken, $isValid);\n        }",
+          "observation": "The enclosing if establishes is_callable(Sanctum::$accessTokenAuthenticationCallback)."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "70b7463156c0687bdfecd21a8c74303fc46b3d28eb260096b778c3b3911f83ca",
+          "line": 133,
+          "excerpt": "$isValid = (bool) (Sanctum::$accessTokenAuthenticationCallback)($accessToken, $isValid);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      },
+      "reopened_review": {
+        "status": "pending",
+        "reason": "Re-review required: the previous audit classified computed syntax as a strict violation without fully resolving callable contracts."
+      }
+    },
+    {
+      "id": "34b3324ff5fda61d8081",
+      "package": "laravel/sanctum",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 32,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Http/Middleware/CheckAbilities.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "reviewed_callable_contract",
+          "source_sha256": "d5463e297156c3369f993b904d88d66881b0c05f41558c831e82070474c43422",
+          "line": 32,
+          "excerpt": "                throw new MissingAbilityException($ability);\n            }\n        }\n\n        return $next($request);\n    }",
+          "observation": "The handle declaration explicitly documents @param \\Closure $next."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "d5463e297156c3369f993b904d88d66881b0c05f41558c831e82070474c43422",
+          "line": 32,
+          "excerpt": "return $next($request);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      },
+      "reopened_review": {
+        "status": "pending",
+        "reason": "Re-review required: the previous audit classified computed syntax as a strict violation without fully resolving callable contracts."
+      }
+    },
+    {
+      "id": "41a09e147268eaf23e2d",
+      "package": "laravel/sanctum",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 28,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Http/Middleware/CheckForAnyAbility.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "reviewed_callable_contract",
+          "source_sha256": "94b4817f5b485c15eb14739a108aae507cc2c939f6020d9c19290513e34772b3",
+          "line": 28,
+          "excerpt": "        }\n\n        foreach ($abilities as $ability) {\n            if ($request->user()->tokenCan($ability)) {\n                return $next($request);\n            }",
+          "observation": "The handle declaration explicitly documents @param \\Closure $next."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "94b4817f5b485c15eb14739a108aae507cc2c939f6020d9c19290513e34772b3",
+          "line": 28,
+          "excerpt": "return $next($request);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      },
+      "reopened_review": {
+        "status": "pending",
+        "reason": "Re-review required: the previous audit classified computed syntax as a strict violation without fully resolving callable contracts."
+      }
+    },
+    {
+      "id": "442f10349eb6e90d7eef",
+      "package": "laravel/sanctum",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 26,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Http/Middleware/EnsureFrontendRequestsAreStateful.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "reviewed_callable_contract",
+          "source_sha256": "989a2122f224d2a8c522a011f19fe1700a2aac35253f719e601bf3e68ca3013b",
+          "line": 26,
+          "excerpt": "\n        return (new Pipeline(app()))->send($request)->through(\n            static::fromFrontend($request) ? $this->frontendMiddleware() : []\n        )->then(function ($request) use ($next) {\n            return $next($request);\n        });",
+          "observation": "The handle declaration documents @param callable $next; the inner closure captures this binding."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "989a2122f224d2a8c522a011f19fe1700a2aac35253f719e601bf3e68ca3013b",
+          "line": 26,
+          "excerpt": "return $next($request);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      },
+      "reopened_review": {
+        "status": "pending",
+        "reason": "Re-review required: the previous audit classified computed syntax as a strict violation without fully resolving callable contracts."
+      }
+    },
+    {
+      "id": "ca5ed9e209b0d99b034d",
+      "package": "laravel/sanctum",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 61,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Http/Middleware/EnsureFrontendRequestsAreStateful.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "reviewed_callable_contract",
+          "source_sha256": "989a2122f224d2a8c522a011f19fe1700a2aac35253f719e601bf3e68ca3013b",
+          "line": 61,
+          "excerpt": "\n        array_unshift($middleware, function ($request, $next) {\n            $request->attributes->set('sanctum', true);\n\n            return $next($request);\n        });",
+          "observation": "The closure is inserted into the returned middleware array consumed by a concrete Illuminate\\Routing\\Pipeline::through call. Its second input is the continuation closure supplied by Pipeline::carry."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "989a2122f224d2a8c522a011f19fe1700a2aac35253f719e601bf3e68ca3013b",
+          "line": 61,
+          "excerpt": "return $next($request);",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      },
+      "reopened_review": {
+        "status": "pending",
+        "reason": "Re-review required: the previous audit classified computed syntax as a strict violation without fully resolving callable contracts."
+      }
+    },
+    {
+      "id": "c8f1168f9f6ef1d14456",
+      "package": "laravel/sanctum",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 91,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/SanctumServiceProvider.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "reviewed_callable_contract",
+          "source_sha256": "8acbc3d97886c0acea47f70e65ba545a4d367dcd4dfacf3340bc47636f8ec4f7",
+          "line": 91,
+          "excerpt": "        Auth::resolved(function ($auth) {\n            $requestGuardCreator = fn ($config) => $this->createGuard($auth, $config);\n\n            $auth->extend('sanctum', function ($app, $name, array $config) use ($requestGuardCreator) {\n                return tap($requestGuardCreator($config), function ($guard) {\n                    app()->refresh('request', $guard, 'setRequest');",
+          "observation": "A sole dominating arrow-function assignment defines requestGuardCreator before capture."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "8acbc3d97886c0acea47f70e65ba545a4d367dcd4dfacf3340bc47636f8ec4f7",
+          "line": 91,
+          "excerpt": "return tap($requestGuardCreator($config), function ($guard) {",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      },
+      "reopened_review": {
+        "status": "pending",
+        "reason": "Re-review required: the previous audit classified computed syntax as a strict violation without fully resolving callable contracts."
+      }
+    },
+    {
+      "id": "58bb6dfa8b29bea4485b",
+      "package": "laravel/scout",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 36,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Searchable.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "reviewed_callable_contract",
+          "source_sha256": "f373fc13316ef5d9a4b2c2b13a380abd2e369a71730172c1f150d2446540fc33",
+          "line": 36,
+          "excerpt": "\n        if (method_exists(static::class, 'whenBooted')) {\n            static::whenBooted($whenBootedCallback);\n        } else {\n            $whenBootedCallback();\n        }",
+          "observation": "A sole dominating closure assignment defines whenBootedCallback before the conditional invocation."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "f373fc13316ef5d9a4b2c2b13a380abd2e369a71730172c1f150d2446540fc33",
+          "line": 36,
+          "excerpt": "$whenBootedCallback();",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      },
+      "reopened_review": {
+        "status": "pending",
+        "reason": "Re-review required: the previous audit classified computed syntax as a strict violation without fully resolving callable contracts."
+      }
+    },
+    {
+      "id": "1416f83388b5e0960f57",
+      "package": "laravel/scout",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 372,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/Searchable.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "kind": "reviewed_callable_contract",
+          "source_sha256": "f373fc13316ef5d9a4b2c2b13a380abd2e369a71730172c1f150d2446540fc33",
+          "line": 372,
+          "excerpt": "    {\n        static::disableSearchSyncing();\n\n        try {\n            return $callback();\n        } finally {",
+          "observation": "The method explicitly documents @param callable $callback."
+        },
+        "regression_test": "tests/unit/CallableContractRegressionTest.php"
+      },
+      "previous_review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "f373fc13316ef5d9a4b2c2b13a380abd2e369a71730172c1f150d2446540fc33",
+          "line": 372,
+          "excerpt": "return $callback();",
+          "observation": "Вызов через переменную/свойство/индекс, вычисляемое имя метода или класса либо call_user_func. Стандарт запрещает эту форму, включая callback-переменные."
+        },
+        "regression_test": "tests/unit/NoDynamicInvocationTest.php"
+      },
+      "reopened_review": {
+        "status": "pending",
+        "reason": "Re-review required: the previous audit classified computed syntax as a strict violation without fully resolving callable contracts."
+      }
     }
   ]
 }

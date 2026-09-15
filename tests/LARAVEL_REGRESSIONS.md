@@ -78,3 +78,29 @@ PHPDoc-потребители Serializable Closure закреплены парн
 
 `LocalInterfaceRulesTest` закрепляет ограниченность локального вывода об интерфейсе
 и сохранение явно объявленного внешнего контракта.
+
+## Контрпримеры Sandbox после первоначального аудита
+
+`CallableContractRegressionTest` проходит через стандартный Runner: отсутствие
+сведений о callback, его свойстве, результате метода или коллекции не порождает
+нарушение. Вычисляемый метод, класс и косвенный helper по-прежнему срабатывают.
+Тест также сохраняет контракт наследуемого метода и проверяет лишние аргументы.
+`ExternalParameterContractsTest` проверяет Composer-зависимости без исполнения кода.
+`LaravelMiddlewareContractsTest` сохраняет два контрактных входа `terminate`
+зарегистрированного middleware; лишние входы и совпадения имён проверяются.
+
+Общий стандарт доказательств: `docs/ANALYSIS_EVIDENCE.md`.
+Воспроизводимая проверка корпуса: `LaravelAuditCorpusTest` и инструкция в реестре.
+
+## Полный аудит Sandbox
+
+`MaxArgumentsContractTest::testForwardingConstructorRequiresTheActualParentContract`
+защищает прозрачную передачу параметров реальному родителю и парные нарушения.
+`SandboxAuditCorpusTest` проверяет полноту ручного реестра; при `SODA_SANDBOX_ROOT`
+также сверяет все исходники, родительский контракт и каждую текущую диагностику.
+Реестр: `docs/research/sandbox-audit/README.md`.
+
+`CloningPolicyTest` защищает отсутствие безусловного запрета clone в стандартном
+наборе, секционном наборе и новой конфигурации; отдельно проверяет копию Query
+Builder в условии и сохранение замечания к вложенному factory-вызову. Явное
+подключение старой политики защищает `PracticalPolicyCompatibilityTest`.

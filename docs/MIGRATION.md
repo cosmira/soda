@@ -439,7 +439,7 @@ See [the RFC](rfcs/explicit-behavior-rules.md) for exact scope and counterexampl
 
 ## Strict behavior and composition checks
 
-The standard catalog now contains **82 checks**, including eleven new checks listed in
+The standard catalog now contains **81 checks**, including eleven new checks listed in
 [the strict rule matrix](STRICT_RULES_IMPLEMENTATION.md). Standard configuration and newly
 generated `init` files enable them. Existing explicit `with([...])` selections keep their
 chosen checks; add the desired classes or switch to `RuleCatalog::standard()`.
@@ -454,3 +454,6 @@ Project composition checks require the runner's project stage and all relevant s
 Direct `checkFile()` integrations must also collect the requested facts and invoke
 `checkProject()` to include inherited methods, selected trait bodies and cross-file consumers.
 The normal runner already does this. JSON remains schema 4, with the same violation fields.
+
+The unconditional `NoObjectCloning` policy is no longer enabled by default. Existing
+explicit rule selections remain effective; remove that check to allow copying.

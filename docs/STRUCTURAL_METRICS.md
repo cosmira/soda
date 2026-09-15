@@ -691,9 +691,13 @@ new MaxArguments(3, contracts: [
 ```
 
 Use the fully qualified declaring class or trait and method. Matching ignores case
-and an initial backslash. Inheritance, `#[Override]`, and a matching short method
-name do not grant exemptions. The default contract list is empty; all other
-methods retain the configured limit.
+and an initial backslash. The project pass also resolves actual inherited signatures,
+including parent trait methods from installed Composer sources, without executing them.
+A trait override is checked in the context of its known consuming class. Only the
+inherited arity is protected; extra positions still violate the limit. Ordinary
+concrete parent constructors do not impose a PHP signature contract. `#[Override]`
+or a matching short method name alone grants no exemption. Unknown external
+contracts can still be listed explicitly; the default list is empty.
 
 Native stream hooks registered through the declaring class's `__CLASS__` in
 `stream_wrapper_register()` preserve their PHP protocol arity: `stream_open` (4),
@@ -736,6 +740,12 @@ public function createUser(CreateUserRequest $request): User
 ```
 
 ---
+
+A constructor that only forwards every unchanged positional parameter to the actual
+parent constructor preserves that parent's known arity, including promoted inputs.
+This does not make all concrete constructors inherited contracts. Extra arguments,
+reordered inputs, unknown parents and additional body behavior do not receive this
+exception. Parent sources are read without executing application code.
 
 ### max_dependencies
 
@@ -1207,7 +1217,18 @@ application collaborator.
 
 ### no_object_cloning
 
-Forbids `clone`. Express copy semantics through a named method or fresh construction.
+Not enabled in the standard catalog. `clone` is a normal copying operation;
+its presence does not prove unsafe aliasing or an architectural defect. Direct
+copies of query builders and value objects require no framework-specific exception.
+
+`(clone $query)->exists()` is a single predicate on a copied value. A nested factory
+such as `(clone createQuery())->exists()` still violates the separate simple-condition
+policy because it executes a call inside the receiver expression.
+
+The existing `new NoObjectCloning()` remains available only when explicitly selected
+for a project that intentionally forbids all cloning. It retains that literal meaning,
+including inside named copy methods. Remove it from previously generated configurations
+to adopt the standard policy; this change does not silently edit user configuration.
 
 ### no_closure_rebinding
 
@@ -1231,10 +1252,15 @@ Forbids PHP's `@` error-suppression operator. Handle or translate failures expli
 
 ### no_dynamic_invocation
 
-Forbids variable function and variable method names plus `call_user_func*()` and `forward_static_call*()`. Use a typed interface or explicit dispatch map.
-An immediately invoked literal closure or arrow has an explicit target and is
-accepted. A variable callback, computed choice between closures, or dynamic call
-inside the literal callable remains subject to the rule.
+Forbids computed method names, runtime-selected class construction, and the indirect
+helpers `call_user_func*()` and `forward_static_call*()`. These are explicit syntax
+policies; their diagnostics identify the actual forbidden mechanism.
+
+Direct callback invocation (`$callback()`, property values, method results and array
+values) does not violate this rule. Missing type information does not prove a
+violation. This rule does not check whether a value is callable at runtime. Native
+type declarations remain subject to their own rules. No framework-specific callback
+exceptions or additional strict mode are needed.
 
 ### no_catch_all_exceptions
 
@@ -1508,3 +1534,11 @@ See [round two](research/LARAVEL_FALSE_POSITIVES_ROUND_2.md) for verified exampl
 Ask-then-tell checks exclude consumed ternary results and decisions about the
 receiver's own state (`$this`, `self`, `static`). Inline Markdown code examples
 are not treated as commented-out PHP; surrounding disabled code remains checked.
+
+### Registered Laravel middleware inputs
+
+`no_unused_parameters` preserves the first two positions of a public, non-static
+`terminate` method when its exact class is registered by a Laravel ServiceProvider
+through `$this->app['router']->aliasMiddleware(...)`. The project pass resolves
+registration across files. A class or method name alone is not evidence; extra
+inputs and unrelated registrations remain checked.

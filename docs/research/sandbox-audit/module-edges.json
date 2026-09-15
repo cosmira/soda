@@ -1,0 +1,463 @@
+{
+  "cosmira\\sandbox": {
+    "cosmira\\sandbox\\relations": [
+      {
+        "class": "Cosmira\\Sandbox\\HasSandbox",
+        "dependency": "Cosmira\\Sandbox\\Relations\\SandboxBelongsToMany",
+        "file": "src/HasSandbox.php",
+        "lines": [
+          28
+        ]
+      }
+    ],
+    "cosmira\\sandbox\\support": [
+      {
+        "class": "Cosmira\\Sandbox\\HasSandbox",
+        "dependency": "Cosmira\\Sandbox\\Support\\SandboxTableSynchronizer",
+        "file": "src/HasSandbox.php",
+        "lines": [
+          282
+        ]
+      },
+      {
+        "class": "Cosmira\\Sandbox\\Sandbox",
+        "dependency": "Cosmira\\Sandbox\\Support\\SandboxModelRegistry",
+        "file": "src/Sandbox.php",
+        "lines": [
+          30,
+          33,
+          40
+        ]
+      },
+      {
+        "class": "Cosmira\\Sandbox\\SandboxServiceProvider",
+        "dependency": "Cosmira\\Sandbox\\Support\\SandboxModelRegistry",
+        "file": "src/SandboxServiceProvider.php",
+        "lines": [
+          35,
+          50,
+          52
+        ]
+      },
+      {
+        "class": "Cosmira\\Sandbox\\SandboxTable",
+        "dependency": "Cosmira\\Sandbox\\Support\\SandboxTableSynchronizer",
+        "file": "src/SandboxTable.php",
+        "lines": [
+          62
+        ]
+      }
+    ],
+    "cosmira\\sandbox\\models": [
+      {
+        "class": "Cosmira\\Sandbox\\Sandbox",
+        "dependency": "Cosmira\\Sandbox\\Models\\SandboxStatus",
+        "file": "src/Sandbox.php",
+        "lines": [
+          85
+        ]
+      },
+      {
+        "class": "Cosmira\\Sandbox\\SandboxBuilder",
+        "dependency": "Cosmira\\Sandbox\\Models\\SandboxStatus",
+        "file": "src/SandboxBuilder.php",
+        "lines": [
+          91
+        ]
+      }
+    ],
+    "cosmira\\sandbox\\backends": [
+      {
+        "class": "Cosmira\\Sandbox\\SandboxServiceProvider",
+        "dependency": "Cosmira\\Sandbox\\Backends\\EloquentSandboxBackend",
+        "file": "src/SandboxServiceProvider.php",
+        "lines": [
+          36
+        ]
+      }
+    ],
+    "cosmira\\sandbox\\commands": [
+      {
+        "class": "Cosmira\\Sandbox\\SandboxServiceProvider",
+        "dependency": "Cosmira\\Sandbox\\Commands\\BenchmarkSyncCommand",
+        "file": "src/SandboxServiceProvider.php",
+        "lines": [
+          81
+        ]
+      },
+      {
+        "class": "Cosmira\\Sandbox\\SandboxServiceProvider",
+        "dependency": "Cosmira\\Sandbox\\Commands\\CommitSandboxCommand",
+        "file": "src/SandboxServiceProvider.php",
+        "lines": [
+          74
+        ]
+      },
+      {
+        "class": "Cosmira\\Sandbox\\SandboxServiceProvider",
+        "dependency": "Cosmira\\Sandbox\\Commands\\OpenSandboxCommand",
+        "file": "src/SandboxServiceProvider.php",
+        "lines": [
+          73
+        ]
+      },
+      {
+        "class": "Cosmira\\Sandbox\\SandboxServiceProvider",
+        "dependency": "Cosmira\\Sandbox\\Commands\\RollbackSandboxCommand",
+        "file": "src/SandboxServiceProvider.php",
+        "lines": [
+          75
+        ]
+      },
+      {
+        "class": "Cosmira\\Sandbox\\SandboxServiceProvider",
+        "dependency": "Cosmira\\Sandbox\\Commands\\SaveSandboxCommand",
+        "file": "src/SandboxServiceProvider.php",
+        "lines": [
+          76
+        ]
+      },
+      {
+        "class": "Cosmira\\Sandbox\\SandboxServiceProvider",
+        "dependency": "Cosmira\\Sandbox\\Commands\\StatusSandboxCommand",
+        "file": "src/SandboxServiceProvider.php",
+        "lines": [
+          77
+        ]
+      }
+    ],
+    "cosmira\\sandbox\\events": [
+      {
+        "class": "Cosmira\\Sandbox\\SandboxServiceProvider",
+        "dependency": "Cosmira\\Sandbox\\Events\\SandboxCommitted",
+        "file": "src/SandboxServiceProvider.php",
+        "lines": [
+          50
+        ]
+      },
+      {
+        "class": "Cosmira\\Sandbox\\SandboxServiceProvider",
+        "dependency": "Cosmira\\Sandbox\\Events\\SandboxRolledBack",
+        "file": "src/SandboxServiceProvider.php",
+        "lines": [
+          52
+        ]
+      }
+    ],
+    "cosmira\\sandbox\\http\\middleware": [
+      {
+        "class": "Cosmira\\Sandbox\\SandboxServiceProvider",
+        "dependency": "Cosmira\\Sandbox\\Http\\Middleware\\SandboxMiddleware",
+        "file": "src/SandboxServiceProvider.php",
+        "lines": [
+          47
+        ]
+      }
+    ]
+  },
+  "cosmira\\sandbox\\backends": {
+    "cosmira\\sandbox\\events": [
+      {
+        "class": "Cosmira\\Sandbox\\Backends\\EloquentSandboxBackend",
+        "dependency": "Cosmira\\Sandbox\\Events\\SandboxCommitted",
+        "file": "src/Backends/EloquentSandboxBackend.php",
+        "lines": [
+          278
+        ]
+      },
+      {
+        "class": "Cosmira\\Sandbox\\Backends\\EloquentSandboxBackend",
+        "dependency": "Cosmira\\Sandbox\\Events\\SandboxCommitting",
+        "file": "src/Backends/EloquentSandboxBackend.php",
+        "lines": [
+          265
+        ]
+      },
+      {
+        "class": "Cosmira\\Sandbox\\Backends\\EloquentSandboxBackend",
+        "dependency": "Cosmira\\Sandbox\\Events\\SandboxOpened",
+        "file": "src/Backends/EloquentSandboxBackend.php",
+        "lines": [
+          83
+        ]
+      },
+      {
+        "class": "Cosmira\\Sandbox\\Backends\\EloquentSandboxBackend",
+        "dependency": "Cosmira\\Sandbox\\Events\\SandboxResetting",
+        "file": "src/Backends/EloquentSandboxBackend.php",
+        "lines": [
+          69,
+          72,
+          236
+        ]
+      },
+      {
+        "class": "Cosmira\\Sandbox\\Backends\\EloquentSandboxBackend",
+        "dependency": "Cosmira\\Sandbox\\Events\\SandboxRolledBack",
+        "file": "src/Backends/EloquentSandboxBackend.php",
+        "lines": [
+          248
+        ]
+      },
+      {
+        "class": "Cosmira\\Sandbox\\Backends\\EloquentSandboxBackend",
+        "dependency": "Cosmira\\Sandbox\\Events\\SandboxRollingBack",
+        "file": "src/Backends/EloquentSandboxBackend.php",
+        "lines": [
+          235
+        ]
+      },
+      {
+        "class": "Cosmira\\Sandbox\\Backends\\EloquentSandboxBackend",
+        "dependency": "Cosmira\\Sandbox\\Events\\SandboxSaved",
+        "file": "src/Backends/EloquentSandboxBackend.php",
+        "lines": [
+          301
+        ]
+      }
+    ],
+    "cosmira\\sandbox\\models": [
+      {
+        "class": "Cosmira\\Sandbox\\Backends\\EloquentSandboxBackend",
+        "dependency": "Cosmira\\Sandbox\\Models\\SandboxStatus",
+        "file": "src/Backends/EloquentSandboxBackend.php",
+        "lines": [
+          35,
+          35,
+          159,
+          231,
+          259,
+          288,
+          313,
+          329,
+          341
+        ]
+      }
+    ],
+    "cosmira\\sandbox\\support": [
+      {
+        "class": "Cosmira\\Sandbox\\Backends\\EloquentSandboxBackend",
+        "dependency": "Cosmira\\Sandbox\\Support\\SandboxModelRegistry",
+        "file": "src/Backends/EloquentSandboxBackend.php",
+        "lines": [
+          33
+        ]
+      },
+      {
+        "class": "Cosmira\\Sandbox\\Backends\\EloquentSandboxBackend",
+        "dependency": "Cosmira\\Sandbox\\Support\\SandboxRecordRestorer",
+        "file": "src/Backends/EloquentSandboxBackend.php",
+        "lines": [
+          34,
+          34
+        ]
+      },
+      {
+        "class": "Cosmira\\Sandbox\\Backends\\EloquentSandboxBackend",
+        "dependency": "Cosmira\\Sandbox\\Support\\SandboxStatusLocker",
+        "file": "src/Backends/EloquentSandboxBackend.php",
+        "lines": [
+          331
+        ]
+      }
+    ]
+  },
+  "cosmira\\sandbox\\commands": {
+    "cosmira\\sandbox": [
+      {
+        "class": "Cosmira\\Sandbox\\Commands\\BenchmarkItem",
+        "dependency": "Cosmira\\Sandbox\\HasSandbox",
+        "file": "src/Commands/BenchmarkSyncCommand.php",
+        "lines": [
+          225
+        ]
+      },
+      {
+        "class": "Cosmira\\Sandbox\\Commands\\CommitSandboxCommand",
+        "dependency": "Cosmira\\Sandbox\\Sandbox",
+        "file": "src/Commands/CommitSandboxCommand.php",
+        "lines": [
+          32
+        ]
+      },
+      {
+        "class": "Cosmira\\Sandbox\\Commands\\OpenSandboxCommand",
+        "dependency": "Cosmira\\Sandbox\\Sandbox",
+        "file": "src/Commands/OpenSandboxCommand.php",
+        "lines": [
+          33
+        ]
+      },
+      {
+        "class": "Cosmira\\Sandbox\\Commands\\RollbackSandboxCommand",
+        "dependency": "Cosmira\\Sandbox\\Sandbox",
+        "file": "src/Commands/RollbackSandboxCommand.php",
+        "lines": [
+          32
+        ]
+      },
+      {
+        "class": "Cosmira\\Sandbox\\Commands\\SaveSandboxCommand",
+        "dependency": "Cosmira\\Sandbox\\Sandbox",
+        "file": "src/Commands/SaveSandboxCommand.php",
+        "lines": [
+          32
+        ]
+      },
+      {
+        "class": "Cosmira\\Sandbox\\Commands\\StatusSandboxCommand",
+        "dependency": "Cosmira\\Sandbox\\Sandbox",
+        "file": "src/Commands/StatusSandboxCommand.php",
+        "lines": [
+          30
+        ]
+      }
+    ]
+  },
+  "cosmira\\sandbox\\database\\factories": {
+    "cosmira\\sandbox\\models": [
+      {
+        "class": "Cosmira\\Sandbox\\Database\\Factories\\SandboxStatusFactory",
+        "dependency": "Cosmira\\Sandbox\\Models\\SandboxStatus",
+        "file": "src/Database/Factories/SandboxStatusFactory.php",
+        "lines": [
+          23
+        ]
+      }
+    ]
+  },
+  "cosmira\\sandbox\\events": {
+    "cosmira\\sandbox\\support": [
+      {
+        "class": "Cosmira\\Sandbox\\Events\\SandboxResolvingModels",
+        "dependency": "Cosmira\\Sandbox\\Support\\SandboxModelRegistry",
+        "file": "src/Events/SandboxResolvingModels.php",
+        "lines": [
+          18,
+          28,
+          30,
+          48
+        ]
+      }
+    ]
+  },
+  "cosmira\\sandbox\\http\\middleware": {
+    "cosmira\\sandbox\\events": [
+      {
+        "class": "Cosmira\\Sandbox\\Http\\Middleware\\SandboxMiddleware",
+        "dependency": "Cosmira\\Sandbox\\Events\\SandboxResolvingModels",
+        "file": "src/Http/Middleware/SandboxMiddleware.php",
+        "lines": [
+          73
+        ]
+      }
+    ],
+    "cosmira\\sandbox\\models": [
+      {
+        "class": "Cosmira\\Sandbox\\Http\\Middleware\\SandboxMiddleware",
+        "dependency": "Cosmira\\Sandbox\\Models\\SandboxStatus",
+        "file": "src/Http/Middleware/SandboxMiddleware.php",
+        "lines": [
+          60
+        ]
+      }
+    ],
+    "cosmira\\sandbox": [
+      {
+        "class": "Cosmira\\Sandbox\\Http\\Middleware\\SandboxMiddleware",
+        "dependency": "Cosmira\\Sandbox\\Sandbox",
+        "file": "src/Http/Middleware/SandboxMiddleware.php",
+        "lines": [
+          23,
+          25,
+          28
+        ]
+      }
+    ],
+    "cosmira\\sandbox\\support": [
+      {
+        "class": "Cosmira\\Sandbox\\Http\\Middleware\\SandboxMiddleware",
+        "dependency": "Cosmira\\Sandbox\\Support\\SandboxModelRegistry",
+        "file": "src/Http/Middleware/SandboxMiddleware.php",
+        "lines": [
+          21,
+          25,
+          27
+        ]
+      }
+    ]
+  },
+  "cosmira\\sandbox\\models": {
+    "cosmira\\sandbox\\database\\factories": [
+      {
+        "class": "Cosmira\\Sandbox\\Models\\SandboxStatus",
+        "dependency": "Cosmira\\Sandbox\\Database\\Factories\\SandboxStatusFactory",
+        "file": "src/Models/SandboxStatus.php",
+        "lines": [
+          125,
+          127
+        ]
+      }
+    ],
+    "cosmira\\sandbox\\support": [
+      {
+        "class": "Cosmira\\Sandbox\\Models\\SandboxStatus",
+        "dependency": "Cosmira\\Sandbox\\Support\\SandboxStatusLocker",
+        "file": "src/Models/SandboxStatus.php",
+        "lines": [
+          106
+        ]
+      }
+    ]
+  },
+  "cosmira\\sandbox\\relations": {
+    "cosmira\\sandbox\\support": [
+      {
+        "class": "Cosmira\\Sandbox\\Relations\\SandboxBelongsToMany",
+        "dependency": "Cosmira\\Sandbox\\Support\\SandboxModelRegistry",
+        "file": "src/Relations/SandboxBelongsToMany.php",
+        "lines": [
+          35
+        ]
+      }
+    ]
+  },
+  "cosmira\\sandbox\\support": {
+    "cosmira\\sandbox": [
+      {
+        "class": "Cosmira\\Sandbox\\Support\\SandboxModelRegistry",
+        "dependency": "Cosmira\\Sandbox\\SandboxTable",
+        "file": "src/Support/SandboxModelRegistry.php",
+        "lines": [
+          33,
+          81,
+          211,
+          225
+        ]
+      },
+      {
+        "class": "Cosmira\\Sandbox\\Support\\SandboxTableSynchronizer",
+        "dependency": "Cosmira\\Sandbox\\SandboxCopyRules",
+        "file": "src/Support/SandboxTableSynchronizer.php",
+        "lines": [
+          47,
+          102,
+          142,
+          170,
+          211,
+          258
+        ]
+      }
+    ],
+    "cosmira\\sandbox\\models": [
+      {
+        "class": "Cosmira\\Sandbox\\Support\\SandboxStatusLocker",
+        "dependency": "Cosmira\\Sandbox\\Models\\SandboxStatus",
+        "file": "src/Support/SandboxStatusLocker.php",
+        "lines": [
+          18
+        ]
+      }
+    ]
+  }
+}

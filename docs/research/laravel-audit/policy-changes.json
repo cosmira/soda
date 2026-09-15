@@ -1,0 +1,95 @@
+[
+  {
+    "status": "policy_withdrawn",
+    "reason": "Clone is no longer forbidden by the standard catalog; cloning a simple value also does not establish nested computation. This changes the policy, not the prior source observation.",
+    "previous_finding": {
+      "id": "474e15944d138c877180",
+      "package": "laravel/scout",
+      "diagnostic": {
+        "rule": "no_object_cloning",
+        "method": null,
+        "class": null,
+        "line": 559,
+        "value": 1,
+        "threshold": 0,
+        "message": "This rule forbids every clone, including explicit copy methods. Construct a new value to satisfy this policy; the syntax alone does not prove unsafe copying.",
+        "recommendation": "This policy forbids every clone, including explicit copying APIs. Fresh construction satisfies it; clone-based value APIs require choosing a different rule selection.",
+        "file": "src/Builder.php"
+      },
+      "review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "1c05afb3953990c969f733b525a004b60ffe9db2b46d0027d8f5fa208253e4de",
+          "line": 559,
+          "excerpt": "$ids = $engine->keys(tap(clone $this, function ($builder) use ($totalCount) {",
+          "observation": "Присутствует clone. Независимая копия может быть необходима, но правило задаёт запрет конструкции."
+        },
+        "regression_test": null
+      }
+    },
+    "regression_test": "tests/unit/CloningPolicyTest.php"
+  },
+  {
+    "status": "policy_withdrawn",
+    "reason": "Clone is no longer forbidden by the standard catalog; cloning a simple value also does not establish nested computation. This changes the policy, not the prior source observation.",
+    "previous_finding": {
+      "id": "25a54d27bfd95339ea87",
+      "package": "laravel/serializable-closure",
+      "diagnostic": {
+        "rule": "no_object_cloning",
+        "method": null,
+        "class": null,
+        "line": 251,
+        "value": 1,
+        "threshold": 0,
+        "message": "This rule forbids every clone, including explicit copy methods. Construct a new value to satisfy this policy; the syntax alone does not prove unsafe copying.",
+        "recommendation": "This policy forbids every clone, including explicit copying APIs. Fresh construction satisfies it; clone-based value APIs require choosing a different rule selection.",
+        "file": "src/Serializers/Native.php"
+      },
+      "review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "106cfeff488717b4d5d84bc4b5a0ca49c10bbc65f8959b92bdc2976408ef4353",
+          "line": 251,
+          "excerpt": "$data = $storage[$data] = clone $data;",
+          "observation": "Присутствует clone. Независимая копия может быть необходима, но правило задаёт запрет конструкции."
+        },
+        "regression_test": null
+      }
+    },
+    "regression_test": "tests/unit/CloningPolicyTest.php"
+  },
+  {
+    "status": "policy_withdrawn",
+    "reason": "Clone is no longer forbidden by the standard catalog; cloning a simple value also does not establish nested computation. This changes the policy, not the prior source observation.",
+    "previous_finding": {
+      "id": "99079f1efe85b69e68ee",
+      "package": "laravel/serializable-closure",
+      "diagnostic": {
+        "rule": "no_object_cloning",
+        "method": null,
+        "class": null,
+        "line": 470,
+        "value": 1,
+        "threshold": 0,
+        "message": "This rule forbids every clone, including explicit copy methods. Construct a new value to satisfy this policy; the syntax alone does not prove unsafe copying.",
+        "recommendation": "This policy forbids every clone, including explicit copying APIs. Fresh construction satisfies it; clone-based value APIs require choosing a different rule selection.",
+        "file": "src/Serializers/Native.php"
+      },
+      "review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "kind": "source_review",
+          "source_sha256": "106cfeff488717b4d5d84bc4b5a0ca49c10bbc65f8959b92bdc2976408ef4353",
+          "line": 470,
+          "excerpt": "$this->scope[$instance] = $data = clone $data;",
+          "observation": "Присутствует clone. Независимая копия может быть необходима, но правило задаёт запрет конструкции."
+        },
+        "regression_test": null
+      }
+    },
+    "regression_test": "tests/unit/CloningPolicyTest.php"
+  }
+]

@@ -1,0 +1,92 @@
+[
+  {
+    "status": "policy_withdrawn",
+    "reason": "Clone is no longer forbidden by the standard catalog; cloning a simple value also does not establish nested computation. This changes the policy, not the prior source observation.",
+    "previous_finding": {
+      "id": "3f09df6777dfd1260cd1",
+      "original_index": 143,
+      "diagnostic": {
+        "rule": "no_complex_control_conditions",
+        "file": "src/Support/SandboxTableSynchronizer.php",
+        "method": null,
+        "class": null,
+        "line": 116,
+        "value": 1,
+        "threshold": 0,
+        "message": "Nested computation obscures this condition. Prepare the value locally or name the query before testing it.",
+        "recommendation": "Keep simple predicates, comparisons and homogeneous boolean chains inline. Name mixed decisions or prepare nested computations locally."
+      },
+      "review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "source_sha256": "cf853ecb05b41274a4d3d2b5f88fe1b62cc454bde0b2dec7b8fe1f85424a8ccb",
+          "line": 116,
+          "end_line": 116,
+          "excerpt": "        while ((clone $missing)->exists()) {",
+          "observation": "exists() вызывается на результате clone внутри while; clone прямо запрещён отдельно."
+        }
+      }
+    },
+    "regression_test": "tests/unit/CloningPolicyTest.php"
+  },
+  {
+    "status": "policy_withdrawn",
+    "reason": "Clone is no longer forbidden by the standard catalog; cloning a simple value also does not establish nested computation. This changes the policy, not the prior source observation.",
+    "previous_finding": {
+      "id": "14a2cdf8d414da9754aa",
+      "original_index": 145,
+      "diagnostic": {
+        "rule": "no_object_cloning",
+        "file": "src/Support/SandboxTableSynchronizer.php",
+        "method": null,
+        "class": null,
+        "line": 116,
+        "value": 1,
+        "threshold": 0,
+        "message": "This rule forbids every clone, including explicit copy methods. Construct a new value to satisfy this policy; the syntax alone does not prove unsafe copying.",
+        "recommendation": "This policy forbids every clone, including explicit copying APIs. Fresh construction satisfies it; clone-based value APIs require choosing a different rule selection."
+      },
+      "review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "source_sha256": "cf853ecb05b41274a4d3d2b5f88fe1b62cc454bde0b2dec7b8fe1f85424a8ccb",
+          "line": 116,
+          "end_line": 116,
+          "excerpt": "        while ((clone $missing)->exists()) {",
+          "observation": "Узел clone присутствует. Независимость Query Builder нужна для поведения кода, но правило намеренно запрещает любой clone."
+        }
+      }
+    },
+    "regression_test": "tests/unit/CloningPolicyTest.php"
+  },
+  {
+    "status": "policy_withdrawn",
+    "reason": "Clone is no longer forbidden by the standard catalog; cloning a simple value also does not establish nested computation. This changes the policy, not the prior source observation.",
+    "previous_finding": {
+      "id": "ea1584e2975a6363b077",
+      "original_index": 146,
+      "diagnostic": {
+        "rule": "no_object_cloning",
+        "file": "src/Support/SandboxTableSynchronizer.php",
+        "method": null,
+        "class": null,
+        "line": 117,
+        "value": 1,
+        "threshold": 0,
+        "message": "This rule forbids every clone, including explicit copy methods. Construct a new value to satisfy this policy; the syntax alone does not prove unsafe copying.",
+        "recommendation": "This policy forbids every clone, including explicit copying APIs. Fresh construction satisfies it; clone-based value APIs require choosing a different rule selection."
+      },
+      "review": {
+        "status": "confirmed_policy_violation",
+        "evidence": {
+          "source_sha256": "cf853ecb05b41274a4d3d2b5f88fe1b62cc454bde0b2dec7b8fe1f85424a8ccb",
+          "line": 117,
+          "end_line": 117,
+          "excerpt": "            $ready = (clone $missing)->where(function (QueryBuilder $query) use (",
+          "observation": "Узел clone присутствует. Независимость Query Builder нужна для поведения кода, но правило намеренно запрещает любой clone."
+        }
+      }
+    },
+    "regression_test": "tests/unit/CloningPolicyTest.php"
+  }
+]
