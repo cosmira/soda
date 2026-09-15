@@ -29,4 +29,25 @@ The first trial incorrectly added findings for plain assignments and casts aroun
 
 ## Method usage
 
-Pending the second implementation step.
+The condition findings are byte-for-byte identical to step 1. Method findings change as follows:
+
+| Project | Before | Project usage |
+| --- | ---: | ---: |
+| Soda | 0 | 0 |
+| Laravel | 477 | 0 |
+| Monolog | 69 | 0 |
+| Symfony Console | 40 | 0 |
+| Guzzle | 1 | 0 |
+
+The 587 removed method findings combine resolved calls/contracts with conservative uncertainty; **zero findings is not proof that the corpus has no unused code**. Missing dependencies are not silently loaded. The analysis deliberately abstains when affected composition or receivers cannot be resolved.
+
+Reviewed examples:
+
+- Laravel `Broadcaster::verifyUserCanAccessChannel` is called through `parent` in Redis/Ably/Pusher broadcasters; `formatChannels` is called by multiple descendants. Cache lock implementations retain the abstract `Lock` contract across files.
+- Monolog `LineFormatter::normalizeException` participates in dispatch from `NormalizerFormatter`; `AbstractSyslogHandler::toSyslogPriority` is called by the concrete syslog handlers.
+- Symfony command `configure`/`initialize`/`execute` implementations participate in their inherited command lifecycle. `Descriptor::removeHiddenOptions` has callers in Text/Json/Markdown/Xml/ReStructuredText descriptors.
+- Guzzle `CurlMultiHandler::tickInQueue` is passed through `Closure::fromCallable([$this, 'tickInQueue'])`, which the previous callback collector missed.
+
+An intermediate run added two incorrect Symfony findings. `ProgressBar::getStepWidth` has a caller on a closure parameter declared `self`. `Option::handleUnion` is reached on a factory result obtained with `self::class`. Both became regression cases: explicit parameter types resolve receivers, while the latter remains conservative factory-result uncertainty. The final run has no added method findings.
+
+Tests additionally prove that untyped foreign receivers cannot hide local unused methods, that uncertainty in one type leaves unrelated types reportable, and that alias/override/private dispatch preserves original declaration identity. These synthetic counterexamples matter because the corpus itself contains no final method findings. Review remains qualitative and bounded; arbitrary variable data flow, union/return types and reflection are not claimed to be solved.

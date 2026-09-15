@@ -485,9 +485,13 @@ $email = $row[2];
 
 ### unused_methods
 
-Reports private and protected methods that are never called in the same class,
-trait, subclass, or trait user in the same file. Magic methods and configured
-ignored lifecycle names are skipped.
+Reports unused private methods and eligible protected class methods after all configured files have been analyzed. Full type names and case-insensitive method names connect owners, nested traits and descendants across files. Magic methods, configured ignored names, protected trait methods, abstract declarations and existing abstract/interface/`Override` contract exclusions remain excluded. An unconsumed trait is not reported.
+
+The rule distinguishes `$this`, `self`, `parent`, `static`, explicit class receivers and directly declared parameter types. An unrelated `$other->save()` does not prove that the current class's `save()` is used. Trait aliases preserve the original declaration and apply visibility at the consuming class; `as final` alone retains the original visibility. Precedence selections, class overrides and private lexical scope are respected. First-class callables, callback arrays and supported literal callback strings count as possible use.
+
+Dynamic calls and missing/cyclic/ambiguous composition prevent a claim of non-use for affected methods. Fluent receiver results, escaping object aliases, and a factory receiving a class literal can introduce local uncertainty. No dependency directory is scanned implicitly. This is a bounded structural analysis, not a whole-program type or reachability proof; add all relevant source paths for meaningful results. It does not infer arbitrary union types, return types, reflection targets or variable data flow.
+
+One violation points to the original declaration even when multiple classes use the trait. Project storage keeps scalar/array usage facts, not AST nodes. The rule now runs in `checkProject()`, requesting `methodUsage` during the existing parse.
 
 ```php
 new NoUnusedMethods(ignore: ['seedDatabase'])
