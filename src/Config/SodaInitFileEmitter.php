@@ -34,16 +34,11 @@ final class SodaInitFileEmitter
             $shortNames[$shortName] = $definition['class'];
             $uses[] = 'use '.$definition['class'].';';
             $items[] = match ($ruleKey) {
-                'max_arguments'                  => self::instantiate($shortName, $definition['arguments'], 'properties: $properties'),
-                'max_properties_per_class'       => '$properties,',
                 'boolean_methods_without_prefix' => $shortName.'::standard(),',
                 default                          => self::instantiate($shortName, $definition['arguments']),
             };
         }
 
-        $propertyRule = RuleCatalog::standardDefinitions()['max_properties_per_class'];
-        $properties = self::instantiate(self::shortName($propertyRule['class']), $propertyRule['arguments']);
-        $properties = rtrim($properties, ',');
         sort($uses);
         $usesBlock = implode("\n", array_unique($uses));
         $itemsBlock = implode("\n", array_map(fn (string $line) => '        '.$line, $items));
@@ -54,8 +49,6 @@ final class SodaInitFileEmitter
 declare(strict_types=1);
 
 {$usesBlock}
-
-\$properties = {$properties};
 
 return Soda::configure()
     ->withPaths([
@@ -93,18 +86,14 @@ PHP;
     }
 
     /**
-     * Render constructor arguments and an optional shared rule dependency.
+     * Render constructor arguments.
      */
-    private static function instantiate(string $class, array $arguments, ?string $dependency = null): string
+    private static function instantiate(string $class, array $arguments): string
     {
         $rendered = [];
         foreach ($arguments as $key => $argument) {
             $prefix = is_string($key) ? $key.': ' : '';
             $rendered[] = $prefix.var_export($argument, true);
-        }
-
-        if ($dependency !== null) {
-            $rendered[] = $dependency;
         }
 
         return sprintf('new %s(%s),', $class, implode(', ', $rendered));

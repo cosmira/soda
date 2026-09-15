@@ -11,6 +11,16 @@ use PHPUnit\Framework\TestCase;
 
 final class RuleCatalogTest extends TestCase
 {
+    public function testArchitecturalQuotasRequireExplicitSelection(): void
+    {
+        foreach (['max_properties_per_class', 'max_arguments', 'max_efferent_coupling', 'no_boolean_parameters', 'no_dependency_cycles', 'no_service_locator_calls', 'no_runtime_contract_probes', 'no_static_mutable_properties', 'boolean_methods_without_prefix'] as $id) {
+            $definition = RuleCatalog::definitions()[$id];
+            self::assertArrayNotHasKey($id, RuleCatalog::standardDefinitions());
+            $class = $definition['class'];
+            self::assertSame($id, (new $class(...$definition['arguments']))->id());
+        }
+    }
+
     public function testMetadataMatchesRuleMetadataDefault(): void
     {
         $fromCatalog = RuleCatalog::definitions();
@@ -113,7 +123,7 @@ final class RuleCatalogTest extends TestCase
         $expected = array_column(RuleCatalog::standardDefinitions(), 'class');
         $actual = array_map(fn ($check) => $check::class, RuleCatalog::standard());
         $this->assertSame($expected, $actual);
-        $this->assertCount(81, $actual);
+        $this->assertCount(72, $actual);
         $ids = array_map(fn ($check) => $check->id(), RuleCatalog::standard());
         $this->assertNotContains('max_cognitive_complexity', $ids);
         $this->assertNotContains('no_redundant_rethrow', $ids);

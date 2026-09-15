@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Cosmira\Soda\Tests;
 
 use Cosmira\Soda\Rules\Structure\MethodsFollowCallOrder;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class MethodsFollowCallOrderTest extends TestCase
@@ -199,7 +200,7 @@ PHP);
         }
     }
 
-    public function testRepeatedConsistentOrderIsStillChecked(): void
+    public function testSharedHelpersAreNotReordered(): void
     {
         $file = $this->writeFixture(<<<'PHP'
 <?php
@@ -224,10 +225,46 @@ final class Workflow
 PHP);
 
         try {
-            self::assertCount(2, CheckFixture::forRule(new MethodsFollowCallOrder, $this->context($file)));
+            self::assertCount(0, CheckFixture::forRule(new MethodsFollowCallOrder, $this->context($file)));
         } finally {
             unlink($file);
         }
+    }
+
+    #[DataProvider('scopeCases')]
+    public function testLocalSequenceScope(string $body, string $helpers, int $count): void
+    {
+        $file = $this->writeFixture('<?php class Workflow { public function run() { '.$body.' } '.$helpers.' }');
+
+        try {
+            self::assertCount($count, CheckFixture::forRule(new MethodsFollowCallOrder, $this->context($file)));
+        } finally {
+            unlink($file);
+        }
+    }
+
+    public static function scopeCases(): iterable
+    {
+        $private = 'private function commit() {} private function prepare() {}';
+        yield 'private direct' => ['$this->prepare(); $this->commit();', $private, 1];
+        yield 'case insensitive' => ['$this->PREPARE(); $this->COMMIT();', $private, 1];
+        yield 'self static' => ['self::PREPARE(); self::commit();', 'private static function commit() {} private static function prepare() {}', 1];
+        yield 'public methods' => ['$this->prepare(); $this->commit();', 'public function commit() {} public function prepare() {}', 0];
+        yield 'protected hooks' => ['$this->prepare(); $this->commit();', 'protected function commit() {} protected function prepare() {}', 0];
+        yield 'branch' => ['if (ready()) { $this->prepare(); } $this->commit();', $private, 0];
+        yield 'loop' => ['while (ready()) { $this->prepare(); $this->commit(); }', $private, 0];
+        yield 'deferred closure' => ['$callback = function () { $this->prepare(); $this->commit(); };', $private, 0];
+        yield 'arrow' => ['$callback = fn () => $this->prepare(); $this->commit();', $private, 0];
+        yield 'nested class' => ['$value = new class { function inner() { $this->prepare(); $this->commit(); } };', $private, 0];
+        yield 'shared callback helper' => ['$this->prepare(); $this->commit(); $callback = fn () => $this->prepare();', $private, 0];
+        yield 'first class callable' => ['$this->prepare(...); $this->commit();', $private, 0];
+        yield 'nested evaluation order' => ['$this->commit($this->prepare());', $private, 0];
+        yield 'return branch' => ['$this->prepare(); return $this->commit();', $private, 0];
+        yield 'callback array' => ['$this->prepare(); $this->commit(); register([$this, "prepare"]);', $private, 0];
+        yield 'receiver alias' => ['$this->prepare(); $this->commit(); $alias = $this; $alias->prepare();', $private, 0];
+        yield 'late static use' => ['$this->prepare(); $this->commit(); static::prepare();', $private, 0];
+        yield 'contradictory sequence' => ['$this->prepare(); $this->commit(); $this->prepare();', $private, 0];
+        yield 'dynamic local call' => ['$this->prepare(); $this->commit(); $this->$action();', $private, 0];
     }
 
     private function writeFixture(string $contents): string

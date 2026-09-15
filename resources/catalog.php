@@ -83,6 +83,7 @@ return [
     'no_dependency_cycles' => [
         'class'      => 'Cosmira\\Soda\\Rules\\Architecture\\NoDependencyCycles',
         'arguments'  => [],
+        'standard'   => false,
         'section'    => 'structural',
         'severity'   => 'error',
         'default'    => 0,
@@ -147,6 +148,7 @@ return [
     'max_arguments' => [
         'class'      => 'Cosmira\\Soda\\Rules\\Structure\\MaxArguments',
         'arguments'  => [3],
+        'standard'   => false,
         'section'    => 'structural',
         'severity'   => 'warning',
         'default'    => 3,
@@ -187,6 +189,7 @@ return [
     'max_properties_per_class' => [
         'class'      => 'Cosmira\\Soda\\Rules\\Structure\\MaxPropertiesPerClass',
         'arguments'  => [5],
+        'standard'   => false,
         'section'    => 'structural',
         'severity'   => 'warning',
         'default'    => 5,
@@ -271,7 +274,7 @@ return [
         'severity'   => 'warning',
         'default'    => 0,
         'label'      => 'Methods out of call order:',
-        'advice'     => 'Place the called helper directly below its caller so the class reads from high-level intent to detail.',
+        'advice'     => 'Review the declaration order of private helpers used exclusively by one direct local sequence. Preserve public API grouping, shared helpers and extension points.',
         'comparison' => null,
     ],
     'only_list_arrays' => [
@@ -291,7 +294,7 @@ return [
         'severity'   => 'warning',
         'default'    => 0,
         'label'      => 'Numeric array index:',
-        'advice'     => 'Use a named field or value object so readers do not need to remember what this position means.',
+        'advice'     => 'Review repeated fixed fields of an explicitly documented tuple. Named fields may clarify their meaning; ordinary list access and unknown array shapes are accepted.',
         'comparison' => null,
     ],
     'unused_methods' => [
@@ -347,6 +350,7 @@ return [
     'no_service_locator_calls' => [
         'class'      => 'Cosmira\\Soda\\Rules\\Architecture\\NoServiceLocatorCalls',
         'arguments'  => [],
+        'standard'   => false,
         'section'    => 'structural',
         'severity'   => 'warning',
         'default'    => 0,
@@ -528,6 +532,7 @@ return [
     'no_runtime_contract_probes' => [
         'class'      => 'Cosmira\\Soda\\Rules\\Architecture\\NoRuntimeContractProbes',
         'arguments'  => [],
+        'standard'   => false,
         'section'    => 'structural',
         'severity'   => 'warning',
         'default'    => 0,
@@ -588,6 +593,7 @@ return [
     'no_boolean_parameters' => [
         'class'      => 'Cosmira\\Soda\\Rules\\Architecture\\NoBooleanParameters',
         'arguments'  => [],
+        'standard'   => false,
         'section'    => 'structural',
         'severity'   => 'warning',
         'default'    => 0,
@@ -608,6 +614,7 @@ return [
     'no_static_mutable_properties' => [
         'class'      => 'Cosmira\\Soda\\Rules\\Architecture\\NoStaticMutableProperties',
         'arguments'  => [],
+        'standard'   => false,
         'section'    => 'structural',
         'severity'   => 'warning',
         'default'    => 0,
@@ -628,6 +635,7 @@ return [
     'max_efferent_coupling' => [
         'class'      => 'Cosmira\\Soda\\Rules\\Structure\\MaxEfferentCoupling',
         'arguments'  => [10],
+        'standard'   => false,
         'section'    => 'structural',
         'severity'   => 'warning',
         'default'    => 10,
@@ -768,6 +776,7 @@ return [
     'boolean_methods_without_prefix' => [
         'class'      => 'Cosmira\\Soda\\Rules\\Naming\\BooleanMethodPrefix',
         'arguments'  => [],
+        'standard'   => false,
         'section'    => 'naming',
         'severity'   => 'warning',
         'default'    => 0,
@@ -791,7 +800,7 @@ return [
     'method_name_length' => [
         'class'     => 'Cosmira\\Soda\\Rules\\Naming\\MethodNameLength',
         'arguments' => [
-            'min' => 3,
+            'min' => 1,
             'max' => 32,
         ],
         'section'    => 'naming',

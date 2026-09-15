@@ -35,7 +35,7 @@ final class CatalogPresetsTest extends TestCase
         $this->assertContains(ClassRules::class, $classNames);
         $this->assertContains(MethodRules::class, $classNames);
         $this->assertContains(RedundantNamingChecker::class, $classNames);
-        $this->assertContains(BooleanMethodPrefixChecker::class, $classNames);
+        $this->assertNotContains(BooleanMethodPrefixChecker::class, $classNames);
         $this->assertContains(NameLengthChecker::class, $classNames);
         $this->assertContains(OnlyListArraysAllowed::class, $classNames);
         $this->assertContains(NoNumericArrayIndex::class, $classNames);
@@ -72,7 +72,7 @@ final class CatalogPresetsTest extends TestCase
     {
         $classNames = array_map(fn (RuleChecker $c) => $c::class, RuleCatalog::checks('naming'));
         $this->assertContains(RedundantNamingChecker::class, $classNames);
-        $this->assertContains(BooleanMethodPrefixChecker::class, $classNames);
+        $this->assertNotContains(BooleanMethodPrefixChecker::class, $classNames);
         $this->assertContains(NameLengthChecker::class, $classNames);
     }
 

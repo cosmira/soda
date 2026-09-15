@@ -121,17 +121,6 @@
         "recommendation": "Remove unused inputs only when the signature permits it. Known inherited positions and callback slots are preserved; list exact external method contracts."
     },
     {
-        "rule": "no_service_locator_calls",
-        "file": "demo-app/iterations/01-service-locator.php",
-        "method": null,
-        "class": null,
-        "line": 12,
-        "value": 1,
-        "threshold": 0,
-        "message": "Service locator access hides required dependencies. Inject the collaborator explicitly.",
-        "recommendation": "Declare dependencies in the constructor instead of pulling them from a global container."
-    },
-    {
         "rule": "no_global_state",
         "file": "demo-app/iterations/02-global-state.php",
         "method": null,
@@ -187,17 +176,6 @@
         "recommendation": "Catch only failures the current boundary can recover from meaningfully."
     },
     {
-        "rule": "no_boolean_parameters",
-        "file": "demo-app/iterations/07-boolean-parameter.php",
-        "method": null,
-        "class": null,
-        "line": 13,
-        "value": 1,
-        "threshold": 0,
-        "message": "Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.",
-        "recommendation": "Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow."
-    },
-    {
         "rule": "no_behavior_magic_methods",
         "file": "demo-app/iterations/08-behavior-magic.php",
         "method": null,
@@ -207,17 +185,6 @@
         "threshold": 0,
         "message": "Behavioral magic methods hide the public API. Declare explicit methods and contracts.",
         "recommendation": "Expose explicit methods so callers and tools can see the supported contract."
-    },
-    {
-        "rule": "no_static_mutable_properties",
-        "file": "demo-app/iterations/09-static-state.php",
-        "method": null,
-        "class": null,
-        "line": 8,
-        "value": 1,
-        "threshold": 0,
-        "message": "Static mutable storage creates hidden shared state. Move state behind an injected object.",
-        "recommendation": "Put shared mutable state in an injected object with explicit lifetime and ownership."
     },
     {
         "rule": "no_blocking_sleep",
@@ -242,17 +209,6 @@
         "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map."
     },
     {
-        "rule": "no_boolean_parameters",
-        "file": "demo-app/iterations/12-nullable-boolean.php",
-        "method": null,
-        "class": null,
-        "line": 10,
-        "value": 1,
-        "threshold": 0,
-        "message": "Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.",
-        "recommendation": "Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow."
-    },
-    {
         "rule": "no_environment_reads",
         "file": "demo-app/iterations/13-server-environment.php",
         "method": null,
@@ -273,17 +229,6 @@
         "threshold": 0,
         "message": "Blocking sleep hides timing coordination. Inject a scheduler, clock, retry policy, or backoff port.",
         "recommendation": "Inject time and retry coordination rather than blocking inside application behavior."
-    },
-    {
-        "rule": "no_static_mutable_properties",
-        "file": "demo-app/iterations/15-static-local-cache.php",
-        "method": null,
-        "class": null,
-        "line": 12,
-        "value": 1,
-        "threshold": 0,
-        "message": "Static mutable storage creates hidden shared state. Move state behind an injected object.",
-        "recommendation": "Put shared mutable state in an injected object with explicit lifetime and ownership."
     },
     {
         "rule": "no_singleton_access",
@@ -594,17 +539,6 @@
         "recommendation": "Promote the hidden responsibility to a named, independently testable type."
     },
     {
-        "rule": "no_dynamic_invocation",
-        "file": "demo-app/iterations/44-dynamic-construction.php",
-        "method": null,
-        "class": null,
-        "line": 12,
-        "value": 1,
-        "threshold": 0,
-        "message": "Runtime-selected class construction is forbidden by this policy. Use an explicit factory boundary.",
-        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map."
-    },
-    {
         "rule": "no_closure_rebinding",
         "file": "demo-app/iterations/46-static-closure-bind.php",
         "method": null,
@@ -625,39 +559,6 @@
         "threshold": 0,
         "message": "Closure rebinding bypasses visible scope and ownership. Use an explicit collaborator contract.",
         "recommendation": "Pass an explicit collaborator instead of changing a closure scope at runtime."
-    },
-    {
-        "rule": "no_runtime_contract_probes",
-        "file": "demo-app/iterations/48-method-contract-probe.php",
-        "method": null,
-        "class": null,
-        "line": 12,
-        "value": 1,
-        "threshold": 0,
-        "message": "Runtime contract probing hides supported capabilities. Require an explicit interface or value shape.",
-        "recommendation": "Require an interface or typed value instead of discovering capabilities at runtime."
-    },
-    {
-        "rule": "no_runtime_contract_probes",
-        "file": "demo-app/iterations/49-property-contract-probe.php",
-        "method": null,
-        "class": null,
-        "line": 12,
-        "value": 1,
-        "threshold": 0,
-        "message": "Runtime contract probing hides supported capabilities. Require an explicit interface or value shape.",
-        "recommendation": "Require an interface or typed value instead of discovering capabilities at runtime."
-    },
-    {
-        "rule": "no_runtime_contract_probes",
-        "file": "demo-app/iterations/50-callable-contract-probe.php",
-        "method": null,
-        "class": null,
-        "line": 12,
-        "value": 1,
-        "threshold": 0,
-        "message": "Runtime contract probing hides supported capabilities. Require an explicit interface or value shape.",
-        "recommendation": "Require an interface or typed value instead of discovering capabilities at runtime."
     },
     {
         "rule": "max_line_length",
@@ -1540,17 +1441,6 @@
         "recommendation": "Remove unused inputs only when the signature permits it. Known inherited positions and callback slots are preserved; list exact external method contracts."
     },
     {
-        "rule": "no_service_locator_calls",
-        "file": "demo-app/run.php",
-        "method": null,
-        "class": null,
-        "line": 31,
-        "value": 1,
-        "threshold": 0,
-        "message": "Service locator access hides required dependencies. Inject the collaborator explicitly.",
-        "recommendation": "Declare dependencies in the constructor instead of pulling them from a global container."
-    },
-    {
         "rule": "no_global_state",
         "file": "demo-app/run.php",
         "method": null,
@@ -1606,17 +1496,6 @@
         "recommendation": "Catch only failures the current boundary can recover from meaningfully."
     },
     {
-        "rule": "no_boolean_parameters",
-        "file": "demo-app/run.php",
-        "method": null,
-        "class": null,
-        "line": 27,
-        "value": 1,
-        "threshold": 0,
-        "message": "Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.",
-        "recommendation": "Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow."
-    },
-    {
         "rule": "no_behavior_magic_methods",
         "file": "demo-app/run.php",
         "method": null,
@@ -1626,17 +1505,6 @@
         "threshold": 0,
         "message": "Behavioral magic methods hide the public API. Declare explicit methods and contracts.",
         "recommendation": "Expose explicit methods so callers and tools can see the supported contract."
-    },
-    {
-        "rule": "no_static_mutable_properties",
-        "file": "demo-app/run.php",
-        "method": null,
-        "class": null,
-        "line": 20,
-        "value": 1,
-        "threshold": 0,
-        "message": "Static mutable storage creates hidden shared state. Move state behind an injected object.",
-        "recommendation": "Put shared mutable state in an injected object with explicit lifetime and ownership."
     },
     {
         "rule": "no_blocking_sleep",
@@ -2066,39 +1934,6 @@
         "threshold": 0,
         "message": "DemoApp\\Subscriptions\\Transferable has no explicit type consumer in the analysed project. Declare external consumers in contracts; remove it only if it has no consumers.",
         "recommendation": "List externally consumed interfaces in contracts. Remove only unused interfaces; an implements clause alone is not a type consumer for this policy."
-    },
-    {
-        "rule": "max_properties_per_class",
-        "file": "demo-app/candidates/62-inherited-readonly-state/CatalogImportRequest.php",
-        "method": null,
-        "class": "DemoApp\\Catalog\\CatalogImportRequest",
-        "line": null,
-        "value": 6,
-        "threshold": 5,
-        "message": null,
-        "recommendation": "Keep state with its behavior. Group values when they share meaning or invariants; a property count alone does not justify another object."
-    },
-    {
-        "rule": "max_properties_per_class",
-        "file": "demo-app/candidates/62-inherited-readonly-state/PaymentWebhookRequest.php",
-        "method": null,
-        "class": "DemoApp\\Billing\\PaymentWebhookRequest",
-        "line": null,
-        "value": 6,
-        "threshold": 5,
-        "message": null,
-        "recommendation": "Keep state with its behavior. Group values when they share meaning or invariants; a property count alone does not justify another object."
-    },
-    {
-        "rule": "max_properties_per_class",
-        "file": "demo-app/candidates/62-inherited-readonly-state/ShipOrderRequest.php",
-        "method": null,
-        "class": "DemoApp\\Shipping\\ShipOrderRequest",
-        "line": null,
-        "value": 6,
-        "threshold": 5,
-        "message": null,
-        "recommendation": "Keep state with its behavior. Group values when they share meaning or invariants; a property count alone does not justify another object."
     },
     {
         "rule": "max_public_methods",

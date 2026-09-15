@@ -17,17 +17,17 @@ use PHPUnit\Framework\TestCase;
 final class LaravelFalsePositiveRegressionTest extends TestCase
 {
     #[DataProvider('regressions')]
-    public function testStandardPipelinePreservesValidCodeAndDetectsControl(
+    public function testSelectedPipelinePreservesValidCodeAndDetectsControl(
         string $valid,
         string $invalid,
         array $rules,
     ): void {
         foreach ($rules as $rule) {
-            self::assertContains($rule, array_map(static fn ($check) => $check->id(), RuleCatalog::standard()));
+            self::assertArrayHasKey($rule, RuleCatalog::definitions());
         }
 
-        $validFindings = $this->findings($valid);
-        $invalidFindings = $this->findings($invalid);
+        $validFindings = $this->findings($valid, $rules);
+        $invalidFindings = $this->findings($invalid, $rules);
         foreach ($rules as $rule) {
             self::assertNotContains($rule, $validFindings, 'False positive returned: '.$rule);
             self::assertContains($rule, $invalidFindings, 'Real violation stopped being detected: '.$rule);
@@ -76,14 +76,9 @@ final class LaravelFalsePositiveRegressionTest extends TestCase
             'function label(int $status): string { if ($status === 1) { return "on"; } elseif ($status === 2) { return "off"; } return "unknown"; }',
             ['no_else_branches'],
         ];
-        yield 'Strict policy: known list still forbids literal index' => [
-            'function first(): string { $values = ["first" => "value"]; return $values["first"]; }',
-            'function first(): string { $values = ["value"]; return $values[0]; }',
-            ['no_numeric_array_index'],
-        ];
-        yield 'Strict policy: known negative key still forbids literal index' => [
-            'function previous(): string { $values = ["previous" => "value"]; return $values["previous"]; }',
-            'function previous(): string { $values = [-1 => "value"]; return $values[-1]; }',
+        yield 'Sandbox: ordinary list indices need no wrapper' => [
+            'function first(array $keys) { return $keys[0]; }',
+            '/** @param array{string, int} $row */ function label(array $row): string { return $row[0].$row[1]; }',
             ['no_numeric_array_index'],
         ];
         yield 'Sandbox: independent array copy survives unset' => [
@@ -173,13 +168,19 @@ final class LaravelFalsePositiveRegressionTest extends TestCase
         ];
     }
 
-    private function findings(string $source): array
+    private function findings(string $source, array $rules): array
     {
         $path = tempnam(sys_get_temp_dir(), 'soda-laravel-regression-');
         file_put_contents($path, '<?php '.$source);
 
         try {
-            $result = (new Runner)->check([$path], Soda::configure()->with(RuleCatalog::standard()));
+            $checks = [];
+            foreach ($rules as $id) {
+                $entry = RuleCatalog::definitions()[$id];
+                $class = $entry['class'];
+                $checks[] = new $class(...$entry['arguments']);
+            }
+            $result = (new Runner)->check([$path], Soda::configure()->with($checks));
 
             return array_map(static fn ($violation) => $violation->rule, $result->violations->all());
         } finally {

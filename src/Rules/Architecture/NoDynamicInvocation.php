@@ -25,7 +25,7 @@ final class NoDynamicInvocation extends Check
     {
         $nodes = (new NodeFinder)->find($file->nodes, fn (Node $node): bool => ($node instanceof Expr\FuncCall && $node->name instanceof Name
                 && in_array(strtolower($node->name->toString()), ['call_user_func', 'call_user_func_array', 'forward_static_call', 'forward_static_call_array'], true))
-                || CallableMember::isDynamicConstruction($node) || CallableMember::isDynamicCall($node));
+                || CallableMember::isDynamicCall($node));
 
         foreach ($nodes as $node) {
             yield new Violation(

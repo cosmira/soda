@@ -457,3 +457,64 @@ The normal runner already does this. JSON remains schema 4, with the same violat
 
 The unconditional `NoObjectCloning` policy is no longer enabled by default. Existing
 explicit rule selections remain effective; remove that check to allow copying.
+
+
+## Practical API defaults
+
+The standard selection now has 78 checks. `max_arguments`, `max_efferent_coupling`
+and `no_boolean_parameters` remain available but require explicit selection.
+Their counts and syntax do not establish that an API needs wrapper objects,
+service layers or an enum. Existing explicitly configured instances retain their
+thresholds and behavior. Remove them from an existing generated configuration to
+adopt the new selection, or use `RuleCatalog::standard()`.
+
+`MethodNameLength` now defaults to `min: 1, max: 32`, including the standard catalog.
+Names such as `me()`, `id()` and `to()` need no padding. An explicitly configured
+`min: 3` still enforces that project policy.
+
+`NoDynamicInvocation` no longer reports `new $class()`. Moving the same construction
+into a factory or a fresh container does not improve it. Computed method names and
+indirect callable helpers remain checked. Use PHPStan to verify class-string
+contracts; Soda does not establish that runtime construction is safe.
+
+These changes address specific sources of needless indirection, not every possible
+false positive. Review behavior, clarity and public compatibility before applying
+any structural recommendation. Earlier audit reports describe their original policy.
+
+
+## Preserve framework conventions and existing APIs
+
+The standard selection now has 72 checks. Six more architecture and naming
+policies require explicit selection: `no_service_locator_calls`,
+`no_runtime_contract_probes`, `no_static_mutable_properties`,
+`no_dependency_cycles`, `max_properties_per_class`, and `boolean_methods_without_prefix`.
+
+A container lookup can preserve an optional constructor dependency. Capability
+checks can support existing trait-based integrations without mandatory interfaces.
+A static declaration can configure a model rather than store request state.
+A property quota does not establish that those settings need wrapper objects.
+Namespace directories are not necessarily independent modules, and a boolean
+return type does not establish that a public method should be renamed.
+
+The strict checkers retain their behavior when explicitly constructed. Configure
+`NoDependencyCycles(modules: [...])` with actual module boundaries when selecting
+that policy. Existing expanded `soda.php` files retain their explicit policies;
+remove the corresponding instances to adopt these defaults. No findings are
+silenced in explicitly selected checks.
+
+
+## Evidence-based tuple and helper-order diagnostics
+
+`no_numeric_array_index` now reviews repeated fields of explicit scalar PHPDoc
+tuples instead of banning list offsets. Unknown shapes, mutation, references,
+escapes and ambiguous scopes are skipped. The supported subset and one-finding
+location policy are documented in STRUCTURAL_METRICS.md.
+
+`methods_follow_call_order` now only constrains private helpers with one direct
+local caller. Shared helpers, public methods, protected hooks and indirect or
+conditional calls are excluded. `$this` and `self` calls are case-insensitive.
+
+Both IDs, zero-argument constructors, standard membership and JSON schema stay
+unchanged. Explicitly selected instances also adopt the narrower semantics.
+Messages change to describe readability evidence, not universal syntax bans.
+The standard selection remains 72 checks; earlier opt-in decisions remain intact.

@@ -355,22 +355,20 @@ new MaxLayerDominancePercentage(60, minFiles: 5)
 
 ### methods_follow_call_order
 
-Methods should be declared vertically in the order local `$this->...()` calls
-reveal the flow. This keeps the next method a reader needs close to the method
-that calls it.
+Review the order of private helpers called exclusively by one local method in
+straight-line expression statements. Public and protected methods are not moved.
+Shared helpers, conditional and loop calls, deferred callbacks, nested classes,
+first-class callables and contradictory order constraints do not establish an order.
+Names are case-insensitive; direct `$this->helper()` and `self::helper()` calls
+are supported. Unknown dynamic calls, unresolved receivers and possible array
+callbacks conservatively suppress the class finding.
 
 ```php
 new MethodsFollowCallOrder()
 ```
 
-Every out-of-order local call pair is reported. The rule has no numeric allowance
-for existing violations.
-
-SODA first combines the local call-order constraints from every method. Edges
-inside a directed cycle are not reported because no linear declaration order
-can satisfy them: reversible lifecycle paths may intentionally call the same
-helpers in opposite order. Acyclic edges, including a consistently ordered pair
-used by several callers, remain checked.
+The diagnostic is a reading-order suggestion for this limited case, not proof
+that declaration order affects runtime behavior.
 
 ```php
 // Good
@@ -472,22 +470,32 @@ new OnlyListArraysAllowed(strictness: ListOnlyArrayStrictness::Strict)
 
 ### no_numeric_array_index
 
-Forbids numeric literal array indexes such as `$row[0]`. Numeric offsets hide
-meaning and make later changes brittle.
+Review a documented tuple when one callable reads at least two different fixed
+positions of the same parameter. Ordinary lists and unknown shapes are accepted.
+The rule only understands native `array` parameters documented as closed PHPDoc
+scalar tuples, such as `array{string, int}` or `array{0: string, 1: int}`. Supported
+field types are `string`, `int`, `float`, `bool` and `null`; positions are contiguous.
+Reads must be straight-line scalar expressions (return, echo, concatenation,
+addition, subtraction, multiplication or string casts). Other syntax is unknown.
+
+Reassignment, writes, references, escapes to calls, ambiguous control flow and
+unsupported PHPDoc (including aliases, unions, optional or nested shapes) suppress
+the candidate. Local `@var` annotations are not interpreted. No general type
+inference or framework-specific exceptions are used.
 
 ```php
 new NoNumericArrayIndex()
+
+// Accepted: a list offset does not require a wrapper.
+function first(array $keys): mixed { return $keys[0]; }
+
+// Review whether named fields would explain these two different meanings.
+/** @param array{string, int} $row */
+function label(array $row): string { return $row[0].': '.$row[1]; }
 ```
 
-```php
-// Good
-$email = $row['email'];
-```
-
-```php
-// Bad
-$email = $row[2];
-```
+One finding is located at the first fixed-position read of each qualifying
+parameter. This is a readability heuristic, not a claim that tuple access is unsafe.
 
 ### unused_methods
 
@@ -679,6 +687,8 @@ final class RetryPolicy
 
 ### max_arguments
 
+Opt-in policy. Argument count alone does not justify wrapper objects.
+
 Maximum parameters per method.
 
 Externally imposed signatures can be listed explicitly:
@@ -785,6 +795,8 @@ public function __construct(
 
 ### max_efferent_coupling (Ce)
 
+Opt-in policy. Dependency count alone does not justify another service layer.
+
 **Efferent coupling:** number of **distinct** external classes/types the class or trait depends on (same type counted once).
 
 **Included (minimum set):** `extends`, `implements`, `use Trait`, property/param/return types (incl. promoted ctor), `catch` types, `new Class`, static calls `Class::…`, static property, `Class::CONST`, `instanceof Class`.
@@ -821,6 +833,8 @@ final class ReportBuilder
 ---
 
 ### max_properties_per_class
+
+Opt-in policy. Property counts alone do not justify splitting model configuration into objects.
 
 Counts the effective project-known instance state, not only explicit property
 statements in the current class. Constructor-promoted properties, properties
@@ -1149,6 +1163,8 @@ These zero-tolerance rules close common ways of making code look locally tidy wh
 
 ### no_service_locator_calls
 
+Opt-in syntax policy. A container fallback can preserve optional constructor dependencies.
+
 Forbids `app()` and `resolve()` calls. Inject the dependency explicitly.
 
 ### no_singleton_access
@@ -1236,6 +1252,8 @@ Forbids `Closure::bind()` and `Closure::bindTo()`. Keep scope and ownership expl
 
 ### no_runtime_contract_probes
 
+Opt-in syntax policy. Capability checks can preserve integrations without imposing interfaces.
+
 Forbids `method_exists()`, `property_exists()`, and `is_callable()`. Require explicit interfaces and value shapes.
 
 ### no_global_state
@@ -1252,7 +1270,11 @@ Forbids PHP's `@` error-suppression operator. Handle or translate failures expli
 
 ### no_dynamic_invocation
 
-Forbids computed method names, runtime-selected class construction, and the indirect
+Runtime-selected construction such as `new $modelClass()` is allowed. A factory
+that only hides this expression adds no contract; validate class-string types with
+a type checker. This rule is not a security or type-safety analysis.
+
+Forbids computed method names and the indirect
 helpers `call_user_func*()` and `forward_static_call*()`. These are explicit syntax
 policies; their diagnostics identify the actual forbidden mechanism.
 
@@ -1268,6 +1290,9 @@ Forbids catching `Exception` or `Throwable`. Catch only a failure the current bo
 
 ### no_boolean_parameters
 
+Opt-in policy; absent from the standard selection. Boolean state and named boolean
+arguments do not by themselves justify an enum or a separate operation.
+
 Forbids boolean parameter declarations, including nullable/union forms, literal
 `true`/`false` types and boolean defaults. A truth test, cast or comparison does
 not prove that a parameter is a flag: counts, optional callbacks, pagination
@@ -1281,6 +1306,8 @@ readonly state. Using that input to select behavior removes the initialization e
 Forbids `__call`, `__callStatic`, `__get`, `__set`, `__isset`, and `__unset`. Constructors and serialization magic remain available.
 
 ### no_static_mutable_properties
+
+Opt-in syntax policy. A declaration alone does not distinguish model configuration from request state.
 
 Forbids static properties and static local variables because they create process-wide mutable state. Constants are unaffected.
 
@@ -1519,6 +1546,8 @@ consumer. Self-references and unused interface cycles do not establish use.
 String-based framework conventions require an explicit contract entry.
 
 ### no_dependency_cycles
+
+Opt-in architecture policy. Configure actual module prefixes; namespace folders need not be independent modules.
 
 `new NoDependencyCycles()` rejects strongly connected groups of namespace modules using
 resolved type-dependency edges. By default each exact namespace is a module. Configure

@@ -15,7 +15,6 @@ use Illuminate\Events\Dispatcher;
 use LogicException;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
-use ReflectionProperty;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
@@ -62,7 +61,7 @@ final class InitCommandTest extends TestCase
             $this->assertStringContainsString('new MaxFileLoc(700)', $content);
             $this->assertStringContainsString('new MaxLineLength(100)', $content);
             $this->assertStringContainsString('new VariableNameLength(min: 3, max: 16)', $content);
-            $this->assertStringContainsString('new MethodNameLength(min: 3, max: 32)', $content);
+            $this->assertStringContainsString('new MethodNameLength(min: 1, max: 32)', $content);
             $this->assertStringContainsString('new ClassNameLength(min: 3, max: 32)', $content);
             $this->assertStringContainsString('new NamespaceNameLength(min: 3, max: 32)', $content);
             $this->assertStringContainsString('new MaxLayerDominancePercentage(', $content);
@@ -78,8 +77,7 @@ final class InitCommandTest extends TestCase
             foreach ($config->checks() as $check) {
                 $rulesById[$check->id()] = $check;
             }
-            $properties = new ReflectionProperty($rulesById['max_arguments'], 'properties');
-            $this->assertSame($rulesById['max_properties_per_class'], $properties->getValue($rulesById['max_arguments']));
+            $this->assertArrayNotHasKey('max_arguments', $rulesById);
             $this->assertSame(
                 array_keys(RuleCatalog::standardDefinitions()),
                 array_map(static fn ($check): string => $check->id(), $config->checks()),

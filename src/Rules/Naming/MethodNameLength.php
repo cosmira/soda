@@ -24,7 +24,7 @@ final class MethodNameLength extends Check
     /**
      * Set inclusive byte-length bounds for declared names.
      */
-    public function __construct(private readonly int $min = 3, private readonly int $max = 32) {}
+    public function __construct(private readonly int $min = 1, private readonly int $max = 32) {}
 
     /**
      * Use the already parsed syntax tree.

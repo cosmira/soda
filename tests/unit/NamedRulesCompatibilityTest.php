@@ -29,7 +29,7 @@ final class NamedRulesCompatibilityTest extends TestCase
         self::assertEquals($selective->violations->all(), $full->violations->all());
     }
 
-    public function testEveryDemoDiagnosticMatchesTheReviewedStrictCatalogResult(): void
+    public function testEveryDemoDiagnosticMatchesTheReviewedCatalogResult(): void
     {
         $root = dirname(__DIR__, 2);
         $files = (new Facade)->getFilesAsArray([$root.'/demo-app'], ['.php']);
@@ -50,7 +50,7 @@ final class NamedRulesCompatibilityTest extends TestCase
 
             return $rows;
         };
-        self::assertCount(198, $expected);
+        self::assertCount(183, $expected);
         self::assertSame($sort($expected), $sort($actual));
     }
 }

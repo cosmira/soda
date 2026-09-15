@@ -23,7 +23,7 @@ return Soda::configure()
         new BooleanMethodPrefix(),
         new VariableNameLength(min: 3, max: 16),
         new MaxVariableNameWords(maxWords: 1, ignore: ['openAI']),
-        new MethodNameLength(min: 3, max: 32),
+        new MethodNameLength(min: 1, max: 32),
         new ClassNameLength(min: 3, max: 32),
         new NamespaceNameLength(min: 3, max: 32),
     ]);
@@ -32,10 +32,10 @@ return Soda::configure()
 | Rule | Purpose | Default |
 |------|---------|---------|
 | `avoid_redundant_naming` | Reports names that repeat type or class context. Similarity threshold: 0 disables, 1-100 is percent. Minimum word length: 4. | 80 |
-| `boolean_methods_without_prefix` | Reports boolean-returning methods that do not start with a question-style prefix. | allowed prefixes: is/has/can/should/... |
+| `boolean_methods_without_prefix` | Reports boolean-returning methods that do not start with a question-style prefix. | opt-in; allowed prefixes: is/has/can/should/... |
 | `variable_name_length` | Minimum and maximum variable name length. | min 3 / max 16 |
 | `max_variable_name_words` | Optional policy for local variables and parameters that combine multiple concepts. | opt-in |
-| `method_name_length` | Minimum and maximum method name length. | min 3 / max 32 |
+| `method_name_length` | Minimum and maximum method name length. | min 1 / max 32 |
 | `class_name_length` | Minimum and maximum class, interface, trait, and enum name length. | min 3 / max 32 |
 | `namespace_name_length` | Minimum and maximum namespace segment length. | min 3 / max 32 |
 
@@ -134,7 +134,7 @@ Use the constructor to tune the minimum and maximum lengths:
 
 ```php
 new VariableNameLength(min: 3, max: 16)
-new MethodNameLength(min: 3, max: 32)
+new MethodNameLength(min: 1, max: 32)
 new ClassNameLength(min: 3, max: 32)
 ```
 

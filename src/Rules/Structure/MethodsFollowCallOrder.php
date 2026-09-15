@@ -98,7 +98,7 @@ final class MethodsFollowCallOrder extends Check
         MethodOrderMethod $previous,
     ): Violation {
         return new Violation(rule: $this->id(), file: $file, value: $current->line, threshold: $previous->line, method: $current->name, class: $class->name, line: $current->line, message: sprintf(
-            '%s() should be declared before %s() because %s() calls it first',
+            'Consider declaring private helper %s() before %s(): their sole direct caller %s() uses that order',
             $current->name,
             $previous->name,
             $caller->name,

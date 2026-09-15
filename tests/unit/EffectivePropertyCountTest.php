@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Cosmira\Soda;
 
+use Cosmira\Soda\Analysis\Runner;
+use Cosmira\Soda\Config\Soda;
 use Cosmira\Soda\Reporting\Violation;
+use Cosmira\Soda\Rules\Structure\MaxPropertiesPerClass;
 use PHPUnit\Framework\TestCase;
 
 final class EffectivePropertyCountTest extends TestCase
@@ -149,10 +152,7 @@ PHP]));
      */
     private function propertyViolations(array $files): array
     {
-        return Analyzer::analyze(
-            $files,
-            dirname(__DIR__, 2).'/demo-app/soda.php',
-        )->violations
+        return (new Runner)->check($files, Soda::configure()->with([new MaxPropertiesPerClass(5)]))->violations
             ->where('rule', 'max_properties_per_class')
             ->values()
             ->all();

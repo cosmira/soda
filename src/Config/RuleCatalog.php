@@ -6,8 +6,6 @@ namespace Cosmira\Soda\Config;
 
 use Cosmira\Soda\Rules\Check;
 use Cosmira\Soda\Rules\Naming\BooleanMethodPrefix;
-use Cosmira\Soda\Rules\Structure\MaxArguments;
-use Cosmira\Soda\Rules\Structure\MaxPropertiesPerClass;
 
 final class RuleCatalog
 {
@@ -30,22 +28,18 @@ final class RuleCatalog
     }
 
     /**
-     * Create the standard rules, including readonly-data and boolean-prefix policies.
+     * Create the standard rules, including the boolean-prefix policy.
      *
      * @return list<Check>
      */
     public static function standard(): array
     {
         $definitions = self::standardDefinitions();
-        $propertyRule = $definitions['max_properties_per_class'];
-        $properties = new MaxPropertiesPerClass(...$propertyRule['arguments']);
         $checks = [];
 
         foreach ($definitions as $id => $entry) {
             $class = $entry['class'];
             $checks[] = match ($id) {
-                'max_arguments'                     => new MaxArguments(...$entry['arguments'], properties: $properties),
-                'max_properties_per_class'          => $properties,
                 'boolean_methods_without_prefix'    => BooleanMethodPrefix::standard(),
                 default                             => new $class(...$entry['arguments']),
             };

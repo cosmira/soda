@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Cosmira\Soda;
 
 use Cosmira\Soda\Analysis\Runner;
-use Cosmira\Soda\Config\RuleCatalog;
 use Cosmira\Soda\Config\Soda;
 use Cosmira\Soda\Rules\Architecture\NoDynamicInvocation;
 use Cosmira\Soda\Rules\Check;
@@ -33,7 +32,7 @@ final class CallableContractRegressionTest extends TestCase
         yield 'reassignment is not evidence' => ['function run(Closure $callback, $value) { $callback = $value; $callback(); }', 0];
         yield 'framework name does not change policy' => ['function run(\\App\\Pipeline $pipeline, $next) { $next(); }', 0];
         yield 'computed method is evidence' => ['function run($object, $method) { $object->$method(); }', 1];
-        yield 'computed class is evidence' => ['function run($class) { new $class(); }', 1];
+        yield 'class selection does not require a factory' => ['function run($class) { new $class(); }', 0];
         yield 'indirect helper is evidence' => ['function run($callback) { call_user_func($callback); }', 1];
     }
 
@@ -64,7 +63,7 @@ final class CallableContractRegressionTest extends TestCase
                 $files[] = $file;
             }
 
-            return (new Runner)->check($files, Soda::configure()->with(RuleCatalog::standard()))->violations->filter(static fn ($finding): bool => $finding->rule === $rule->id())->values()->all();
+            return (new Runner)->check($files, Soda::configure()->with([$rule]))->violations->filter(static fn ($finding): bool => $finding->rule === $rule->id())->values()->all();
         } finally {
             foreach ($files as $file) {
                 unlink($file);

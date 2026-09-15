@@ -27,14 +27,14 @@ final class QualityConfigTest extends TestCase
 
         $this->assertSame(100, CheckFixture::thresholds()['max_method_length']);
         $this->assertSame(500, CheckFixture::thresholds()['max_class_length']);
-        $this->assertSame(3, CheckFixture::thresholds()['max_arguments']);
+        $this->assertArrayNotHasKey('max_arguments', $config);
         $this->assertSame(40, CheckFixture::thresholds()['max_methods_per_class']);
         $this->assertSame(700, CheckFixture::thresholds()['max_file_loc']);
         $this->assertSame(8, CheckFixture::thresholds()['max_cyclomatic_complexity']);
         $this->assertSame(15, CheckFixture::thresholds()['max_classes_per_namespace']);
         $this->assertSame(50, CheckFixture::thresholds()['max_layer_dominance_percentage']);
         $this->assertSame(0, CheckFixture::thresholds()['max_todo_fixme_comments']);
-        $this->assertSame(0, CheckFixture::thresholds()['boolean_methods_without_prefix']);
+        $this->assertArrayNotHasKey('boolean_methods_without_prefix', $config);
         $this->assertSame(32, CheckFixture::thresholds()['namespace_name_length']);
     }
 

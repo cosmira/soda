@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Cosmira\Soda\Tests;
 
+use Cosmira\Soda\Config\RuleCatalog;
 use Cosmira\Soda\Rules\Naming\ClassNameLength;
 use Cosmira\Soda\Rules\Naming\MethodNameLength;
 use Cosmira\Soda\Rules\Naming\NamespaceNameLength;
@@ -12,6 +13,21 @@ use PHPUnit\Framework\TestCase;
 
 final class NameLengthTest extends TestCase
 {
+    public function testShortApiNamesNeedNoPaddingUnderDefaultPolicy(): void
+    {
+        $file = $this->writeFixture('<?php class User { public function me() {} public function id() {} public function to() {} public function x() {} }');
+
+        try {
+            $entry = RuleCatalog::standardDefinitions()['method_name_length'];
+            foreach ([new MethodNameLength, new MethodNameLength(...$entry['arguments'])] as $rule) {
+                self::assertCount(0, CheckFixture::forRule($rule, $this->context($file)));
+            }
+            self::assertCount(4, CheckFixture::forRule(new MethodNameLength(min: 3), $this->context($file)));
+        } finally {
+            unlink($file);
+        }
+    }
+
     public function testVariableNameLengthReportsTooShortName(): void
     {
         $file = $this->writeFixture('<?php $x = 1; $good = 2;');

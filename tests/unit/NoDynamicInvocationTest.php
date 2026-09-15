@@ -36,7 +36,8 @@ final class NoDynamicInvocationTest extends TestCase
         yield 'declared closure contract' => ['function run(Closure $callback) { $callback(); }', 0];
         yield 'nullsafe dynamic method' => ['$object?->$method();', 1];
         yield 'dynamic method' => ['$object->$method();', 1];
-        yield 'dynamic class' => ['new $class();', 1];
+        yield 'typed model construction' => ['/** @param class-string<Model> $model */ function build(string $model): Model { return new $model(); }', 0];
+        yield 'dynamic class' => ['new $class();', 0];
         yield 'indirect dispatcher' => ['call_user_func($callback);', 1];
     }
 }

@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Cosmira\Soda;
 
+use Cosmira\Soda\Analysis\Runner;
+use Cosmira\Soda\Config\Soda;
 use Cosmira\Soda\Reporting\Violation;
+use Cosmira\Soda\Rules\Structure\MaxArguments;
+use Cosmira\Soda\Rules\Structure\MaxPropertiesPerClass;
 use PHPUnit\Framework\TestCase;
 
 final class ReadonlyDataConstructorArgumentsTest extends TestCase
@@ -104,7 +108,7 @@ readonly class ShipmentData
 PHP));
     }
 
-    public function testStandardCatalogStillLimitsReadonlyDataShape(): void
+    public function testExplicitShapePolicyStillLimitsReadonlyDataShape(): void
     {
         self::assertCount(1, $this->violations(<<<'PHP'
 <?php
@@ -169,10 +173,13 @@ PHP);
         file_put_contents($file, $code);
 
         try {
-            return Analyzer::analyze(
-                [$file],
-                $config ?? dirname(__DIR__, 2).'/demo-app/soda.php',
-            )->violations
+            $result = $config !== null
+                ? Analyzer::analyze([$file], $config)
+                : (new Runner)->check([$file], Soda::configure()->with([
+                    new MaxArguments(3, new MaxPropertiesPerClass(5)),
+                ]));
+
+            return $result->violations
                 ->where('rule', 'max_arguments')
                 ->values()
                 ->all();

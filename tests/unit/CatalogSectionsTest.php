@@ -27,7 +27,7 @@ final class CatalogSectionsTest extends TestCase
         $this->assertContains('max_method_length', $sections['structural']);
         $this->assertContains('max_class_length', $sections['structural']);
         $this->assertContains('max_classes_per_project', $sections['structural']);
-        $this->assertContains('max_efferent_coupling', $sections['structural']);
+        $this->assertNotContains('max_efferent_coupling', $sections['structural']);
 
         $this->assertArrayHasKey('complexity', $sections);
         $this->assertContains('max_cyclomatic_complexity', $sections['complexity']);
@@ -41,7 +41,7 @@ final class CatalogSectionsTest extends TestCase
 
     public function testRuleToSectionMapsAllRules(): void
     {
-        $map = array_map(static fn (array $entry): string => $entry['section'], RuleCatalog::standardDefinitions());
+        $map = array_map(static fn (array $entry): string => $entry['section'], RuleCatalog::definitions());
 
         $this->assertSame('structural', $map['max_method_length']);
         $this->assertSame('structural', $map['max_efferent_coupling']);
