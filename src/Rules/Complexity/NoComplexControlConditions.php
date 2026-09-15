@@ -37,33 +37,11 @@ final class NoComplexControlConditions extends Check
     #[\Override]
     public function checkFile(FileFacts $facts): iterable
     {
-        $file = $facts->path;
         $metrics = $facts->metrics;
-        $violations = [];
 
         foreach ($metrics['complexControlConditions'] ?? [] as $occurrence) {
-            $isArray = is_array($occurrence);
-            if (! $isArray) {
-                continue;
-            }
-
-            $isPresent = isset($occurrence['line'], $occurrence['reason']);
-            if (! $isPresent) {
-                continue;
-            }
-
-            $isInt = is_int($occurrence['line']);
-            if (! $isInt) {
-                continue;
-            }
-
-            $isString = is_string($occurrence['reason']);
-            if (! $isString) {
-                continue;
-            }
-
-            $violations[] = new Violation(rule: $this->id(),
-                file: $file,
+            yield new Violation(rule: $this->id(),
+                file: $facts->path,
                 value: 1,
                 threshold: 0,
                 line: $occurrence['line'],
@@ -71,7 +49,5 @@ final class NoComplexControlConditions extends Check
                     ? 'Mixed logical operators obscure this condition. Name the distinct decision before combining it.'
                     : 'Nested computation obscures this condition. Prepare the value locally or name the query before testing it.');
         }
-
-        return $violations;
     }
 }

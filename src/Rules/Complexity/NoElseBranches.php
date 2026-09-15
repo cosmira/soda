@@ -41,38 +41,14 @@ final class NoElseBranches extends Check
     #[\Override]
     public function checkFile(FileFacts $facts): iterable
     {
-        $file = $facts->path;
         $metrics = $facts->metrics;
-        $violations = [];
 
         foreach ($metrics['elseBranches'] ?? [] as $occurrence) {
-            $isArray = is_array($occurrence);
-            if (! $isArray) {
-                continue;
-            }
-
-            $isPresent = isset($occurrence['line'], $occurrence['kind']);
-            if (! $isPresent) {
-                continue;
-            }
-
-            $isInt = is_int($occurrence['line']);
-            if (! $isInt) {
-                continue;
-            }
-
-            $isString = is_string($occurrence['kind']);
-            if (! $isString) {
-                continue;
-            }
-
             $message = $occurrence['kind'] === 'elseif'
                 ? 'Avoid elseif. End the preceding case early, then use a separate if.'
                 : 'Avoid else. Exit the preceding branch early and keep the remaining path unindented.';
 
-            $violations[] = new Violation(rule: $this->id(), file: $file, value: 1, threshold: 0, line: $occurrence['line'], message: $message);
+            yield new Violation(rule: $this->id(), file: $facts->path, value: 1, threshold: 0, line: $occurrence['line'], message: $message);
         }
-
-        return $violations;
     }
 }

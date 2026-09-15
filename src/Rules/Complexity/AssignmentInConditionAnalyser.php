@@ -18,6 +18,8 @@ use PhpParser\NodeFinder;
 /**
  * Finds assignments hidden inside control-flow conditions.
  *
+ * @phpstan-type AssignmentCondition array{line: positive-int}
+ *
  * @internal
  */
 final readonly class AssignmentInConditionAnalyser
@@ -38,7 +40,7 @@ final readonly class AssignmentInConditionAnalyser
     /**
      * @param Node[] $nodes
      *
-     * @return list<array{line: int}>
+     * @return list<AssignmentCondition>
      */
     public function analyse(array $nodes): array
     {

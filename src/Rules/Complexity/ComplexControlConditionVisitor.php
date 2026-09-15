@@ -9,11 +9,15 @@ use Cosmira\Soda\Analysis\FactVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 
-/** Collects mixed logical decisions and computations nested inside control predicates. */
+/**
+ * Collects mixed logical decisions and computations nested inside control predicates.
+ *
+ * @phpstan-type ComplexCondition array{line: int, reason: 'mixed_logic'|'nested_computation'}
+ */
 final class ComplexControlConditionVisitor extends FactVisitor
 {
     /**
-     * @var list<array{line: int, reason: 'mixed_logic'|'nested_computation'}>
+     * @var list<ComplexCondition>
      */
     private array $occurrences = [];
 
@@ -37,7 +41,7 @@ final class ComplexControlConditionVisitor extends FactVisitor
     }
 
     /**
-     * @return list<array{line: int, reason: 'mixed_logic'|'nested_computation'}>
+     * @return list<ComplexCondition>
      */
     public function occurrences(): array
     {
