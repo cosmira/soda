@@ -16,7 +16,6 @@ use Cosmira\Soda\Tests\Design\Money;
 use Cosmira\Soda\Tests\Design\PublicationSettings;
 use Cosmira\Soda\Tests\Design\QueryOptions;
 use Cosmira\Soda\Tests\Design\ReportDraft;
-use Cosmira\Soda\Tests\Design\ReportStorage;
 use DateTimeImmutable;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -98,10 +97,10 @@ final class PracticalDesignTest extends TestCase
         self::assertSame('orders', Design\normalizedLabel(' Orders '));
     }
 
-    public function testAdapterTranslatesTheBoundaryOperation(): void
+    public function testDirectStorageNeedsNoRenamingWrapper(): void
     {
         $storage = new MemoryStorage;
-        (new ReportStorage($storage))->save('report.txt', 'Orders');
+        $storage->write('report.txt', 'Orders');
 
         self::assertSame(['report.txt' => 'Orders'], $storage->files);
     }

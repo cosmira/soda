@@ -1,0 +1,1132 @@
+{
+  "scope": "Corrections since the hooks audit snapshot; earlier corrections are documented in the round reports.",
+  "findings": [
+    {
+      "id": "d88d6435cc5745251ded",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_boolean_parameters",
+        "method": null,
+        "class": null,
+        "line": 10,
+        "value": 1,
+        "threshold": 0,
+        "message": "Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.",
+        "recommendation": "Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow.",
+        "file": "src/Concerns/Erase.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Truthiness, casts and comparisons of data do not establish a boolean parameter.",
+          "fix": "src/Rules/Architecture/NoBooleanParameters.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "29b8521d2887b3467d61",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_boolean_parameters",
+        "method": null,
+        "class": null,
+        "line": 424,
+        "value": 1,
+        "threshold": 0,
+        "message": "Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.",
+        "recommendation": "Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow.",
+        "file": "src/Prompt.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Truthiness, casts and comparisons of data do not establish a boolean parameter.",
+          "fix": "src/Rules/Architecture/NoBooleanParameters.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "55ae2691484b03fc91fd",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_boolean_parameters",
+        "method": null,
+        "class": null,
+        "line": 23,
+        "value": 1,
+        "threshold": 0,
+        "message": "Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.",
+        "recommendation": "Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow.",
+        "file": "src/Themes/Default/Concerns/DrawsBoxes.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Truthiness, casts and comparisons of data do not establish a boolean parameter.",
+          "fix": "src/Rules/Architecture/NoBooleanParameters.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "2b00ea0ff7431ec7468f",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_boolean_parameters",
+        "method": null,
+        "class": null,
+        "line": 67,
+        "value": 1,
+        "threshold": 0,
+        "message": "Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.",
+        "recommendation": "Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow.",
+        "file": "src/Themes/Default/NumberPromptRenderer.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Truthiness, casts and comparisons of data do not establish a boolean parameter.",
+          "fix": "src/Rules/Architecture/NoBooleanParameters.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "cf1a2de5acf3f942eb0c",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_boolean_parameters",
+        "method": null,
+        "class": null,
+        "line": 82,
+        "value": 1,
+        "threshold": 0,
+        "message": "Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.",
+        "recommendation": "Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow.",
+        "file": "src/Themes/Default/Renderer.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Truthiness, casts and comparisons of data do not establish a boolean parameter.",
+          "fix": "src/Rules/Architecture/NoBooleanParameters.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "8f42d69b4c861097d042",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_boolean_parameters",
+        "method": null,
+        "class": null,
+        "line": 82,
+        "value": 1,
+        "threshold": 0,
+        "message": "Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.",
+        "recommendation": "Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow.",
+        "file": "src/Themes/Default/Renderer.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Truthiness, casts and comparisons of data do not establish a boolean parameter.",
+          "fix": "src/Rules/Architecture/NoBooleanParameters.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "7341c47c6e5d8135e1e3",
+      "package": "laravel/sanctum",
+      "diagnostic": {
+        "rule": "no_boolean_parameters",
+        "method": null,
+        "class": null,
+        "line": 70,
+        "value": 1,
+        "threshold": 0,
+        "message": "Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.",
+        "recommendation": "Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow.",
+        "file": "src/Guard.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Truthiness, casts and comparisons of data do not establish a boolean parameter.",
+          "fix": "src/Rules/Architecture/NoBooleanParameters.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "036145e9591f7a65854e",
+      "package": "laravel/sanctum",
+      "diagnostic": {
+        "rule": "no_boolean_parameters",
+        "method": null,
+        "class": null,
+        "line": 121,
+        "value": 1,
+        "threshold": 0,
+        "message": "Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.",
+        "recommendation": "Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow.",
+        "file": "src/Guard.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Truthiness, casts and comparisons of data do not establish a boolean parameter.",
+          "fix": "src/Rules/Architecture/NoBooleanParameters.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "7de8fad1cd8695369f68",
+      "package": "laravel/scout",
+      "diagnostic": {
+        "rule": "no_boolean_parameters",
+        "method": null,
+        "class": null,
+        "line": 394,
+        "value": 1,
+        "threshold": 0,
+        "message": "Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.",
+        "recommendation": "Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow.",
+        "file": "src/Builder.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Truthiness, casts and comparisons of data do not establish a boolean parameter.",
+          "fix": "src/Rules/Architecture/NoBooleanParameters.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "0b0b2e763802445b1161",
+      "package": "laravel/scout",
+      "diagnostic": {
+        "rule": "no_boolean_parameters",
+        "method": null,
+        "class": null,
+        "line": 394,
+        "value": 1,
+        "threshold": 0,
+        "message": "Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.",
+        "recommendation": "Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow.",
+        "file": "src/Builder.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Truthiness, casts and comparisons of data do not establish a boolean parameter.",
+          "fix": "src/Rules/Architecture/NoBooleanParameters.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "f79a18e0a002670b0c6d",
+      "package": "laravel/scout",
+      "diagnostic": {
+        "rule": "no_boolean_parameters",
+        "method": null,
+        "class": null,
+        "line": 435,
+        "value": 1,
+        "threshold": 0,
+        "message": "Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.",
+        "recommendation": "Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow.",
+        "file": "src/Builder.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Truthiness, casts and comparisons of data do not establish a boolean parameter.",
+          "fix": "src/Rules/Architecture/NoBooleanParameters.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "b3c1a7c7be9725d3c06f",
+      "package": "laravel/scout",
+      "diagnostic": {
+        "rule": "no_boolean_parameters",
+        "method": null,
+        "class": null,
+        "line": 435,
+        "value": 1,
+        "threshold": 0,
+        "message": "Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.",
+        "recommendation": "Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow.",
+        "file": "src/Builder.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Truthiness, casts and comparisons of data do not establish a boolean parameter.",
+          "fix": "src/Rules/Architecture/NoBooleanParameters.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "4eae033a879b3efcdbc5",
+      "package": "laravel/scout",
+      "diagnostic": {
+        "rule": "no_boolean_parameters",
+        "method": null,
+        "class": null,
+        "line": 472,
+        "value": 1,
+        "threshold": 0,
+        "message": "Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.",
+        "recommendation": "Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow.",
+        "file": "src/Builder.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Truthiness, casts and comparisons of data do not establish a boolean parameter.",
+          "fix": "src/Rules/Architecture/NoBooleanParameters.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "fb6357b8d12c1b3e9360",
+      "package": "laravel/scout",
+      "diagnostic": {
+        "rule": "no_boolean_parameters",
+        "method": null,
+        "class": null,
+        "line": 472,
+        "value": 1,
+        "threshold": 0,
+        "message": "Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.",
+        "recommendation": "Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow.",
+        "file": "src/Builder.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Truthiness, casts and comparisons of data do not establish a boolean parameter.",
+          "fix": "src/Rules/Architecture/NoBooleanParameters.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "f28e0e70f56ef8713a02",
+      "package": "laravel/scout",
+      "diagnostic": {
+        "rule": "no_boolean_parameters",
+        "method": null,
+        "class": null,
+        "line": 512,
+        "value": 1,
+        "threshold": 0,
+        "message": "Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.",
+        "recommendation": "Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow.",
+        "file": "src/Builder.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Truthiness, casts and comparisons of data do not establish a boolean parameter.",
+          "fix": "src/Rules/Architecture/NoBooleanParameters.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "93b3e67d9adb99b79a0a",
+      "package": "laravel/scout",
+      "diagnostic": {
+        "rule": "no_boolean_parameters",
+        "method": null,
+        "class": null,
+        "line": 512,
+        "value": 1,
+        "threshold": 0,
+        "message": "Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.",
+        "recommendation": "Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow.",
+        "file": "src/Builder.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Truthiness, casts and comparisons of data do not establish a boolean parameter.",
+          "fix": "src/Rules/Architecture/NoBooleanParameters.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "6a4be9a98e2f59c81942",
+      "package": "laravel/scout",
+      "diagnostic": {
+        "rule": "max_ask_then_tell_patterns",
+        "method": "Laravel\\Scout\\Console\\IndexCommand::handle",
+        "class": "Laravel\\Scout\\Console\\IndexCommand",
+        "line": 74,
+        "value": 1,
+        "threshold": 0,
+        "message": "Asked $engine via configureSoftDeleteFilter(), then told it via updateIndexSettings()",
+        "recommendation": "Tell the object what outcome you want instead of querying its state and deciding for it.",
+        "file": "src/Console/IndexCommand.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Prepared settings are forwarded as a complete argument; the code does not establish an object-state decision.",
+          "fix": "src/Rules/Structure/TellDontAskBranchMatcher.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "41734237cb717b564bc6",
+      "package": "laravel/scout",
+      "diagnostic": {
+        "rule": "no_boolean_parameters",
+        "method": null,
+        "class": null,
+        "line": 186,
+        "value": 1,
+        "threshold": 0,
+        "message": "Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.",
+        "recommendation": "Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow.",
+        "file": "src/Engines/AlgoliaEngine.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Truthiness, casts and comparisons of data do not establish a boolean parameter.",
+          "fix": "src/Rules/Architecture/NoBooleanParameters.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "270cdd777c5617cdce8b",
+      "package": "laravel/scout",
+      "diagnostic": {
+        "rule": "no_boolean_parameters",
+        "method": null,
+        "class": null,
+        "line": 215,
+        "value": 1,
+        "threshold": 0,
+        "message": "Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.",
+        "recommendation": "Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow.",
+        "file": "src/Engines/MeilisearchEngine.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Truthiness, casts and comparisons of data do not establish a boolean parameter.",
+          "fix": "src/Rules/Architecture/NoBooleanParameters.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "87c05466dda50d94f5c2",
+      "package": "laravel/scout",
+      "diagnostic": {
+        "rule": "no_boolean_parameters",
+        "method": null,
+        "class": null,
+        "line": 34,
+        "value": 1,
+        "threshold": 0,
+        "message": "Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.",
+        "recommendation": "Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow.",
+        "file": "src/SearchableScope.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Truthiness, casts and comparisons of data do not establish a boolean parameter.",
+          "fix": "src/Rules/Architecture/NoBooleanParameters.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "c0e2c98b95758f530846",
+      "package": "laravel/scout",
+      "diagnostic": {
+        "rule": "no_boolean_parameters",
+        "method": null,
+        "class": null,
+        "line": 44,
+        "value": 1,
+        "threshold": 0,
+        "message": "Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.",
+        "recommendation": "Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow.",
+        "file": "src/SearchableScope.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Truthiness, casts and comparisons of data do not establish a boolean parameter.",
+          "fix": "src/Rules/Architecture/NoBooleanParameters.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "9e8277c9aea40d42ecd5",
+      "package": "laravel/scout",
+      "diagnostic": {
+        "rule": "no_boolean_parameters",
+        "method": null,
+        "class": null,
+        "line": 54,
+        "value": 1,
+        "threshold": 0,
+        "message": "Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.",
+        "recommendation": "Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow.",
+        "file": "src/SearchableScope.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Truthiness, casts and comparisons of data do not establish a boolean parameter.",
+          "fix": "src/Rules/Architecture/NoBooleanParameters.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "305dae5349b86fcd1662",
+      "package": "laravel/scout",
+      "diagnostic": {
+        "rule": "no_boolean_parameters",
+        "method": null,
+        "class": null,
+        "line": 63,
+        "value": 1,
+        "threshold": 0,
+        "message": "Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.",
+        "recommendation": "Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow.",
+        "file": "src/SearchableScope.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Truthiness, casts and comparisons of data do not establish a boolean parameter.",
+          "fix": "src/Rules/Architecture/NoBooleanParameters.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "57f0d49dabefeed6fdcf",
+      "package": "laravel/serializable-closure",
+      "diagnostic": {
+        "rule": "no_boolean_parameters",
+        "method": null,
+        "class": null,
+        "line": 69,
+        "value": 1,
+        "threshold": 0,
+        "message": "Boolean parameter outside recognized readonly initialization. Check whether it selects behavior or carries data; use separate named methods for distinct behavior.",
+        "recommendation": "Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow.",
+        "file": "src/SerializableClosure.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Truthiness, casts and comparisons of data do not establish a boolean parameter.",
+          "fix": "src/Rules/Architecture/NoBooleanParameters.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "1f5c223762cf1da27b00",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_complex_control_conditions",
+        "method": null,
+        "class": null,
+        "line": 96,
+        "value": 1,
+        "threshold": 0,
+        "message": "Nested computation obscures this condition. Prepare the value locally or name the query before testing it.",
+        "recommendation": "Keep simple predicates, comparisons and homogeneous boolean chains inline. Name mixed decisions or prepare nested computations locally.",
+        "file": "src/Concerns/FakesInputOutput.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "A single query combined with instanceof or a simple null fallback is not nested computation.",
+          "fix": "src/Rules/Complexity/ConditionValueGrammar.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "da08aca49a49e323782b",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_complex_control_conditions",
+        "method": null,
+        "class": null,
+        "line": 39,
+        "value": 1,
+        "threshold": 0,
+        "message": "Nested computation obscures this condition. Prepare the value locally or name the query before testing it.",
+        "recommendation": "Keep simple predicates, comparisons and homogeneous boolean chains inline. Name mixed decisions or prepare nested computations locally.",
+        "file": "src/Concerns/Scrolling.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "A single query combined with instanceof or a simple null fallback is not nested computation.",
+          "fix": "src/Rules/Complexity/ConditionValueGrammar.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "6833dedab51f3071ad92",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_dynamic_invocation",
+        "method": null,
+        "class": null,
+        "line": 57,
+        "value": 1,
+        "threshold": 0,
+        "message": "Dynamic invocation hides the callable contract. Use an explicit interface or dispatch map.",
+        "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map.",
+        "file": "src/SuggestPrompt.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "The immediately invoked literal closure defines its target directly.",
+          "fix": "src/Rules/Architecture/NoDynamicInvocation.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "15545e9563741fef67e6",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "no_assignment_in_condition",
+        "method": null,
+        "class": null,
+        "line": 215,
+        "value": 1,
+        "threshold": 0,
+        "message": "Assignment inside condition is forbidden. Assign first, then test the value.",
+        "recommendation": "Assign first, then make the condition a pure question with no hidden state change.",
+        "file": "src/TextareaPrompt.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Assignment is in a callback body, outside the surrounding ternary condition.",
+          "fix": "src/Rules/Complexity/AssignmentInConditionAnalyser.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "1885d30fc74b72e12f66",
+      "package": "laravel/pail",
+      "diagnostic": {
+        "rule": "no_complex_control_conditions",
+        "method": null,
+        "class": null,
+        "line": 105,
+        "value": 1,
+        "threshold": 0,
+        "message": "Nested computation obscures this condition. Prepare the value locally or name the query before testing it.",
+        "recommendation": "Keep simple predicates, comparisons and homogeneous boolean chains inline. Name mixed decisions or prepare nested computations locally.",
+        "file": "src/Handler.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "A single query combined with instanceof or a simple null fallback is not nested computation.",
+          "fix": "src/Rules/Complexity/ConditionValueGrammar.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "44954241ed3889d49136",
+      "package": "laravel/pail",
+      "diagnostic": {
+        "rule": "no_complex_control_conditions",
+        "method": null,
+        "class": null,
+        "line": 92,
+        "value": 1,
+        "threshold": 0,
+        "message": "Nested computation obscures this condition. Prepare the value locally or name the query before testing it.",
+        "recommendation": "Keep simple predicates, comparisons and homogeneous boolean chains inline. Name mixed decisions or prepare nested computations locally.",
+        "file": "src/Printers/CliPrinter.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "A single query combined with instanceof or a simple null fallback is not nested computation.",
+          "fix": "src/Rules/Complexity/ConditionValueGrammar.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "02db86221b9e4a511676",
+      "package": "laravel/pail",
+      "diagnostic": {
+        "rule": "no_complex_control_conditions",
+        "method": null,
+        "class": null,
+        "line": 232,
+        "value": 1,
+        "threshold": 0,
+        "message": "Nested computation obscures this condition. Prepare the value locally or name the query before testing it.",
+        "recommendation": "Keep simple predicates, comparisons and homogeneous boolean chains inline. Name mixed decisions or prepare nested computations locally.",
+        "file": "src/Printers/CliPrinter.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "A single query combined with instanceof or a simple null fallback is not nested computation.",
+          "fix": "src/Rules/Complexity/ConditionValueGrammar.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "4815343e128572a2b244",
+      "package": "laravel/pail",
+      "diagnostic": {
+        "rule": "no_complex_control_conditions",
+        "method": null,
+        "class": null,
+        "line": 56,
+        "value": 1,
+        "threshold": 0,
+        "message": "Nested computation obscures this condition. Prepare the value locally or name the query before testing it.",
+        "recommendation": "Keep simple predicates, comparisons and homogeneous boolean chains inline. Name mixed decisions or prepare nested computations locally.",
+        "file": "src/ValueObjects/MessageLogged.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "A single query combined with instanceof or a simple null fallback is not nested computation.",
+          "fix": "src/Rules/Complexity/ConditionValueGrammar.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "43f7e0fab1665935def5",
+      "package": "laravel/pail",
+      "diagnostic": {
+        "rule": "no_complex_control_conditions",
+        "method": null,
+        "class": null,
+        "line": 72,
+        "value": 1,
+        "threshold": 0,
+        "message": "Nested computation obscures this condition. Prepare the value locally or name the query before testing it.",
+        "recommendation": "Keep simple predicates, comparisons and homogeneous boolean chains inline. Name mixed decisions or prepare nested computations locally.",
+        "file": "src/ValueObjects/MessageLogged.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "A single query combined with instanceof or a simple null fallback is not nested computation.",
+          "fix": "src/Rules/Complexity/ConditionValueGrammar.php"
+        },
+        "regression_test": "tests/unit/LaravelFalsePositiveRegressionTest.php"
+      }
+    },
+    {
+      "id": "616f4584e950b9711d3f",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "max_control_nesting",
+        "method": "Laravel\\Prompts\\Progress::map",
+        "class": "Laravel\\Prompts\\Progress",
+        "line": 74,
+        "value": 4,
+        "threshold": 3,
+        "message": null,
+        "recommendation": "Return early for exceptional paths and extract the nested happy-path behavior into a named method.",
+        "file": "src/Progress.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Alternative branches share their owner depth. The actual nesting is within the configured limit.",
+          "fix": "src/Analysis/ControlStructureMatcher.php"
+        },
+        "regression_test": "tests/unit/CallableNestingTest.php"
+      }
+    },
+    {
+      "id": "a5a594eefb3ea5b124f3",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "max_control_nesting",
+        "method": "Laravel\\Prompts\\Task::receiveMessages",
+        "class": "Laravel\\Prompts\\Task",
+        "line": 218,
+        "value": 4,
+        "threshold": 3,
+        "message": null,
+        "recommendation": "Return early for exceptional paths and extract the nested happy-path behavior into a named method.",
+        "file": "src/Task.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Alternative branches share their owner depth. The actual nesting is within the configured limit.",
+          "fix": "src/Analysis/ControlStructureMatcher.php"
+        },
+        "regression_test": "tests/unit/CallableNestingTest.php"
+      }
+    },
+    {
+      "id": "abac3bdff078861d0283",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "max_control_nesting",
+        "method": "Laravel\\Prompts\\Themes\\Default\\CalloutRenderer::renderBulletedList",
+        "class": "Laravel\\Prompts\\Themes\\Default\\CalloutRenderer",
+        "line": 105,
+        "value": 4,
+        "threshold": 3,
+        "message": null,
+        "recommendation": "Return early for exceptional paths and extract the nested happy-path behavior into a named method.",
+        "file": "src/Themes/Default/CalloutRenderer.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Alternative branches share their owner depth. The actual nesting is within the configured limit.",
+          "fix": "src/Analysis/ControlStructureMatcher.php"
+        },
+        "regression_test": "tests/unit/CallableNestingTest.php"
+      }
+    },
+    {
+      "id": "140c11fd043ab36ff479",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "max_control_nesting",
+        "method": "Laravel\\Prompts\\Themes\\Default\\CalloutRenderer::renderNumberedList",
+        "class": "Laravel\\Prompts\\Themes\\Default\\CalloutRenderer",
+        "line": 140,
+        "value": 4,
+        "threshold": 3,
+        "message": null,
+        "recommendation": "Return early for exceptional paths and extract the nested happy-path behavior into a named method.",
+        "file": "src/Themes/Default/CalloutRenderer.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Alternative branches share their owner depth. The actual nesting is within the configured limit.",
+          "fix": "src/Analysis/ControlStructureMatcher.php"
+        },
+        "regression_test": "tests/unit/CallableNestingTest.php"
+      }
+    },
+    {
+      "id": "2e3968a0163cae7ed34a",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "max_control_nesting",
+        "method": "Laravel\\Prompts\\Themes\\Default\\CalloutRenderer::renderKeyValueList",
+        "class": "Laravel\\Prompts\\Themes\\Default\\CalloutRenderer",
+        "line": 173,
+        "value": 4,
+        "threshold": 3,
+        "message": null,
+        "recommendation": "Return early for exceptional paths and extract the nested happy-path behavior into a named method.",
+        "file": "src/Themes/Default/CalloutRenderer.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Alternative branches share their owner depth. The actual nesting is within the configured limit.",
+          "fix": "src/Analysis/ControlStructureMatcher.php"
+        },
+        "regression_test": "tests/unit/CallableNestingTest.php"
+      }
+    },
+    {
+      "id": "b71b736556c5ffd67e7b",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "max_control_nesting",
+        "method": "Laravel\\Prompts\\Themes\\Default\\Concerns\\InteractsWithStrings::mbWordwrap",
+        "class": "Laravel\\Prompts\\Themes\\Default\\Concerns\\InteractsWithStrings",
+        "line": 85,
+        "value": 6,
+        "threshold": 3,
+        "message": null,
+        "recommendation": "Return early for exceptional paths and extract the nested happy-path behavior into a named method.",
+        "file": "src/Themes/Default/Concerns/InteractsWithStrings.php"
+      },
+      "review": {
+        "status": "corrected_measurement",
+        "evidence": {
+          "observation": "Alternative branches share their owner depth. The method still exceeds the limit, but its value or first deepest location changed.",
+          "fix": "src/Analysis/ControlStructureMatcher.php"
+        },
+        "regression_test": "tests/unit/CallableNestingTest.php"
+      }
+    },
+    {
+      "id": "28a30a0550d8f06f8199",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "max_control_nesting",
+        "method": "Laravel\\Prompts\\Themes\\Default\\Concerns\\InteractsWithStrings::ansiWordwrap",
+        "class": "Laravel\\Prompts\\Themes\\Default\\Concerns\\InteractsWithStrings",
+        "line": 174,
+        "value": 5,
+        "threshold": 3,
+        "message": null,
+        "recommendation": "Return early for exceptional paths and extract the nested happy-path behavior into a named method.",
+        "file": "src/Themes/Default/Concerns/InteractsWithStrings.php"
+      },
+      "review": {
+        "status": "corrected_measurement",
+        "evidence": {
+          "observation": "Alternative branches share their owner depth. The method still exceeds the limit, but its value or first deepest location changed.",
+          "fix": "src/Analysis/ControlStructureMatcher.php"
+        },
+        "regression_test": "tests/unit/CallableNestingTest.php"
+      }
+    },
+    {
+      "id": "14abdda4afcad5f8d0ce",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "max_control_nesting",
+        "method": "Laravel\\Prompts\\Themes\\Default\\Concerns\\InteractsWithStrings::parseAnsiText",
+        "class": "Laravel\\Prompts\\Themes\\Default\\Concerns\\InteractsWithStrings",
+        "line": 261,
+        "value": 7,
+        "threshold": 3,
+        "message": null,
+        "recommendation": "Return early for exceptional paths and extract the nested happy-path behavior into a named method.",
+        "file": "src/Themes/Default/Concerns/InteractsWithStrings.php"
+      },
+      "review": {
+        "status": "corrected_measurement",
+        "evidence": {
+          "observation": "Alternative branches share their owner depth. The method still exceeds the limit, but its value or first deepest location changed.",
+          "fix": "src/Analysis/ControlStructureMatcher.php"
+        },
+        "regression_test": "tests/unit/CallableNestingTest.php"
+      }
+    },
+    {
+      "id": "b3335d9c6b541d4950bb",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "max_control_nesting",
+        "method": "Laravel\\Prompts\\Themes\\Default\\DataTableRenderer::renderActive",
+        "class": "Laravel\\Prompts\\Themes\\Default\\DataTableRenderer",
+        "line": 148,
+        "value": 4,
+        "threshold": 3,
+        "message": null,
+        "recommendation": "Return early for exceptional paths and extract the nested happy-path behavior into a named method.",
+        "file": "src/Themes/Default/DataTableRenderer.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Alternative branches share their owner depth. The actual nesting is within the configured limit.",
+          "fix": "src/Analysis/ControlStructureMatcher.php"
+        },
+        "regression_test": "tests/unit/CallableNestingTest.php"
+      }
+    },
+    {
+      "id": "018ba917b0c1300b8e93",
+      "package": "laravel/prompts",
+      "diagnostic": {
+        "rule": "max_control_nesting",
+        "method": "Laravel\\Prompts\\Themes\\Default\\DataTableRenderer::renderDataRows",
+        "class": "Laravel\\Prompts\\Themes\\Default\\DataTableRenderer",
+        "line": 279,
+        "value": 5,
+        "threshold": 3,
+        "message": null,
+        "recommendation": "Return early for exceptional paths and extract the nested happy-path behavior into a named method.",
+        "file": "src/Themes/Default/DataTableRenderer.php"
+      },
+      "review": {
+        "status": "corrected_measurement",
+        "evidence": {
+          "observation": "Alternative branches share their owner depth. The method still exceeds the limit, but its value or first deepest location changed.",
+          "fix": "src/Analysis/ControlStructureMatcher.php"
+        },
+        "regression_test": "tests/unit/CallableNestingTest.php"
+      }
+    },
+    {
+      "id": "1f633495a484066b1508",
+      "package": "laravel/serializable-closure",
+      "diagnostic": {
+        "rule": "max_control_nesting",
+        "method": "Laravel\\SerializableClosure\\Serializers\\Native::wrapClosures",
+        "class": "Laravel\\SerializableClosure\\Serializers\\Native",
+        "line": 282,
+        "value": 5,
+        "threshold": 3,
+        "message": null,
+        "recommendation": "Return early for exceptional paths and extract the nested happy-path behavior into a named method.",
+        "file": "src/Serializers/Native.php"
+      },
+      "review": {
+        "status": "corrected_measurement",
+        "evidence": {
+          "observation": "Alternative branches share their owner depth. The method still exceeds the limit, but its value or first deepest location changed.",
+          "fix": "src/Analysis/ControlStructureMatcher.php"
+        },
+        "regression_test": "tests/unit/CallableNestingTest.php"
+      }
+    },
+    {
+      "id": "2f6c2b5441cc919494d2",
+      "package": "laravel/serializable-closure",
+      "diagnostic": {
+        "rule": "max_control_nesting",
+        "method": "Laravel\\SerializableClosure\\Serializers\\Native::mapPointers",
+        "class": "Laravel\\SerializableClosure\\Serializers\\Native",
+        "line": 408,
+        "value": 6,
+        "threshold": 3,
+        "message": null,
+        "recommendation": "Return early for exceptional paths and extract the nested happy-path behavior into a named method.",
+        "file": "src/Serializers/Native.php"
+      },
+      "review": {
+        "status": "corrected_measurement",
+        "evidence": {
+          "observation": "Alternative branches share their owner depth. The method still exceeds the limit, but its value or first deepest location changed.",
+          "fix": "src/Analysis/ControlStructureMatcher.php"
+        },
+        "regression_test": "tests/unit/CallableNestingTest.php"
+      }
+    },
+    {
+      "id": "521f9c7b2cc5f155c5f1",
+      "package": "laravel/serializable-closure",
+      "diagnostic": {
+        "rule": "max_control_nesting",
+        "method": "Laravel\\SerializableClosure\\Serializers\\Native::mapByReference",
+        "class": "Laravel\\SerializableClosure\\Serializers\\Native",
+        "line": 514,
+        "value": 5,
+        "threshold": 3,
+        "message": null,
+        "recommendation": "Return early for exceptional paths and extract the nested happy-path behavior into a named method.",
+        "file": "src/Serializers/Native.php"
+      },
+      "review": {
+        "status": "corrected_measurement",
+        "evidence": {
+          "observation": "Alternative branches share their owner depth. The method still exceeds the limit, but its value or first deepest location changed.",
+          "fix": "src/Analysis/ControlStructureMatcher.php"
+        },
+        "regression_test": "tests/unit/CallableNestingTest.php"
+      }
+    },
+    {
+      "id": "8686c834529ebc94bac3",
+      "package": "laravel/serializable-closure",
+      "diagnostic": {
+        "rule": "max_control_nesting",
+        "method": "Laravel\\SerializableClosure\\Support\\ReflectionClosure::getCode",
+        "class": "Laravel\\SerializableClosure\\Support\\ReflectionClosure",
+        "line": 676,
+        "value": 9,
+        "threshold": 3,
+        "message": null,
+        "recommendation": "Return early for exceptional paths and extract the nested happy-path behavior into a named method.",
+        "file": "src/Support/ReflectionClosure.php"
+      },
+      "review": {
+        "status": "corrected_measurement",
+        "evidence": {
+          "observation": "Alternative branches share their owner depth. The method still exceeds the limit, but its value or first deepest location changed.",
+          "fix": "src/Analysis/ControlStructureMatcher.php"
+        },
+        "regression_test": "tests/unit/CallableNestingTest.php"
+      }
+    },
+    {
+      "id": "509299dcc4d745fbb0b8",
+      "package": "laravel/serializable-closure",
+      "diagnostic": {
+        "rule": "max_control_nesting",
+        "method": "Laravel\\SerializableClosure\\Support\\ReflectionClosure::fetchItems",
+        "class": "Laravel\\SerializableClosure\\Support\\ReflectionClosure",
+        "line": 1200,
+        "value": 6,
+        "threshold": 3,
+        "message": null,
+        "recommendation": "Return early for exceptional paths and extract the nested happy-path behavior into a named method.",
+        "file": "src/Support/ReflectionClosure.php"
+      },
+      "review": {
+        "status": "corrected_measurement",
+        "evidence": {
+          "observation": "Alternative branches share their owner depth. The method still exceeds the limit, but its value or first deepest location changed.",
+          "fix": "src/Analysis/ControlStructureMatcher.php"
+        },
+        "regression_test": "tests/unit/CallableNestingTest.php"
+      }
+    },
+    {
+      "id": "07641028d6eebd234b9d",
+      "package": "laravel/serializable-closure",
+      "diagnostic": {
+        "rule": "max_control_nesting",
+        "method": "Laravel\\SerializableClosure\\Support\\ReflectionClosure::verifyCandidateSignature",
+        "class": "Laravel\\SerializableClosure\\Support\\ReflectionClosure",
+        "line": 1452,
+        "value": 4,
+        "threshold": 3,
+        "message": null,
+        "recommendation": "Return early for exceptional paths and extract the nested happy-path behavior into a named method.",
+        "file": "src/Support/ReflectionClosure.php"
+      },
+      "review": {
+        "status": "fixed_false_positive",
+        "evidence": {
+          "observation": "Alternative branches share their owner depth. The actual nesting is within the configured limit.",
+          "fix": "src/Analysis/ControlStructureMatcher.php"
+        },
+        "regression_test": "tests/unit/CallableNestingTest.php"
+      }
+    }
+  ]
+}

@@ -435,3 +435,22 @@ contracts or combine independently evolving decisions just to silence a finding.
 Promotion is a project policy decision, not a successful corpus admission:
 the frozen 550-file corpus yielded zero findings and precision remains unknown.
 See [the RFC](rfcs/explicit-behavior-rules.md) for exact scope and counterexamples.
+
+
+## Strict behavior and composition checks
+
+The standard catalog now contains **82 checks**, including eleven new checks listed in
+[the strict rule matrix](STRICT_RULES_IMPLEMENTATION.md). Standard configuration and newly
+generated `init` files enable them. Existing explicit `with([...])` selections keep their
+chosen checks; add the desired classes or switch to `RuleCatalog::standard()`.
+
+`NoTrivialFactories`, `NoTrivialDelegatingClasses`, `NoRepeatedCompoundConditions` and
+`NoBooleanParameters` retain their IDs but reject additional structural disguises. Existing
+code can therefore produce new diagnostics. Interfaces and attributes alone no longer exempt
+transparent wrappers. Exact external contracts can be supplied through the documented
+constructor options; the default contract lists are empty.
+
+Project composition checks require the runner's project stage and all relevant source paths.
+Direct `checkFile()` integrations must also collect the requested facts and invoke
+`checkProject()` to include inherited methods, selected trait bodies and cross-file consumers.
+The normal runner already does this. JSON remains schema 4, with the same violation fields.

@@ -159,7 +159,7 @@ final class AdversarialDemoTest extends TestCase
         }
     }
 
-    public function testAllSixtyOneRulesTogetherReportOnlyTheIntendedEscapePerIteration(): void
+    public function testCurrentCatalogReportsEscapesAndIndependentlyUnusedInputsAndState(): void
     {
         $root = dirname(__DIR__, 2);
         $command = implode(' ', [
@@ -176,14 +176,16 @@ final class AdversarialDemoTest extends TestCase
 
         $this->assertSame(1, $status);
         $iterationFiles = glob($root.'/demo-app/iterations/*.php') ?: [];
-        $this->assertStringContainsString(count($iterationFiles).' issues', $report);
+        $this->assertStringContainsString((count($iterationFiles) + 2).' issues', $report);
+        $this->assertStringContainsString('$service', $report);
+        $this->assertStringContainsString('Private property ledger is never read', $report);
 
         foreach ($iterationFiles as $iterationFile) {
             $this->assertSame(1, substr_count($report, 'demo-app/iterations/'.basename($iterationFile)));
         }
     }
 
-    public function testEachEscapePassesTheCompleteCatalogBeforeItsNewRuleIsAdded(): void
+    public function testRemovingEachEscapeRuleLeavesOnlyIndependentlyProvenViolations(): void
     {
         $root = dirname(__DIR__, 2);
 
@@ -224,7 +226,14 @@ PHP;
             ]);
             exec($command, $output, $status);
 
-            $this->assertSame(0, $status, basename($matches[0])." was caught before its rule existed:\n".implode("\n", $output));
+            // New checks also diagnose the unused locator input and the write-only recovery ledger.
+            $independent = [0 => '$service', 5 => 'Private property ledger is never read'];
+            $expectedStatus = isset($independent[$index]) ? 1 : 0;
+            $this->assertSame($expectedStatus, $status, basename($matches[0])." produced unexpected diagnostics:\n".implode("\n", $output));
+            if (isset($independent[$index])) {
+                $this->assertStringContainsString('1 issue', implode("\n", $output));
+                $this->assertStringContainsString($independent[$index], implode("\n", $output));
+            }
 
             unlink($sourceDirectory.'/challenge.php');
             unlink($sandbox.'/soda.php');

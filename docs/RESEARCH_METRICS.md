@@ -1,7 +1,6 @@
 # Research measurements: cognitive control flow and cohesion
 
-These measurements are **opt-in**. They do not replace the standard's existing
-69 checks, define a general quality score, or prescribe traits/objects by quota.
+These measurements are **opt-in**. They do not replace the standard checks, define a general quality score, or prescribe traits/objects by quota.
 They use the existing PHP parse and Check execution path. `list:metrics` exposes
 the expression fields and calculation methods; `list:rules` marks cognitive
 complexity as optional. The disconnected-groups threshold was rejected after

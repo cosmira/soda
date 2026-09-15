@@ -17,6 +17,7 @@ use PhpParser\Node;
  *   public_methods: int, dependencies: int, efferent_coupling: int,
  *   traits: int, interfaces: int, namespace: string, namespace_depth: int,
  *   depends_on?: list<string>, parent?: string,
+ *   concrete_method_names?: list<string>, trait_method_aliases?: array<string, string>,
  *   public_method_names?: list<string>, property_keys?: list<string>,
  *   trait_names?: list<string>, interface_names?: list<string>,
  *   public_trait_aliases?: list<string>, hidden_trait_methods?: list<string>
@@ -53,6 +54,10 @@ use PhpParser\Node;
  * @phpstan-import-type Declaration from \Cosmira\Soda\Rules\Usage\UnusedMethodDeclarations
  *
  * @phpstan-type FileMetrics array{
+ *   parameterInputs?: list<array>, parameterContracts?: array<string, array>,
+ *   classBehavior?: array<string, array>,
+ *   privateState?: array<string, array{name: string, trait: bool, declarations: array<string, int>, traits: list<string>, reads: array<string, true>, methodReads: array<string, array<string, true>>}>,
+ *   interfaceUsage?: array{declarations?: array<string, array{name: string, line: int, methods: list<string>, parents: list<string>}>, references?: array<string, true>, dependencies?: array<string, array<string, true>>},
  *   methodUsage?: list<Declaration>,
  *   cohesion?: array<string, array>,
  *   file_loc: int, classes_count: int, cognitiveExtras?: array<string, CognitiveRow>,
@@ -106,6 +111,7 @@ final readonly class FileFacts
 
         $key = $scope === 'class' ? 'classes' : 'methods';
         foreach ($this->metrics[$key] as $name => $row) {
+            unset($row['trait_method_aliases']);
             [$owner] = explode('::', $name);
             $separator = strrpos($owner, '\\');
             yield [

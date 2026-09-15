@@ -33,6 +33,21 @@ final class UselessVariableRuleTest extends TestCase
     // Spec — Cases that MUST produce a violation (true)
     // -------------------------------------------------------------------------
 
+    public function testIndependentUpdateValuesSurviveRemovingPrimaryKeys(): void
+    {
+        $this->assertSame([], $this->violations(<<<'PHP'
+class RecordRestorer {
+    private function writeSandboxRow(array $attributes, array $keyColumns): array {
+        $values = $attributes;
+        foreach ($keyColumns as $keyColumn) {
+            unset($values[$keyColumn]);
+        }
+        return $values;
+    }
+}
+PHP));
+    }
+
     /** Case 1 — simple alias: $a = $b; return $a; */
     public function testCase1SimpleAlias(): void
     {

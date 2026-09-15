@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Cosmira\Soda\Rules\Structure;
+namespace Cosmira\Soda\Rules\Structure\Delegation;
 
 final readonly class TrivialDelegatingClassFinding
 {

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Cosmira\Soda\Analysis;
 
+use Cosmira\Soda\Analysis\Composition\ClassBehaviorFacts;
 use Cosmira\Soda\Rules\Architecture\Cohesion;
 use Cosmira\Soda\Rules\Complexity\CognitiveComplexity;
+use Cosmira\Soda\Rules\Usage\ParameterInputFacts;
 use Cosmira\Soda\Rules\Usage\UnusedMethodDeclarations;
 use PhpParser\Node;
 
@@ -30,6 +32,17 @@ trait CollectsDesignFacts
         if (self::isRequired($required, 'cognitive')) {
             $metrics = self::cognitiveMetrics($metrics, $nodes);
         }
+
+        if (self::isRequired($required, 'parameterInputs')) {
+            $metrics['parameterInputs'] = ParameterInputFacts::collect($nodes);
+            $metrics['parameterContracts'] = InheritedParameterContracts::collect($nodes);
+        }
+
+        $metrics['classBehavior'] = self::isRequired($required, 'classBehavior') ? ClassBehaviorFacts::collect($nodes) : [];
+
+        $metrics['privateState'] = self::isRequired($required, 'privateState') ? PrivateStateFacts::collect($nodes) : [];
+
+        $metrics['interfaceUsage'] = self::isRequired($required, 'interfaceUsage') ? InterfaceFacts::collect($nodes) : [];
 
         $metrics['methodUsage'] = self::isRequired($required, 'methodUsage') ? UnusedMethodDeclarations::collect($nodes) : [];
 

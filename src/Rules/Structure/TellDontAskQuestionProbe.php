@@ -37,15 +37,18 @@ final readonly class TellDontAskQuestionProbe
     }
 
     /**
-     * @param list<array<string, list<array{receiver: string, method: string}>>> $questionAliases
+     * @param list<array<string, list<array{receiver: string, method: string, result?: string}>>> $questionAliases
      *
-     * @return list<array{receiver: string, method: string}>
+     * @return list<array{receiver: string, method: string, result?: string}>
      */
     private function aliasedQuestions(string $variable, array $questionAliases): array
     {
         foreach (array_reverse($questionAliases, true) as $aliases) {
             if (array_key_exists($variable, $aliases)) {
-                return $aliases[$variable];
+                return array_map(
+                    static fn (array $question): array => [...$question, 'result' => $variable],
+                    $aliases[$variable],
+                );
             }
         }
 
@@ -61,7 +64,7 @@ final readonly class TellDontAskQuestionProbe
     }
 
     /**
-     * @return list<array{receiver: string, method: string}>
+     * @return list<array{receiver: string, method: string, result?: string}>
      */
     private function questionFromCall(MethodCall|NullsafeMethodCall|StaticCall $expr): array
     {
@@ -80,9 +83,9 @@ final readonly class TellDontAskQuestionProbe
     }
 
     /**
-     * @param list<array<string, list<array{receiver: string, method: string}>>> $questionAliases
+     * @param list<array<string, list<array{receiver: string, method: string, result?: string}>>> $questionAliases
      *
-     * @return list<array{receiver: string, method: string}>
+     * @return list<array{receiver: string, method: string, result?: string}>
      */
     public function questions(Expr $expr, array $questionAliases): array
     {

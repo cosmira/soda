@@ -27,26 +27,45 @@ final readonly class TellDontAskCommandCollector
     ) {}
 
     /**
-     * @return list<array{receiver: string, method: string}>
+     * @return list<array{receiver: string, method: string, arguments: list<string>}>
      */
     private function commandFromCall(MethodCall|NullsafeMethodCall|StaticCall $expr): array
     {
         $receiver = $this->fingerprint->forCall($expr);
         $method = $this->fingerprint->callName($expr);
-        $isIncompleteCall = $receiver === null || $method === null;
+        $isIncompleteCall = $receiver === null || $method === null || $expr->isFirstClassCallable();
 
         if ($isIncompleteCall) {
             return [];
         }
 
         return [[
-            'receiver' => $receiver,
-            'method'   => $method,
+            'receiver'  => $receiver,
+            'method'    => $method,
+            'arguments' => $this->argumentVariables($expr),
         ]];
     }
 
     /**
-     * @return list<array{receiver: string, method: string}>
+     * Record only complete argument values; a nested read does not forward the result.
+     *
+     * @return list<string>
+     */
+    private function argumentVariables(MethodCall|NullsafeMethodCall|StaticCall $call): array
+    {
+        $variables = [];
+        foreach ($call->getArgs() as $argument) {
+            $value = $argument->value;
+            if ($value instanceof Expr\Variable && is_string($value->name) && ! $argument->unpack) {
+                $variables[] = '$'.$value->name;
+            }
+        }
+
+        return $variables;
+    }
+
+    /**
+     * @return list<array{receiver: string, method: string, arguments: list<string>}>
      */
     public function fromExpr(Expr $expr): array
     {
@@ -74,7 +93,7 @@ final readonly class TellDontAskCommandCollector
     /**
      * @param list<Node> $statements
      *
-     * @return list<array{receiver: string, method: string}>
+     * @return list<array{receiver: string, method: string, arguments: list<string>}>
      */
     public function fromStatements(array $statements): array
     {

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Cosmira\Soda;
 
+use Cosmira\Soda\Analysis\Composition\ClassBehaviorFacts;
 use Cosmira\Soda\Analysis\FileFacts;
+use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Commands\QualityCommand;
 use Cosmira\Soda\Config\ConfigLoader;
 use Cosmira\Soda\Config\RuleCatalog;
@@ -32,12 +34,10 @@ final class ExplicitBehaviorCandidatesTest extends TestCase
         $nodes = (new ParserFactory)->createForNewestSupportedVersion()->parse('<?php '.$source) ?? [];
         $nodes = (new NodeTraverser(new NameResolver))->traverse($nodes);
 
-        $facts = new FileFacts('/project/example.php', $source, $nodes, []);
-        $findings = iterator_to_array($rule->checkFile($facts));
-        if ($rule instanceof NoTrivialFactories) {
-            $frozen = new Research\ExplicitBehavior\NoTrivialFactories;
-            self::assertEquals(iterator_to_array($frozen->checkFile($facts)), $findings);
-        }
+        $facts = new FileFacts('/project/example.php', $source, $nodes, ['classBehavior' => ClassBehaviorFacts::collect($nodes)]);
+        $project = new ProjectFacts;
+        $project->add($facts);
+        $findings = [...$rule->checkFile($facts), ...$rule->checkProject($project)];
 
         return $findings;
     }
@@ -68,41 +68,76 @@ final class ExplicitBehaviorCandidatesTest extends TestCase
 
     public static function factoryExceptions(): iterable
     {
-        $method = 'public function create($a) { return new Receipt($a); }';
-        foreach (['class F', 'final class F extends Base', 'final class F implements Contract', '#[Boundary] final class F'] as $declaration) {
-            yield $declaration => ['/** @internal */ '.$declaration.' { '.$method.' }'];
-        }
-        yield 'public API' => ['final class F { '.$method.' }'];
-        yield 'not a docblock' => ['/* @internal */ final class F { '.$method.' }'];
-        yield 'different annotation' => ['/** @internalish */ final class F { '.$method.' }'];
-        foreach (['private $state;', 'const KEY = 1;', 'use Behavior;', 'public function other() {}', 'public function __construct() {}'] as $member) {
-            yield $member => ['/** @internal */ final class F { '.$member.$method.' }'];
-        }
         foreach ([
-            'transform'           => 'public function create($a) { return new Receipt(trim($a)); }',
-            'named argument'      => 'public function create($a) { return new Receipt(amount: $a); }',
-            'unpacking'           => 'public function create($a) { return new Receipt(...$a); }',
-            'variadic'            => 'public function create(...$a) { return new Receipt($a); }',
-            'default'             => 'public function create($a = 1) { return new Receipt($a); }',
-            'reference'           => 'public function create(&$a) { return new Receipt($a); }',
-            'reference return'    => 'public function &create($a) { return new Receipt($a); }',
-            'dynamic class'       => 'public function create($a) { return new $a($a); }',
-            'self'                => 'public function create($a) { return new self($a); }',
-            'static new'          => 'public function create($a) { return new static($a); }',
-            'anonymous'           => 'public function create($a) { return new class($a) {}; }',
-            'named construction'  => 'public function euros($a) { return new Receipt($a); }',
-            'static method'       => 'public static function create($a) { return new Receipt($a); }',
-            'private method'      => 'private function create($a) { return new Receipt($a); }',
-            'protected method'    => 'protected function create($a) { return new Receipt($a); }',
-            'extra statement'     => 'public function create($a) { authorize(); return new Receipt($a); }',
-            'reorder'             => 'public function create($a, $b) { return new Receipt($b, $a); }',
-            'duplicate'           => 'public function create($a, $b) { return new Receipt($a, $a); }',
-            'unused'              => 'public function create($a, $b) { return new Receipt($a); }',
-            'method attribute'    => '#[Boundary] public function create($a) { return new Receipt($a); }',
-            'parameter attribute' => 'public function create(#[Boundary] $a) { return new Receipt($a); }',
+            'transform'            => 'public function create($a) { return new Receipt(trim($a)); }',
+            'unpacking'            => 'public function create($a) { return new Receipt(...$a); }',
+            'variadic'             => 'public function create(...$a) { return new Receipt($a); }',
+            'default'              => 'public function create($a = 1) { return new Receipt($a); }',
+            'reference'            => 'public function create(&$a) { return new Receipt($a); }',
+            'reference return'     => 'public function &create($a) { return new Receipt($a); }',
+            'dynamic class'        => 'public function create($a) { return new $a($a); }',
+            'self'                 => 'public function create($a) { return new self($a); }',
+            'static new'           => 'public function create($a) { return new static($a); }',
+            'anonymous'            => 'public function create($a) { return new class($a) {}; }',
+            'changed local result' => 'public function create($a) { $receipt = new Receipt($a); $receipt->authorize(); return $receipt; }',
+            'extra statement'      => 'public function create($a) { authorize(); return new Receipt($a); }',
+            'reorder'              => 'public function create($a, $b) { return new Receipt($b, $a); }',
+            'duplicate'            => 'public function create($a, $b) { return new Receipt($a, $a); }',
+            'unused'               => 'public function create($a, $b) { return new Receipt($a); }',
         ] as $name => $body) {
             yield $name => ['/** @internal */ final class F { '.$body.' }'];
         }
+    }
+
+    #[DataProvider('factoryDisguises')]
+    public function testFactoryDisguisesRemainViolations(string $source): void
+    {
+        $findings = $this->findings(new NoTrivialFactories, $source);
+        self::assertCount(1, $findings);
+        self::assertSame('build', $findings[0]->method);
+        self::assertSame(1, $findings[0]->value);
+        self::assertSame(0, $findings[0]->threshold);
+    }
+
+    public static function factoryDisguises(): iterable
+    {
+        yield 'returned result' => ['class F { public function build($a) { $receipt = new Receipt($a); return $receipt; } }'];
+        yield 'returned result aliases' => ['class F { public function build($a) { $input = $a; $receipt = new Receipt($input); $result = $receipt; return $result; } }'];
+        foreach (['class F', 'final class F', 'class F extends Base', 'class F implements Contract', '#[Boundary] class F'] as $declaration) {
+            yield $declaration => [$declaration.' { public function build($a) { return new Receipt($a); } }'];
+        }
+        foreach (['private $state;', 'const KEY = 1;', 'use Behavior;', 'public function other() {}', 'public function __construct() {}'] as $member) {
+            yield $member => ['class F { '.$member.' public function build($a) { return new Receipt($a); } }'];
+        }
+        foreach (['public', 'private', 'protected', 'public static', '#[Boundary] public'] as $visibility) {
+            yield $visibility => ['class F { '.$visibility.' function build(#[Boundary] $a) { return new Receipt(amount: $a); } }'];
+        }
+    }
+
+    public function testLocalAliasesDoNotHideMechanicalConstruction(): void
+    {
+        $source = 'class F { public function build($amount) { $first = $amount; $second = $first; return new Receipt(amount: $second); } }';
+        self::assertCount(1, $this->findings(new NoTrivialFactories, $source));
+        self::assertSame([], $this->findings(new NoTrivialFactories, 'class F { function build($amount) { $amount = normalize($amount); return new Receipt($amount); } }'));
+        self::assertSame([], $this->findings(new NoTrivialFactories, 'class F { function build($amount) { $alias =& $amount; return new Receipt($alias); } }'));
+    }
+
+    public function testTraitFactoriesAndExactPublishedContracts(): void
+    {
+        $source = 'namespace App; trait Factory { public static function make($value) { return new Receipt($value); } }';
+        self::assertCount(1, $this->findings(new NoTrivialFactories, $source));
+        self::assertSame([], $this->findings(new NoTrivialFactories(contracts: ['App\\Factory::make']), $source));
+        self::assertCount(1, $this->findings(new NoTrivialFactories(contracts: ['App\\Other::make']), $source));
+    }
+
+    public function testEachMechanicalFactoryMethodIsReported(): void
+    {
+        $findings = $this->findings(new NoTrivialFactories, 'class F {
+            public function first($a) { return new First($a); }
+            public static function second($a) { return new Second($a); }
+            public function meaningful($a) { return new Receipt(trim($a)); }
+        }');
+        self::assertSame(['first', 'second'], array_column($findings, 'method'));
     }
 
     private function repeated(string $condition = '$this->active && ! $this->suspended', int $count = 3, string $declaration = 'class Subscription', string $properties = 'private bool $active; private bool $suspended;'): string
@@ -126,7 +161,7 @@ final class ExplicitBehaviorCandidatesTest extends TestCase
         self::assertSame('Subscription', $findings[0]->class);
         self::assertSame('no_repeated_compound_conditions', $findings[0]->rule);
         self::assertStringContainsString('action0() at lines 2; action1() at lines 3; action2() at lines 4', $findings[0]->message);
-        self::assertSame([], $rule->requiredAnalyses());
+        self::assertSame(['classBehavior'], $rule->requiredAnalyses());
         self::assertSame([], $this->findings($rule, $this->repeated(count: 2)));
         self::assertCount(1, $this->findings(new NoRepeatedCompoundConditions(2), $this->repeated(count: 2)));
         self::assertSame([], $this->findings(new NoRepeatedCompoundConditions(4), $this->repeated()));
@@ -151,7 +186,7 @@ final class ExplicitBehaviorCandidatesTest extends TestCase
             '$this->active && check()', '$this->active && $this->check()',
             '$this->active && $this->child->active', '$this->active && $this->values[0]',
             '$this->active && ($this->suspended = false)', '$this->active == true && $this->suspended',
-            '$this->active and $this->suspended', '$this->active && SOME_CONSTANT',
+            '$this->active and $this->suspended',
             '$this->active && $this->{"suspended"}', '$this->active && ++$this->suspended',
         ] as $condition) {
             yield $condition => [$condition];
@@ -162,7 +197,7 @@ final class ExplicitBehaviorCandidatesTest extends TestCase
     {
         foreach (['class Subscription extends ParentType', 'class Subscription'] as $declaration) {
             $properties = $declaration === 'class Subscription' ? 'use Concern; private $active; private $suspended;' : 'private $active; private $suspended;';
-            self::assertSame([], $this->findings(new NoRepeatedCompoundConditions, $this->repeated(declaration: $declaration, properties: $properties)));
+            self::assertCount(1, $this->findings(new NoRepeatedCompoundConditions, $this->repeated(declaration: $declaration, properties: $properties)));
         }
         foreach ([
             'public function __get($name) {}', 'public function __set($name, $value) {}',
@@ -170,11 +205,29 @@ final class ExplicitBehaviorCandidatesTest extends TestCase
             'public bool $hooked { get => true; }',
             'public function __construct(public bool $hooked { get => true; }) {}',
         ] as $member) {
-            self::assertSame([], $this->findings(new NoRepeatedCompoundConditions, $this->repeated(properties: 'private $active; private $suspended; '.$member)));
+            self::assertCount(1, $this->findings(new NoRepeatedCompoundConditions, $this->repeated(properties: 'private $active; private $suspended; '.$member)));
         }
         self::assertCount(1, $this->findings(new NoRepeatedCompoundConditions, $this->repeated(properties: 'public function __construct(private bool $active, private bool $suspended) {}')));
         self::assertSame([], $this->findings(new NoRepeatedCompoundConditions, $this->repeated(properties: 'private static $active; private $suspended;')));
         self::assertSame([], $this->findings(new NoRepeatedCompoundConditions, $this->repeated(count: 2).$this->repeated(count: 2, declaration: 'class Other')));
+    }
+
+    public function testNamedConstantsDoNotHideRepeatedDecisions(): void
+    {
+        foreach (['$this->active && SOME_CONSTANT', '$this->active && self::ENABLED', '$this->active && Flags::ENABLED'] as $condition) {
+            self::assertCount(1, $this->findings(new NoRepeatedCompoundConditions, $this->repeated($condition)));
+        }
+        self::assertSame([], $this->findings(new NoRepeatedCompoundConditions, $this->repeated('$this->active && Flags::{$name}')));
+        self::assertSame([], $this->findings(new NoRepeatedCompoundConditions, $this->repeated(properties: 'public bool $active { get => true; } private $suspended;')));
+    }
+
+    public function testImmediateConditionSnapshotsAndAliasChains(): void
+    {
+        $condition = '$this->active && !$this->suspended';
+        $source = str_replace('if ($this->active && ! $this->suspended) {}', '$ready = '.$condition.'; $alias = $ready; if ($alias) {}', $this->repeated());
+        self::assertCount(1, $this->findings(new NoRepeatedCompoundConditions, $source));
+        $source = str_replace('$alias = $ready; if ($alias)', '$alias = $ready; mutate(); if ($alias)', $source);
+        self::assertSame([], $this->findings(new NoRepeatedCompoundConditions, $source));
     }
 
     public function testStructuralIdentityAndMultipleGroups(): void
@@ -359,7 +412,7 @@ final class ExplicitBehaviorCandidatesTest extends TestCase
         ExplicitBehaviorReceipt::$events = [];
     }
 
-    public function testProductionRepetitionMatchesFrozenDetector(): void
+    public function testUnchangedRepetitionCasesMatchFrozenDetector(): void
     {
         $sources = [
             $this->repeated(), $this->repeated(count: 2),
@@ -367,7 +420,6 @@ final class ExplicitBehaviorCandidatesTest extends TestCase
             $this->repeated('$this->active === -1 && $this->suspended !== 1.5'),
             $this->repeated('$this->active && check()'),
             $this->repeated(properties: 'public function __construct(private $active, private $suspended) {}'),
-            $this->repeated(properties: 'private $active; private $suspended; public function __get($name) {}'),
         ];
         foreach ($sources as $source) {
             foreach ([2, 3, 4] as $minimum) {

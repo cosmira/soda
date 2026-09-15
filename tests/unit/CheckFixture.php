@@ -46,6 +46,8 @@ final class CheckFixture
             $options = $state['options'][$id] ?? [];
             if (isset($args['max'])) {
                 $args = ['min' => $options['min'] ?? $args['min'], 'max' => $options['max'] ?? $limit];
+            } elseif (isset($args['minMethods'])) {
+                $args['minMethods'] = $limit + 1;
             } elseif ($args !== []) {
                 $args[array_key_first($args)] = $limit;
             }

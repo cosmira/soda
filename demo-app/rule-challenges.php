@@ -12,6 +12,18 @@ declare(strict_types=1);
  * @return array<string, array{iteration: int, attack: non-empty-string}>
  */
 return [
+    'max_delegation_depth'            => ['iteration' => 100, 'attack' => 'Split a pass-through operation across several classes or private methods.'],
+    'max_effective_methods_per_class' => ['iteration' => 100, 'attack' => 'Move methods into nested traits and rename them with private aliases.'],
+    'max_effective_class_length'      => ['iteration' => 100, 'attack' => 'Move source into traits and import the same nested trait through a diamond.'],
+    'no_mode_parameters'              => ['iteration' => 100, 'attack' => 'Replace a boolean flag with enum or string dispatch and hide the selector behind aliases.'],
+    'no_repeated_type_dispatch'       => ['iteration' => 100, 'attack' => 'Repeat a type family using instanceof in one method and match or switch in another.'],
+    'no_untyped_parameters'           => ['iteration' => 100, 'attack' => 'Remove a parameter type to evade type-based restrictions.'],
+    'no_unused_private_state'         => ['iteration' => 100, 'attack' => 'Add a write-only private property or unused constant to make a wrapper appear stateful.'],
+    'no_dependency_cycles'            => ['iteration' => 100, 'attack' => 'Use aliases and nested namespaces to hide a cycle between modules.'],
+    'no_empty_local_interfaces'       => ['iteration' => 100, 'attack' => 'Give a decorative marker a constant or an empty parent interface.'],
+    'no_redundant_local_interfaces'   => ['iteration' => 100, 'attack' => 'Declare an interface and implement or import it without any type consumer.'],
+    'no_unused_parameters'            => ['iteration' => 100, 'attack' => 'Use a same-named variable only in a nested callable to disguise an unused input.'],
+
     'max_method_length'                  => ['iteration' => 1, 'attack' => 'Hide a long workflow in closure bodies and fluent callbacks.'],
     'max_class_length'                   => ['iteration' => 1, 'attack' => 'Spread a god object across comments, traits, and anonymous helpers.'],
     'max_arguments'                      => ['iteration' => 1, 'attack' => 'Replace parameters with variadics, arrays, and ambient lookup.'],

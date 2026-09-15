@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Cosmira\Soda\Rules\Structure;
 
 use Cosmira\Soda\Analysis\FileFacts;
+use Cosmira\Soda\Analysis\NativeStreamContract;
 use Cosmira\Soda\Reporting\Violation;
 use Cosmira\Soda\Rules\Check;
 use Cosmira\Soda\Rules\ExpressionCheck;
@@ -13,8 +14,14 @@ final class MaxArguments extends ExpressionCheck
 {
     /**
      * Set the maximum accepted value; non-positive limits preserve the disabled policy.
+     *
+     * @param list<string> $contracts Exact Class::method signatures imposed by external APIs.
      */
-    public function __construct(private readonly int $limit, private readonly ?MaxPropertiesPerClass $properties = null) {}
+    public function __construct(
+        private readonly int $limit,
+        private readonly ?MaxPropertiesPerClass $properties = null,
+        private readonly array $contracts = [],
+    ) {}
 
     /**
      * Preserve the standard bundle's readonly data constructor policy.
@@ -23,7 +30,15 @@ final class MaxArguments extends ExpressionCheck
      */
     public function checkFile(FileFacts $file): iterable
     {
+        $nativeContracts = NativeStreamContract::signatures($file->nodes);
+        $contracts = array_fill_keys(array_map(static fn (string $name): string => strtolower(ltrim($name, '\\')), $this->contracts), true);
         foreach (parent::checkFile($file) as $violation) {
+            $identity = strtolower(ltrim($violation->method ?? '', '\\'));
+            $nativeArity = $nativeContracts[$identity] ?? 0;
+            if (isset($contracts[$identity]) || $violation->value <= $nativeArity) {
+                continue;
+            }
+
             $methods = $file->metrics['methods'];
             $method = $methods[$violation->method] ?? [];
             $fields = $method['readonlyDataFields'] ?? null;

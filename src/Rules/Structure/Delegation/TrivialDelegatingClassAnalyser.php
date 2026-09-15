@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Cosmira\Soda\Rules\Structure;
+namespace Cosmira\Soda\Rules\Structure\Delegation;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
@@ -56,8 +56,8 @@ final readonly class TrivialDelegatingClassAnalyser
      */
     private function findingFor(Class_ $class): ?TrivialDelegatingClassFinding
     {
-        $isContractless = $this->classPolicy->isContractlessConcrete($class);
-        if (! $isContractless) {
+        $isInspectable = $this->classPolicy->isInspectableConcrete($class);
+        if (! $isInspectable) {
             return null;
         }
 

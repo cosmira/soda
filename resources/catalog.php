@@ -3,6 +3,127 @@
 declare(strict_types=1);
 
 return [
+    'max_delegation_depth' => [
+        'class'      => 'Cosmira\\Soda\\Rules\\Structure\\MaxDelegationDepth',
+        'arguments'  => [3],
+        'section'    => 'structural',
+        'severity'   => 'error',
+        'default'    => 3,
+        'label'      => 'Delegation depth:',
+        'advice'     => 'Remove transparent forwarding chains; moving each call into another method does not simplify the operation.',
+        'comparison' => null,
+    ],
+
+    'max_effective_methods_per_class' => [
+        'class'      => 'Cosmira\\Soda\\Rules\\Structure\\MaxEffectiveMethodsPerClass',
+        'arguments'  => [40],
+        'section'    => 'structural',
+        'severity'   => 'error',
+        'default'    => 40,
+        'label'      => 'Methods including traits:',
+        'advice'     => 'Keep the complete owning class within its method limit; trait extraction does not reduce this measurement.',
+        'comparison' => null,
+    ],
+
+    'max_effective_class_length' => [
+        'class'      => 'Cosmira\\Soda\\Rules\\Structure\\MaxEffectiveClassLength',
+        'arguments'  => [500],
+        'section'    => 'structural',
+        'severity'   => 'error',
+        'default'    => 500,
+        'label'      => 'Source lines including traits:',
+        'advice'     => 'Count source from all composed traits once; moving source to a trait does not remove its maintenance cost.',
+        'comparison' => null,
+    ],
+
+    'no_mode_parameters' => [
+        'class'      => 'Cosmira\\Soda\\Rules\\Architecture\\NoModeParameters',
+        'arguments'  => [],
+        'section'    => 'structural',
+        'severity'   => 'error',
+        'default'    => 0,
+        'label'      => 'Mode parameters:',
+        'advice'     => 'Expose separate operations instead of selecting distinct operations with an input mode.',
+        'comparison' => null,
+    ],
+
+    'no_repeated_type_dispatch' => [
+        'class'      => 'Cosmira\\Soda\\Rules\\Architecture\\NoRepeatedTypeDispatch',
+        'arguments'  => ['minMethods' => 2],
+        'section'    => 'structural',
+        'severity'   => 'error',
+        'default'    => 1,
+        'label'      => 'Repeated type dispatch:',
+        'advice'     => 'Centralize repeated dispatch of the same type or discriminator family.',
+        'comparison' => null,
+    ],
+
+    'no_untyped_parameters' => [
+        'class'      => 'Cosmira\\Soda\\Rules\\Architecture\\NoUntypedParameters',
+        'arguments'  => [],
+        'section'    => 'structural',
+        'severity'   => 'error',
+        'default'    => 0,
+        'label'      => 'Untyped parameters:',
+        'advice'     => 'Declare accepted parameter types. Use mixed to preserve an untyped inherited contract; do not narrow its accepted inputs.',
+        'comparison' => null,
+    ],
+
+    'no_unused_private_state' => [
+        'class'      => 'Cosmira\\Soda\\Rules\\Usage\\NoUnusedPrivateState',
+        'arguments'  => [],
+        'section'    => 'structural',
+        'severity'   => 'error',
+        'default'    => 0,
+        'label'      => 'Unread private state:',
+        'advice'     => 'Remove private properties and constants that are never read, including composed trait state.',
+        'comparison' => null,
+    ],
+
+    'no_dependency_cycles' => [
+        'class'      => 'Cosmira\\Soda\\Rules\\Architecture\\NoDependencyCycles',
+        'arguments'  => [],
+        'section'    => 'structural',
+        'severity'   => 'error',
+        'default'    => 0,
+        'label'      => 'Module dependency cycles:',
+        'advice'     => 'Remove mutual dependencies between namespace modules; configure namespace prefixes for explicit boundaries.',
+        'comparison' => null,
+    ],
+
+    'no_empty_local_interfaces' => [
+        'class'      => 'Cosmira\\Soda\\Rules\\Architecture\\NoEmptyLocalInterfaces',
+        'arguments'  => [],
+        'section'    => 'structural',
+        'severity'   => 'error',
+        'default'    => 0,
+        'label'      => 'Empty local interfaces:',
+        'advice'     => 'Remove decorative marker interfaces; list required external protocols explicitly.',
+        'comparison' => null,
+    ],
+
+    'no_redundant_local_interfaces' => [
+        'class'      => 'Cosmira\\Soda\\Rules\\Architecture\\NoRedundantLocalInterfaces',
+        'arguments'  => [],
+        'section'    => 'structural',
+        'severity'   => 'error',
+        'default'    => 0,
+        'label'      => 'Unconsumed local interfaces:',
+        'advice'     => 'List externally consumed interfaces in contracts. Remove only unused interfaces; an implements clause alone is not a type consumer for this policy.',
+        'comparison' => null,
+    ],
+
+    'no_unused_parameters' => [
+        'class'      => 'Cosmira\\Soda\\Rules\\Usage\\NoUnusedParameters',
+        'arguments'  => [],
+        'section'    => 'structural',
+        'severity'   => 'error',
+        'default'    => 0,
+        'label'      => 'Unused parameters:',
+        'advice'     => 'Remove unused inputs only when the signature permits it. Known inherited positions and callback slots are preserved; list exact external method contracts.',
+        'comparison' => null,
+    ],
+
     'max_method_length' => [
         'class'      => 'Cosmira\\Soda\\Rules\\Structure\\MaxMethodLength',
         'arguments'  => [100],

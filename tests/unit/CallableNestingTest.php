@@ -48,10 +48,35 @@ class Foo {
             return 1;
         }
     }
+
 }
 PHP;
         $result = $this->parseAndCollect($code);
         $this->assertSame(1, $result['App\Foo::bar']['depth']);
+    }
+
+    public function testAlternativeBranchesShareTheirOwnersDepth(): void
+    {
+        foreach ([
+            'if ($value) {} elseif ($other) {} else {}',
+            'try {} catch (Exception $error) {} finally {}',
+        ] as $body) {
+            $result = $this->parseAndCollect('<?php function run($value, $other) { '.$body.' }');
+            self::assertSame(1, $result['run']['depth'], $body);
+        }
+    }
+
+    public function testWorkNestedInAnAlternativeBranchAddsExactlyOneLevel(): void
+    {
+        foreach ([
+            'if ($value) {} elseif ($other) { if ($nested) {} }',
+            'if ($value) {} else { if ($nested) {} }',
+            'try {} catch (Exception $error) { if ($nested) {} }',
+            'try {} finally { if ($nested) {} }',
+        ] as $body) {
+            $result = $this->parseAndCollect('<?php function run($value, $other, $nested) { '.$body.' }');
+            self::assertSame(2, $result['run']['depth'], $body);
+        }
     }
 
     public function testNestedForeachIfDepthTwo(): void

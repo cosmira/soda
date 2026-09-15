@@ -206,7 +206,7 @@ final class TellDontAskVisitor extends FactVisitor
     }
 
     /**
-     * @param list<array{receiver: string, method: string}> ...$commandGroups
+     * @param list<array{receiver: string, method: string, arguments: list<string>}> ...$commandGroups
      */
     private function collectFromConditional(Expr $condition, int $line, array ...$commandGroups): void
     {
@@ -266,6 +266,11 @@ final class TellDontAskVisitor extends FactVisitor
      */
     private function collectFromTernaryNode(Node $node): void
     {
+        $isConsumedValue = $node->getAttribute('parent')?->getType() !== 'Stmt_Expression';
+        if ($isConsumedValue) {
+            return;
+        }
+
         /** @var Ternary $node */
         $this->collectFromConditional(
             $node->cond,

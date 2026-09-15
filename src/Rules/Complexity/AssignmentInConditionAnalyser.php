@@ -127,14 +127,20 @@ final readonly class AssignmentInConditionAnalyser
     /**
      * @return list<Assign|AssignOp>
      */
-    private function assignmentsIn(Node\Expr $condition): array
+    private function assignmentsIn(Node $condition): array
     {
-        $assignments = [];
+        if ($condition instanceof Node\FunctionLike || $condition instanceof Node\Stmt\ClassLike) {
+            return [];
+        }
 
-        foreach ($this->finder->find($condition, static fn (Node $node): bool => $node instanceof Assign || $node instanceof AssignOp) as $node) {
-            $isAssignment = $node instanceof Assign || $node instanceof AssignOp;
-            if ($isAssignment) {
-                $assignments[] = $node;
+        $assignments = $condition instanceof Assign || $condition instanceof AssignOp ? [$condition] : [];
+        $properties = get_object_vars($condition);
+        foreach ($condition->getSubNodeNames() as $name) {
+            $value = $properties[$name];
+            foreach (is_array($value) ? $value : [$value] as $child) {
+                if ($child instanceof Node) {
+                    array_push($assignments, ...$this->assignmentsIn($child));
+                }
             }
         }
 

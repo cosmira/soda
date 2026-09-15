@@ -70,7 +70,10 @@ public function calculateDiscount(User $user, Order $order): float
 
 ### max_control_nesting
 
-Maximum nesting level of `if`, `for`, `foreach`, `while`, `switch`.
+Maximum nesting level of `if`, `for`, `foreach`, `while`, `do`, `switch` and
+`try`. Alternative branches (`elseif`, `else`, `catch`, `finally`) share the
+level of their owning structure. A condition or loop inside such a branch adds
+one level. Nested callable bodies are measured independently.
 
 | Config value | Strictness |
 |--------------|------------|
@@ -255,10 +258,17 @@ For example, three methods containing `if ($this->active && ! $this->suspended)`
 can call a private `canRenew()` predicate when all three express the same decision.
 The predicate must be reevaluated at each call, not cached across state changes.
 
-Only declared instance-property reads, literals, `!`, `===`, `!==`, `&&` and `||`
-are recognized. Formatting is ignored; operand order and literal values remain
-significant. Calls, nested access, locals, inherited/trait state, magic property
-access and hooks are excluded. Conditions inside nested callables belong to their
+Declared instance-property reads, literals, named constants, `!`, `===`, `!==`,
+`&&` and `||` are recognized. Formatting is ignored; operand order and literal
+values remain significant. Immediately preceding local snapshots and direct alias chains
+are normalized; intervening statements end that snapshot scope. Known inherited and trait
+methods are composed across files. Aliases of one body count once. Private state and
+relative `self`/`parent` constants retain lexical identity; late-bound `static` constants
+belong to the effective receiver. Calls and arbitrary computed locals remain excluded.
+Unrelated inheritance, traits, magic methods or hooked properties do not suppress checking
+ordinary declared properties of the class.
+A property with its own hook remains outside the recognized read vocabulary. Conditions inside nested callables belong to their
 own scope. Repetition within one method counts once. Independent decisions should
 not be merged merely because their expressions currently match.
-See the [RFC and corpus limitations](rfcs/explicit-behavior-rules.md).
+The [original RFC](rfcs/explicit-behavior-rules.md) records the earlier research scope;
+the behavior above describes the strengthened check.

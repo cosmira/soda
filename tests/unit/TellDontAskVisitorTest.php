@@ -400,10 +400,30 @@ class UserManager {
 }
 PHP;
         $result = $this->parseAndCollect($code);
-        $this->assertCount(1, $result);
-        $this->assertSame('$u', $result[0]['receiver']);
-        $this->assertSame('isActive', $result[0]['question']);
-        $this->assertSame('notify', $result[0]['command']);
+        $this->assertSame([], $result);
+    }
+
+    public function testObjectMayManageItsOwnState(): void
+    {
+        foreach ([
+            'if ($this->isStale()) { $this->destroy(); }',
+            'if (self::isStale()) { self::destroy(); }',
+            'if (static::isStale()) { static::destroy(); }',
+        ] as $body) {
+            self::assertSame([], $this->parseAndCollect('<?php class File { function log() { '.$body.' } }'));
+        }
+    }
+
+    public function testConsumedConditionalValuesDoNotProveCommands(): void
+    {
+        foreach ([
+            'return $user->hasName() ? $user->name() : null;',
+            '$value = $user->hasName() ? $user->name() : null;',
+            'consume($user->hasName() ? $user->name() : null);',
+            '$value = ["name" => $user->hasName() ? $user->name() : null];',
+        ] as $body) {
+            self::assertSame([], $this->parseAndCollect('<?php function read($user) { '.$body.' }'));
+        }
     }
 
     public function testVariableAssignmentThenCommand(): void
@@ -415,6 +435,43 @@ class UserManager {
     public function notify(User $user): void {
         $active = $user->isActive();
         $active && $user->notify();
+    }
+
+    public function testGuardedDataForwardingDoesNotProveStateDecision(): void
+    {
+        foreach ([
+            '$settings = $engine->configure($input); if ($settings) { $engine->update($settings); }',
+            '$settings = $engine->configure($input); $settings && $engine->update(settings: $settings);',
+            '$settings = $engine->configure($input); if ($settings) { $engine->update($settings); } if ($engine->isReady()) { $other->update(); }',
+        ] as $body) {
+            self::assertSame([], $this->parseAndCollect('<?php function sync($engine, $other, $input) { '.$body.' }'));
+        }
+    }
+
+    public function testForwardingExclusionAppliesOnlyToTheMatchingCommand(): void
+    {
+        $result = $this->parseAndCollect('<?php function sync($engine, $input) {
+            $settings = $engine->configure($input);
+            if ($settings) { $engine->update($settings); $engine->reset(); }
+        }');
+        self::assertCount(1, $result);
+        self::assertSame('reset', $result[0]['command']);
+    }
+
+    public function testReadingPartOfAResultDoesNotForwardTheResult(): void
+    {
+        $result = $this->parseAndCollect('<?php function sync($engine) {
+            $state = $engine->state();
+            if ($state) { $engine->update($state["enabled"]); }
+        }');
+        self::assertCount(1, $result);
+    }
+
+    public function testCreatingAFirstClassCallableDoesNotExecuteACommand(): void
+    {
+        self::assertSame([], $this->parseAndCollect('<?php function sync($engine) {
+            if ($engine->isReady()) { $engine->update(...); }
+        }'));
     }
 }
 PHP;

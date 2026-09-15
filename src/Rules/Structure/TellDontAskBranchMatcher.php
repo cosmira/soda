@@ -26,19 +26,27 @@ final class TellDontAskBranchMatcher
     }
 
     /**
-     * @param list<array{receiver: string, method: string}> $questions
-     * @param array{receiver: string, method: string}       $command
+     * @param list<array{receiver: string, method: string, result?: string}>   $questions
+     * @param array{receiver: string, method: string, arguments: list<string>} $command
      *
-     * @return array{receiver: string, method: string}|null
+     * @return array{receiver: string, method: string, result?: string}|null
      */
     public static function firstMatch(array $questions, array $command): ?array
     {
+        if (in_array($command['receiver'], ['$this', 'self', 'static'], true)) {
+            return null;
+        }
+
         foreach ($questions as $question) {
             if ($question['receiver'] !== $command['receiver']) {
                 continue;
             }
 
             if ($question['method'] === $command['method']) {
+                continue;
+            }
+
+            if (isset($question['result']) && in_array($question['result'], $command['arguments'], true)) {
                 continue;
             }
 

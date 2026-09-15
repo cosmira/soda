@@ -42,6 +42,9 @@ final class NoComplexControlConditionsTest extends TestCase
             '$values["ready"] === true', 'Options::READY === $status',
             'array_all($items, fn ($item) => $item->a() && ($item->b() || $item->c()))',
             'check(function () { return nested(work()); })',
+            'Auth::user() instanceof User', '($renderer = renderer()) instanceof Renderer',
+            '! (output() instanceof BufferedOutput)', 'Env::get("TESTS") ?? false',
+            '$ready ?? predicate()', 'primary() ?? fallback()',
         ] as $expression) {
             yield $expression => [$expression, null];
         }
@@ -53,6 +56,8 @@ final class NoComplexControlConditionsTest extends TestCase
             '($a > $b) === true', '$count > $limit * 1000', '($ready ? one() : two()) === 1',
             '(match ($value) { 1 => true, default => false })', 'check([resolve($user)])',
             '$values[index()] === true', '$user->{name()}()',
+            'resolve(input()) instanceof User', 'Env::get(key()) ?? false',
+            '(primary() ?? fallback())->ready()', 'check(Env::get("TESTS") ?? false)',
         ] as $expression) {
             yield $expression => [$expression, 'nested_computation'];
         }

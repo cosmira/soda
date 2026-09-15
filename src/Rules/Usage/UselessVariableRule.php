@@ -17,7 +17,7 @@ use Cosmira\Soda\Rules\Check;
  *   - It is never mutated, reassigned, or incremented
  *   - It is never passed by reference
  *   - It is not captured by a closure or arrow function
- *   - The source variable ($b) is not unset before $a is used
+ *   - The source variable ($b) and its elements are not changed before $a is used
  *
  * @example Register in soda.php:
  *

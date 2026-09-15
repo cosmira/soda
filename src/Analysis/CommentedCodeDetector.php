@@ -27,7 +27,7 @@ final class CommentedCodeDetector
      */
     public static function isCommentedCode(string $commentLine): bool
     {
-        $line = trim($commentLine);
+        $line = trim(preg_replace('/`+[^`]*`+/', '', $commentLine) ?? $commentLine);
 
         if (self::isClearlyNotCode($line)) {
             return false;

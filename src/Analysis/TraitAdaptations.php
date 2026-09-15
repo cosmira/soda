@@ -4,13 +4,35 @@ declare(strict_types=1);
 
 namespace Cosmira\Soda\Analysis;
 
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\Node\Stmt\TraitUseAdaptation\Alias;
 
-/** Resolves public aliases and visibility changes introduced by trait adaptations. */
+/**
+ * Resolves public aliases and visibility changes introduced by trait adaptations.
+ */
 final class TraitAdaptations
 {
+    /**
+     * Preserve aliases of every visibility when computing the effective method count.
+     *
+     * @return array<string, string>
+     */
+    public static function methodAliases(Class_|Trait_ $node): array
+    {
+        $aliases = [];
+        foreach ($node->getTraitUses() as $use) {
+            foreach ($use->adaptations as $adaptation) {
+                if ($adaptation instanceof Alias && $adaptation->newName instanceof Identifier) {
+                    $aliases[$adaptation->newName->toLowerString()] = $adaptation->method->toLowerString();
+                }
+            }
+        }
+
+        return $aliases;
+    }
+
     /**
      * @return list<string>
      */

@@ -74,7 +74,9 @@ final class StructureVisitor extends FactVisitor
 
         $name = $node->namespacedName?->toString();
         $hasNoName = $name === null || $name === '';
-        /** @psalm-suppress TypeDoesNotContainType - Name::toString() can return '' for anonymous */
+        /**
+         * @psalm-suppress TypeDoesNotContainType - Name::toString() can return '' for anonymous
+         */
         if ($hasNoName) {
             return;
         }
@@ -82,6 +84,8 @@ final class StructureVisitor extends FactVisitor
         $this->result['classes_count']++;
         $classes = $this->result['classes'];
         $row = ClassFactsExtractor::extract($node, $this->logicalLineMap);
+        $row['concrete_method_names'] = array_values(array_map(fn (ClassMethod $method): string => $method->name->toLowerString(), array_filter($node->getMethods(), fn (ClassMethod $method): bool => ! $method->isAbstract())));
+        $row['trait_method_aliases'] = TraitAdaptations::methodAliases($node);
         $row['public_method_names'] = ClassFactsExtractor::publicMethodNames($node);
         $row['trait_names'] = ClassFactsExtractor::usedTraitNames($node);
         $row['property_keys'] = PropertyMetrics::keys($node);
@@ -190,7 +194,9 @@ final class StructureVisitor extends FactVisitor
     {
         $name = $node->namespacedName?->toString();
         $hasNoName = $name === null || $name === '';
-        /** @psalm-suppress TypeDoesNotContainType - Name::toString() can return '' for anonymous */
+        /**
+         * @psalm-suppress TypeDoesNotContainType - Name::toString() can return '' for anonymous
+         */
         if ($hasNoName) {
             return;
         }

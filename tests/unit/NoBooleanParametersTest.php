@@ -109,6 +109,54 @@ PHP));
         yield 'ordinary method' => ['final readonly class Preference { public bool $enabled; public function initialize(bool $enabled) { $this->enabled = $enabled; } }', 1];
     }
 
+    public function testBooleanLiteralsAndUntypedDefaultsCannotHideFlags(): void
+    {
+        self::assertCount(4, $this->violations('<?php function dispatch(true $first, false $second, $third = false, mixed $fourth = true) {}'));
+        self::assertSame([], $this->violations('<?php function data(string $value = "false") { return $value; }'));
+    }
+
+    public function testTruthTestsAndAliasesDoNotProveBooleanParameters(): void
+    {
+        foreach ([
+            'if ($input) { send(); }',
+            '$alias = $input; $other = $alias; if ($other) { send(); }',
+            'return $input === true;',
+            'return (bool) $input;',
+            'return !$input;',
+            'return ready() && $input;',
+            'for (; $input;) { break; }',
+            'if (ready()) { $alias = $input; } else { $alias = false; } if ($alias) { send(); }',
+        ] as $body) {
+            self::assertSame([], $this->violations('<?php function sendInput(mixed $input) { '.$body.' }'), $body);
+        }
+    }
+
+    public function testOverwritesAndNestedScopesDoNotInventFlagUsage(): void
+    {
+        foreach ([
+            '$alias = $input; $alias = 0; if ($alias) { send(); }',
+            '$input = 0; if ($input) { send(); }',
+            '$later = function () { if ($input) { send(); } };',
+            'return $input === "true";',
+            'return $input;',
+        ] as $body) {
+            self::assertSame([], $this->violations('<?php function sendInput(mixed $input) { '.$body.' }'), $body);
+        }
+    }
+
+    public function testLaravelDataGuardsDoNotTurnDataIntoFlags(): void
+    {
+        foreach ([
+            'function erase(int $count) { if ($count) { write($count); } }',
+            'function paginate($perPage = null, $page = null) { $page = $page ?: 1; $perPage = $perPage ?: 15; return [$page, $perPage]; }',
+            'function validate(mixed $value): bool { return $value === "" || $value === [] || $value === false || $value === null; }',
+            'function format(string $info) { return $info ? trim($info) : ""; }',
+            'function render(?callable $callback = null) { if ($callback) { $callback(); } }',
+        ] as $declaration) {
+            self::assertSame([], $this->violations('<?php '.$declaration), $declaration);
+        }
+    }
+
     /** @return list<Violation> */
     private function violations(string $code): array
     {

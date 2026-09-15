@@ -182,7 +182,7 @@ PHP);
         $this->assertSame(2, $inner['returns']);
         $this->assertSame(1, $outer['try_catch']);
         $this->assertSame(1, $inner['try_catch']);
-        $this->assertSame(2, $outer['nesting']);
+        $this->assertSame(1, $outer['nesting']);
         $this->assertSame(2, $inner['nesting']);
         $this->assertSame(3, $outer['complexity']);
         $this->assertSame(4, $inner['complexity']);

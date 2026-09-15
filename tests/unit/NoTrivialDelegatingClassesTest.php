@@ -6,9 +6,9 @@ namespace Cosmira\Soda;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Analysis\Runner as QualityAnalyser;
+use Cosmira\Soda\Rules\Structure\Delegation\TrivialDelegatingClassAnalyser;
+use Cosmira\Soda\Rules\Structure\Delegation\TrivialDelegatingClassFinding;
 use Cosmira\Soda\Rules\Structure\NoTrivialDelegatingClasses;
-use Cosmira\Soda\Rules\Structure\TrivialDelegatingClassAnalyser;
-use Cosmira\Soda\Rules\Structure\TrivialDelegatingClassFinding;
 use PhpParser\Node;
 use PhpParser\ParserFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -153,6 +153,18 @@ PHP;
         self::assertStringContainsString('save, delete', $violations[0]->message);
     }
 
+    public function testDecorationsAndRenamingDoNotAuthorizePassThrough(): void
+    {
+        foreach (['implements SavesOrders', ''] as $contract) {
+            $source = '<?php #[Boundary] class Wrapper '.$contract.' {
+                const MARKER = 1;
+                public function __construct(private Repository $repository) {}
+                #[Operation] public function renamed($order) { return $this->repository->save(order: $order); }
+            }';
+            self::assertCount(1, $this->analyse($source));
+        }
+    }
+
     #[DataProvider('legitimateSmallClassProvider')]
     public function testAllowsSmallClassWithIndependentReasonToExist(string $source): void
     {
@@ -164,15 +176,6 @@ PHP;
      */
     public static function legitimateSmallClassProvider(): iterable
     {
-        yield 'strategy with explicit interface' => [<<<'PHP'
-<?php
-final class OrderSaver implements SavesOrders
-{
-    public function __construct(private OrderRepository $repository) {}
-    public function save(Order $order): void { $this->repository->save($order); }
-}
-PHP];
-
         yield 'specialized subtype' => [<<<'PHP'
 <?php
 final class DomainFailure extends RuntimeException
@@ -201,15 +204,6 @@ final class OrderSaver
             $this->repository->save($order);
         }
     }
-}
-PHP];
-
-        yield 'adapter translates operation name' => [<<<'PHP'
-<?php
-final class OrderSaver
-{
-    public function __construct(private OrderRepository $repository) {}
-    public function save(Order $order): void { $this->repository->persist($order); }
 }
 PHP];
 
@@ -242,16 +236,6 @@ final class OrderSaver
     {
         assert($repository->isWritable());
     }
-    public function save(Order $order): void { $this->repository->save($order); }
-}
-PHP];
-
-        yield 'attributed framework boundary' => [<<<'PHP'
-<?php
-#[Controller]
-final class OrderSaver
-{
-    public function __construct(private OrderRepository $repository) {}
     public function save(Order $order): void { $this->repository->save($order); }
 }
 PHP];

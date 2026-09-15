@@ -10,6 +10,43 @@ use PHPUnit\Framework\TestCase;
 
 final class NoAssignmentInConditionTest extends TestCase
 {
+    public function testCallableBodiesDoNotBelongToTheOuterCondition(): void
+    {
+        foreach ([
+            'if (accept(function () { $value = nextValue(); })) {}',
+            'if (accept(fn () => $value = nextValue())) {}',
+            'if (new class { function run() { $value = nextValue(); } }) {}',
+            'if ((function () { $value = nextValue(); return $value; })()) {}',
+        ] as $source) {
+            $file = $this->tempFile('<?php '.$source);
+
+            try {
+                $violations = CheckFixture::forRule(new NoAssignmentInCondition, $this->context([$file => $this->minimalMetrics()]));
+                self::assertCount(0, $violations, $source);
+            } finally {
+                unlink($file);
+            }
+        }
+    }
+
+    public function testNestedCallableConditionsAreStillCheckedIndependently(): void
+    {
+        $file = $this->tempFile(<<<'PHP'
+<?php
+if (accept(function () {
+    $value = nextValue();
+    if ($inner = nextValue()) { consume($inner); }
+}, $argument = nextValue())) {}
+PHP);
+
+        try {
+            $violations = CheckFixture::forRule(new NoAssignmentInCondition, $this->context([$file => $this->minimalMetrics()]));
+            self::assertSame([4, 5], $violations->map(static fn ($violation): ?int => $violation->line)->all());
+        } finally {
+            unlink($file);
+        }
+    }
+
     public function testCheckReportsAssignmentInsideIfCondition(): void
     {
         $file = $this->tempFile("<?php\nif (\$value = nextValue()) {\n    echo \$value;\n}\n");

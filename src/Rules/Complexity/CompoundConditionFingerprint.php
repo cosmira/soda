@@ -7,7 +7,9 @@ namespace Cosmira\Soda\Rules\Complexity;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 
-/** Encodes only the closed expression vocabulary supported by repetition checks. */
+/**
+ * Encodes only the closed expression vocabulary supported by repetition checks.
+ */
 final class CompoundConditionFingerprint
 {
     /**
@@ -19,8 +21,9 @@ final class CompoundConditionFingerprint
             $expression instanceof Expr\PropertyFetch => $this->property($expression, $properties),
             $expression instanceof Node\Scalar\String_,
             $expression instanceof Node\Scalar\Int_,
-            $expression instanceof Node\Scalar\Float_ => serialize([$expression->getType(), $expression->value]),
-            $expression instanceof Expr\ConstFetch    => $this->literal($expression),
+            $expression instanceof Node\Scalar\Float_   => serialize([$expression->getType(), $expression->value]),
+            $expression instanceof Expr\ConstFetch      => $this->literal($expression),
+            $expression instanceof Expr\ClassConstFetch => $this->classConstant($expression),
             $expression instanceof Expr\BooleanNot,
             $expression instanceof Expr\UnaryMinus,
             $expression instanceof Expr\UnaryPlus => $this->unary($expression, $properties),
@@ -47,11 +50,25 @@ final class CompoundConditionFingerprint
     /**
      * Recognize language literals independently of namespace resolution.
      */
-    private function literal(Expr\ConstFetch $expression): ?string
+    private function literal(Expr\ConstFetch $expression): string
     {
         $name = strtolower($expression->name->toString());
 
-        return in_array($name, ['true', 'false', 'null'], true) ? serialize(['literal', $name]) : null;
+        return in_array($name, ['true', 'false', 'null'], true)
+            ? serialize(['literal', $name])
+            : serialize(['constant', $expression->name->toString()]);
+    }
+
+    /**
+     * Keep named class constants explicit; never evaluate them or reorder operands.
+     */
+    private function classConstant(Expr\ClassConstFetch $expression): ?string
+    {
+        if (! $expression->class instanceof Node\Name || ! $expression->name instanceof Node\Identifier) {
+            return null;
+        }
+
+        return serialize(['class_constant', strtolower($expression->class->toString()), $expression->name->toString()]);
     }
 
     /**

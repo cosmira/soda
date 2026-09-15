@@ -42,13 +42,16 @@ final class NoBooleanParameters extends Check
      */
     private function isBooleanParameter(Node $parameter): bool
     {
-        $isExcludedParameter = ! $parameter instanceof Node\Param
-            || ! $parameter->type instanceof Node;
+        $isExcludedParameter = ! $parameter instanceof Node\Param;
         if ($isExcludedParameter) {
             return false;
         }
 
-        return $this->hasBooleanType($parameter->type) && ! $this->isReadonlyState($parameter);
+        $booleanDefault = $parameter->default instanceof Node\Expr\ConstFetch
+            && in_array(strtolower($parameter->default->name->toString()), ['true', 'false'], true);
+        $booleanType = $parameter->type instanceof Node && $this->hasBooleanType($parameter->type);
+
+        return ($booleanDefault || $booleanType) && ! $this->isReadonlyState($parameter);
     }
 
     /**
@@ -57,7 +60,7 @@ final class NoBooleanParameters extends Check
     private function hasBooleanType(Node $type): bool
     {
         if ($type instanceof Identifier) {
-            return strtolower($type->name) === 'bool';
+            return in_array(strtolower($type->name), ['bool', 'true', 'false'], true);
         }
 
         if ($type instanceof Node\NullableType) {

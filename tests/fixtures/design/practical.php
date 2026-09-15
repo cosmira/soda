@@ -107,13 +107,3 @@ final class MemoryStorage
         $this->files[$path] = $content;
     }
 }
-
-final readonly class ReportStorage
-{
-    public function __construct(private MemoryStorage $storage) {}
-
-    public function save(string $path, string $content): void
-    {
-        $this->storage->write($path, $content);
-    }
-}

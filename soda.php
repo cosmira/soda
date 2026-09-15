@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Cosmira\Soda\Analyzer;
 use Cosmira\Soda\Config\Soda;
 use Cosmira\Soda\Rules\Complexity\MaxBooleanConditions;
 use Cosmira\Soda\Rules\Complexity\MaxControlNesting;
@@ -83,7 +84,11 @@ return Soda::configure()
         new NoEmptyCatchBlocks(),
         new NoAskThenTellPatterns(),
         new NoTrivialDelegatingClasses(),
-        new NoTrivialFactories(),
+        new NoTrivialFactories(contracts: [
+            // Published entry points retained for callers of the existing fluent API.
+            Analyzer::class.'::paths',
+            Soda::class.'::configure',
+        ]),
         new NoRepeatedCompoundConditions(),
         new MethodsFollowCallOrder(),
         new MultilineMethodPhpDoc(['public', 'protected', 'private']),

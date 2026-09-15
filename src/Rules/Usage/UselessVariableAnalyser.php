@@ -15,13 +15,12 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
-use PhpParser\Node\Stmt\Unset_;
 use PhpParser\NodeFinder;
 
 /**
  * Detects useless variables — direct copies of another variable ($a = $b)
  * that are never mutated, passed by reference, captured by a closure,
- * or used after the source is unset.
+ * or used after the source value changes.
  *
  * Analysis scope: function / method bodies only (not top-level code).
  */
@@ -101,7 +100,8 @@ final readonly class UselessVariableAnalyser
     {
         return $this->isUsed($var, $after)
             && ! $this->isMutated($var, $after)
-            && ! $this->isEscaped($var, $source, $after);
+            && ! $this->isMutated($source, $after)
+            && ! $this->isEscaped($var, $after);
     }
 
     /**
@@ -126,12 +126,11 @@ final readonly class UselessVariableAnalyser
     /**
      * @param Node[] $after
      */
-    private function isEscaped(string $var, string $source, array $after): bool
+    private function isEscaped(string $var, array $after): bool
     {
         return $this->isPassedByRef($var, $after)
             || $this->isInClosure($var, $after)
-            || $this->isObjectMutated($var, $after)
-            || $this->isSourceUnset($source, $after);
+            || $this->isObjectMutated($var, $after);
     }
 
     /**
@@ -166,16 +165,6 @@ final readonly class UselessVariableAnalyser
             && $node->var instanceof PropertyFetch
             && $node->var->var instanceof Variable
             && $node->var->var->name === $var) !== [];
-    }
-
-    /**
-     * @param Node[] $nodes
-     */
-    private function isSourceUnset(string $source, array $nodes): bool
-    {
-        return $this->walkScope($nodes, static fn (Node $node): bool => $node instanceof Unset_
-            && array_filter($node->vars, static fn (Node $variable): bool => $variable instanceof Variable
-                && $variable->name === $source) !== []) !== [];
     }
 
     /**

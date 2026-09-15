@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Cosmira\Soda\Rules\Structure;
+namespace Cosmira\Soda\Rules\Structure\Delegation;
 
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\PropertyFetch;
@@ -14,24 +14,21 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Expression;
 
 /**
- * Excludes small classes that carry a contract, boundary marker, state, or constructor behavior.
+ * Selects concrete shapes and verifies that their only state wires the delegated dependency.
  *
  * @internal
  */
 final class TrivialDelegatingClassPolicy
 {
     /**
-     * Determine whether contractless concrete applies to the supplied input.
+     * Determine whether the concrete declaration can be inspected without composition.
      */
-    public function isContractlessConcrete(Class_ $class): bool
+    public function isInspectableConcrete(Class_ $class): bool
     {
         return $class->name instanceof Identifier
             && ! $class->isAbstract()
             && ! $class->extends instanceof Name
-            && $class->implements === []
-            && $class->getTraitUses() === []
-            && $class->attrGroups === []
-            && $class->getConstants() === [];
+            && $class->getTraitUses() === [];
     }
 
     /**

@@ -6,28 +6,24 @@ namespace Cosmira\Soda\Rules\Complexity;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\ClassMethod;
 
-/** Identifies declared state and control conditions belonging to one class method. */
+/**
+ * Identifies declared state and control conditions belonging to one class method.
+ */
 final class CompoundConditionScope
 {
     /**
      * Exclude unknown composition and property interception.
      *
-     * @return array<string, true>|null
+     * @return array<string, true>
      */
-    public function properties(Stmt\Class_ $class): ?array
+    public function properties(Stmt\Class_ $class): array
     {
-        if ($class->extends instanceof Name || $class->getTraitUses() !== [] || $this->hasMagicAccess($class)) {
-            return null;
-        }
-
         $properties = [];
         foreach ($class->getProperties() as $property) {
             if ($property->hooks !== []) {
-                return null;
+                continue;
             }
 
             if (! $property->isStatic()) {
@@ -39,35 +35,20 @@ final class CompoundConditionScope
 
         $promoted = $this->promotedProperties($class);
 
-        return $promoted === null ? null : $properties + $promoted;
-    }
-
-    /**
-     * Respect every form of magic property access.
-     */
-    private function hasMagicAccess(Stmt\Class_ $class): bool
-    {
-        foreach (['__get', '__set', '__isset', '__unset'] as $name) {
-            $method = $class->getMethod($name);
-            if ($method instanceof ClassMethod) {
-                return true;
-            }
-        }
-
-        return false;
+        return $properties + $promoted;
     }
 
     /**
      * Collect promoted properties, rejecting hooked parameters.
      *
-     * @return array<string, true>|null
+     * @return array<string, true>
      */
-    private function promotedProperties(Stmt\Class_ $class): ?array
+    private function promotedProperties(Stmt\Class_ $class): array
     {
         $properties = [];
         foreach ($class->getMethod('__construct')?->params ?? [] as $parameter) {
             if ($parameter->hooks !== []) {
-                return null;
+                continue;
             }
 
             $isNamed = $parameter->var instanceof Expr\Variable && is_string($parameter->var->name);
@@ -77,6 +58,37 @@ final class CompoundConditionScope
         }
 
         return $properties;
+    }
+
+    /**
+     * Traverse the current method, excluding nested callable and class scopes.
+     */
+    public function conditions(array $nodes): iterable
+    {
+        $aliases = [];
+        foreach ($nodes as $node) {
+            if (! $node instanceof Node || $node instanceof Node\FunctionLike || $node instanceof Stmt\ClassLike) {
+                continue;
+            }
+
+            $assignment = $node instanceof Stmt\Expression ? $node->expr : null;
+            if ($assignment instanceof Expr\Assign && $assignment->var instanceof Expr\Variable && is_string($assignment->var->name)) {
+                $value = ConditionSnapshot::normalize($assignment->expr, $aliases);
+                yield from $this->conditions([$value]);
+                // Keep only the immediately preceding snapshot or its direct alias chain.
+                $aliases = [$assignment->var->name => $value];
+
+                continue;
+            }
+
+            foreach ($this->controlConditions($node) as $condition) {
+                yield ConditionSnapshot::normalize($condition, $aliases);
+            }
+
+            $aliases = [];
+            yield from $this->nestedConditions($node);
+
+        }
     }
 
     /**
@@ -96,20 +108,13 @@ final class CompoundConditionScope
     }
 
     /**
-     * Traverse the current method, excluding nested callable and class scopes.
+     * Descend into nested expressions after the immediate snapshot scope has ended.
      */
-    public function conditions(array $nodes): iterable
+    private function nestedConditions(Node $node): iterable
     {
-        foreach ($nodes as $node) {
-            if (! $node instanceof Node || $node instanceof Node\FunctionLike || $node instanceof Stmt\ClassLike) {
-                continue;
-            }
-
-            yield from $this->controlConditions($node);
-            foreach ($node->getSubNodeNames() as $name) {
-                $child = get_object_vars($node)[$name];
-                yield from $this->conditions(is_array($child) ? $child : [$child]);
-            }
+        foreach ($node->getSubNodeNames() as $name) {
+            $child = get_object_vars($node)[$name];
+            yield from $this->conditions(is_array($child) ? $child : [$child]);
         }
     }
 }
