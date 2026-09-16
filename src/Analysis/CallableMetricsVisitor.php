@@ -34,6 +34,9 @@ final class CallableMetricsVisitor extends FactVisitor
 
     /**
      * Initialize the configured values and collaborators for this instance.
+     *
+     * @param NestingTracker    $tracker  Tracks the active callable scopes while traversing the syntax tree.
+     * @param ConditionRecorder $recorder Records measurements for each completed callable scope.
      */
     public function __construct(
         private readonly NestingTracker $tracker = new NestingTracker(),

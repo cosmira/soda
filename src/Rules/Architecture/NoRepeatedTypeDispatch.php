@@ -20,6 +20,8 @@ final class NoRepeatedTypeDispatch extends Check
 {
     /**
      * Require repetition in distinct methods, never a count of tests inside one method.
+     *
+     * @param int $minMethods Minimum number of distinct methods required for a repeated pattern.
      */
     public function __construct(private readonly int $minMethods = 2)
     {

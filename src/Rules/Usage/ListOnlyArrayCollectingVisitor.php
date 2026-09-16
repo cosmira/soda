@@ -24,6 +24,8 @@ final class ListOnlyArrayCollectingVisitor extends NodeVisitorAbstract
 
     /**
      * Initialize the configured values and collaborators for this instance.
+     *
+     * @param ListOnlyArrayStrictness $strictness Selection policy for nested array access.
      */
     public function __construct(
         private readonly ListOnlyArrayStrictness $strictness,

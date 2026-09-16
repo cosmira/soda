@@ -23,6 +23,9 @@ final readonly class TrivialDelegatingClassAnalyser
 
     /**
      * Initialize the configured values and collaborators for this instance.
+     *
+     * @param TrivialDelegatingClassPolicy $classPolicy Exclusions and contracts that determine eligible forwarding classes.
+     * @param TrivialDelegatingMethodProbe $methodProbe Examines method bodies for transparent forwarding behavior.
      */
     public function __construct(
         private TrivialDelegatingClassPolicy $classPolicy = new TrivialDelegatingClassPolicy,

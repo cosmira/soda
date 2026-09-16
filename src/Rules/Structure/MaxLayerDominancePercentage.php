@@ -22,6 +22,9 @@ final class MaxLayerDominancePercentage extends Check
 
     /**
      * Configure the dominance percentage and minimum directory size.
+     *
+     * @param int $threshold Threshold used to decide whether to report the measured value.
+     * @param int $minFiles  Minimum namespace size required before evaluating directory roles.
      */
     public function __construct(private readonly int $threshold = 80, private readonly int $minFiles = 4) {}
 

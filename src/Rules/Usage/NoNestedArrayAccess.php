@@ -33,6 +33,8 @@ final class NoNestedArrayAccess extends Check
 
     /**
      * Initialize the configured values and collaborators for this instance.
+     *
+     * @param int $maxDepth Maximum supported array-access nesting before reporting a finding.
      */
     public function __construct(
         private readonly int $maxDepth = 1,

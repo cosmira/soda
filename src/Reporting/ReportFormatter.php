@@ -27,6 +27,8 @@ final readonly class ReportFormatter
 
     /**
      * Initialize the configured values and collaborators for this instance.
+     *
+     * @param RuleMetadata $ruleMetadata Supplies labels and policy metadata for reported rule identifiers.
      */
     public function __construct(
         private RuleMetadata $ruleMetadata,

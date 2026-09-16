@@ -16,6 +16,8 @@ final class MaxEffectiveMethodsPerClass extends Check
 {
     /**
      * Set a positive limit for the composed class.
+     *
+     * @param int $limit Maximum accepted value of this metric.
      */
     public function __construct(private readonly int $limit = 40)
     {

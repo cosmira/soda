@@ -19,7 +19,9 @@ final class MaxArguments extends ExpressionCheck
     /**
      * Set the maximum accepted value; non-positive limits preserve the disabled policy.
      *
-     * @param list<string> $contracts Exact Class::method signatures imposed by external APIs.
+     * @param list<string>           $contracts  Exact Class::method signatures imposed by external APIs.
+     * @param int                    $limit      Maximum accepted value of this metric.
+     * @param ?MaxPropertiesPerClass $properties Property-count policy used when identifying readonly data constructors.
      */
     public function __construct(
         private readonly int $limit,

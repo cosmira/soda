@@ -86,6 +86,8 @@ final readonly class FileFacts
      *
      * @param list<Node>  $nodes
      * @param FileMetrics $metrics
+     * @param string      $path    Source file path associated with these collected facts.
+     * @param string      $source  PHP source text used to collect these file facts.
      */
     public function __construct(
         public string $path,

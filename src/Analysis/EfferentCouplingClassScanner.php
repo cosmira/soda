@@ -19,6 +19,9 @@ final readonly class EfferentCouplingClassScanner
 {
     /**
      * Initialize the configured values and collaborators for this instance.
+     *
+     * @param EfferentCouplingGraph      $graph Dependency graph receiving references collected from source declarations.
+     * @param EfferentCouplingReferences $types Declared type and inheritance facts used to resolve local contracts.
      */
     public function __construct(
         private EfferentCouplingGraph $graph,

@@ -23,6 +23,8 @@ final readonly class TellDontAskQuestionProbe
 {
     /**
      * Initialize the configured values and collaborators for this instance.
+     *
+     * @param TellDontAskReceiverFingerprint $fingerprint Builds comparable receiver and argument identities for call matching.
      */
     public function __construct(
         private TellDontAskReceiverFingerprint $fingerprint,

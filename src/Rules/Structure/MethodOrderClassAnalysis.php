@@ -16,6 +16,7 @@ final class MethodOrderClassAnalysis
 
     /**
      * @param list<MethodOrderMethod> $methods
+     * @param string                  $name    Original declaration name retained for diagnostics.
      */
     public function __construct(
         public readonly string $name,

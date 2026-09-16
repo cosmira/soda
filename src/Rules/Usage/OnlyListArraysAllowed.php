@@ -59,8 +59,9 @@ final class OnlyListArraysAllowed extends Check
     private readonly FnmatchPathExclusion $pathExclusion;
 
     /**
-     * @param string[] $ignorePathPatterns Extra fnmatch patterns against the full file path or basename.
-     * @param string[] $ignorePathPrefixes Normalized path prefixes: file is skipped if its resolved path is under one of these.
+     * @param string[]                $ignorePathPatterns Extra fnmatch patterns against the full file path or basename.
+     * @param string[]                $ignorePathPrefixes Normalized path prefixes: file is skipped if its resolved path is under one of these.
+     * @param ListOnlyArrayStrictness $strictness         Selection policy for nested array access.
      */
     public function __construct(
         array $ignorePathPatterns = [],

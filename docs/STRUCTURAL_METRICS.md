@@ -614,7 +614,12 @@ collection-shape notes can enable it explicitly.
 
 Requires a multiline PHPDoc block for declared properties with configured
 visibilities. Interfaces are ignored for properties; classes, traits, and enums
-are checked.
+are checked. Constructor-promoted properties follow the same visibility policy.
+They may use either a multiline PHPDoc immediately before the parameter or a
+matching `@param` tag in the constructor's multiline PHPDoc. A constructor summary
+alone does not document its promoted properties. Parameter names must match
+exactly; ordinary constructor parameters are not properties. Findings point to
+the promoted parameter declaration and retain `multiline_property_phpdoc`.
 
 ```php
 new MultilinePropertyPhpDoc(['public'])

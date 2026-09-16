@@ -518,3 +518,16 @@ Both IDs, zero-argument constructors, standard membership and JSON schema stay
 unchanged. Explicitly selected instances also adopt the narrower semantics.
 Messages change to describe readability evidence, not universal syntax bans.
 The standard selection remains 72 checks; earlier opt-in decisions remain intact.
+
+## PHPDoc for constructor-promoted properties
+
+`multiline_property_phpdoc` now checks constructor-promoted properties as well as
+ordinary property declarations. It retains its ID, JSON shape, opt-in status, and
+visibility settings (public only unless configured otherwise).
+
+A promoted property needs a multiline PHPDoc on the parameter or a matching
+`@param` tag in the constructor's multiline PHPDoc. A constructor summary or a tag
+for another parameter is insufficient. Existing configurations that enable this
+rule may therefore report previously missed properties. Document the property
+in either location; there is no need to undo constructor promotion or duplicate
+the description. Ordinary constructor parameters remain outside this rule.

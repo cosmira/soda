@@ -16,6 +16,8 @@ final class MaxCognitiveComplexity extends ExpressionCheck
 {
     /**
      * Zero permits only linear code; negative limits are invalid for this new check.
+     *
+     * @param int $limit Maximum accepted value of this metric.
      */
     public function __construct(private readonly int $limit = 15)
     {

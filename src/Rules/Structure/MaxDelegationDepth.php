@@ -16,6 +16,8 @@ final class MaxDelegationDepth extends Check
 {
     /**
      * Set the maximum number of consecutive forwarding methods.
+     *
+     * @param int $limit Maximum accepted value of this metric.
      */
     public function __construct(private readonly int $limit = 3)
     {

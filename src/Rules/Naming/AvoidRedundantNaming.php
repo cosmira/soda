@@ -12,6 +12,8 @@ final class AvoidRedundantNaming extends Check
 {
     /**
      * Set the similarity percentage needed for a finding.
+     *
+     * @param int $threshold Threshold used to decide whether to report the measured value.
      */
     public function __construct(private readonly int $threshold = 80) {}
 

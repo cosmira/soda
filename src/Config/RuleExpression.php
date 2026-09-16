@@ -37,6 +37,8 @@ final class RuleExpression
 
     /**
      * Initialize the configured values and collaborators for this instance.
+     *
+     * @param string $source Configured expression evaluated against collected metric rows.
      */
     public function __construct(private readonly string $source)
     {

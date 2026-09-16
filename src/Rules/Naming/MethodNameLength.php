@@ -23,6 +23,9 @@ final class MethodNameLength extends Check
 
     /**
      * Set inclusive byte-length bounds for declared names.
+     *
+     * @param int $min Minimum accepted identifier length.
+     * @param int $max Maximum accepted identifier length.
      */
     public function __construct(private readonly int $min = 1, private readonly int $max = 32) {}
 

@@ -71,6 +71,8 @@ final readonly class ComposerTypeSources
 
     /**
      * Store only source directories declared by Composer.
+     *
+     * @param array $prefixes Composer namespace prefixes used to locate external type declarations.
      */
     private function __construct(private array $prefixes) {}
 

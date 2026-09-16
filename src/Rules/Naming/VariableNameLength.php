@@ -22,6 +22,9 @@ final class VariableNameLength extends Check
 
     /**
      * Set inclusive byte-length bounds for declared names.
+     *
+     * @param int $min Minimum accepted identifier length.
+     * @param int $max Maximum accepted identifier length.
      */
     public function __construct(private readonly int $min = 3, private readonly int $max = 16) {}
 

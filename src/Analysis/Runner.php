@@ -15,6 +15,8 @@ class Runner
 {
     /**
      * Supply the PHP fact collector used for this analysis run.
+     *
+     * @param FactCollector $collector Collects file and project facts requested by the selected checks.
      */
     public function __construct(private readonly FactCollector $collector = new FactCollector()) {}
 

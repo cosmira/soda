@@ -28,6 +28,8 @@ final class QualityCommand extends Command
 {
     /**
      * Initialize the configured values and collaborators for this instance.
+     *
+     * @param ?Runner $qualityAnalysis Runs the configured checks and assembles the quality report.
      */
     public function __construct(
         private readonly ?Runner $qualityAnalysis = null,

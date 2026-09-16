@@ -32,6 +32,8 @@ final readonly class RuleMetadata
     public const string COMPARISON_MIN = 'min';
 
     /**
+     * @param array $rules Presentation metadata indexed by stable rule identifier.
+     *
      * @psalm-param array<string, array{severity: 'error'|'warning', label: string, advice: non-empty-string, comparison?: 'min'|'max'}> $rules
      */
     public function __construct(

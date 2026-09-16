@@ -29,6 +29,9 @@ final readonly class MethodRedundancyChecker
 
     /**
      * Initialize the configured values and collaborators for this instance.
+     *
+     * @param float $similarityThreshold Minimum percentage similarity required to flag repeated naming.
+     * @param int   $minWordLength       Minimum token length considered when comparing names.
      */
     public function __construct(
         private float $similarityThreshold = 80.0,

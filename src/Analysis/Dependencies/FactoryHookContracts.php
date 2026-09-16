@@ -24,6 +24,8 @@ final readonly class FactoryHookContracts
 
     /**
      * Store signature and dispatch facts for the reachable class hierarchy.
+     *
+     * @param array $types Declared type and inheritance facts used to resolve local contracts.
      */
     private function __construct(private array $types) {}
 

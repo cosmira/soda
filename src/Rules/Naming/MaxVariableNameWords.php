@@ -22,7 +22,8 @@ final class MaxVariableNameWords extends Check
     private array $ignored;
 
     /**
-     * @param list<string> $ignore Exact variable names, with or without the leading `$`.
+     * @param list<string> $ignore   Exact variable names, with or without the leading `$`.
+     * @param int          $maxWords Maximum accepted number of words in a variable name.
      */
     public function __construct(
         private readonly int $maxWords = 1,

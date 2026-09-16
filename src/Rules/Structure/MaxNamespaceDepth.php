@@ -13,6 +13,8 @@ final class MaxNamespaceDepth extends ExpressionCheck
 {
     /**
      * Set the maximum accepted value; non-positive limits preserve the disabled policy.
+     *
+     * @param int $limit Maximum accepted value of this metric.
      */
     public function __construct(private readonly int $limit) {}
 

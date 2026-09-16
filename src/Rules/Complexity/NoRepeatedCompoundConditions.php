@@ -20,6 +20,8 @@ final class NoRepeatedCompoundConditions extends Check
 {
     /**
      * Set the minimum number of distinct methods sharing a condition.
+     *
+     * @param int $minMethods Minimum number of distinct methods required for a repeated pattern.
      */
     public function __construct(private readonly int $minMethods = 3)
     {

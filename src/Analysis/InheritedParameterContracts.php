@@ -74,6 +74,8 @@ final readonly class InheritedParameterContracts
 
     /**
      * Index only declarations from this analysis, never autoload application code.
+     *
+     * @param array $types Declared type and inheritance facts used to resolve local contracts.
      */
     public function __construct(private array $types) {}
 

@@ -25,6 +25,8 @@ final readonly class EfferentCouplingReferences
 {
     /**
      * Initialize the configured values and collaborators for this instance.
+     *
+     * @param EfferentCouplingGraph $graph Dependency graph receiving references collected from source declarations.
      */
     public function __construct(
         private EfferentCouplingGraph $graph,

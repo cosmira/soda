@@ -15,6 +15,8 @@ final readonly class ParameterUseAnalysis
 {
     /**
      * Retain the declaration only for the duration of its lexical callable analysis.
+     *
+     * @param Node\Param $parameter Incoming parameter whose reads and overwrites are being tracked.
      */
     public function __construct(private Node\Param $parameter) {}
 

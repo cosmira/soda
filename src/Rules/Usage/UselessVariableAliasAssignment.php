@@ -16,6 +16,10 @@ final readonly class UselessVariableAliasAssignment
 {
     /**
      * Initialize the configured values and collaborators for this instance.
+     *
+     * @param string $variable Name of the newly assigned alias variable.
+     * @param string $source   Name of the original variable copied by the alias assignment.
+     * @param int    $line     One-based source line used to locate the declaration or finding.
      */
     public function __construct(
         public string $variable,

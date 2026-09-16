@@ -37,6 +37,8 @@ final class StructureVisitor extends FactVisitor
     ];
 
     /**
+     * @param ?LogicalLineMap $logicalLineMap Maps physical source lines to logical statement counts.
+     *
      * @psalm-param non-negative-int $fileLines
      */
     public function __construct(

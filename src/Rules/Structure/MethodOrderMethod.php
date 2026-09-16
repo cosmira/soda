@@ -11,6 +11,9 @@ final readonly class MethodOrderMethod
 {
     /**
      * @param list<string> $calls
+     * @param string       $name           Original declaration name retained for diagnostics.
+     * @param string       $normalizedName Case-normalized method name used for local call resolution.
+     * @param int          $line           One-based source line used to locate the declaration or finding.
      */
     public function __construct(
         public string $name,

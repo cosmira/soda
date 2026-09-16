@@ -8,6 +8,15 @@ final readonly class Violation
 {
     /**
      * Carry a measured result and its source location without intermediate builders.
+     *
+     * @param string  $rule      Stable identifier of the rule producing the diagnostic.
+     * @param string  $file      Source file containing the reported declaration.
+     * @param int     $value     Measured value reported by the rule.
+     * @param int     $threshold Threshold used to decide whether to report the measured value.
+     * @param ?string $method    Declaring method reported with the finding, when available.
+     * @param ?string $class     Declaring class reported with the finding, when available.
+     * @param ?int    $line      One-based source line used to locate the declaration or finding.
+     * @param ?string $message   Optional explanation of the finding and its local evidence.
      */
     public function __construct(
         public string $rule,
