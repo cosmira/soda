@@ -1500,6 +1500,8 @@ the native parent contract.
 Promoted state and abstract declarations are excluded. Closure captures count as uses;
 a same-named variable in an independent nested scope does not. Installed Composer PSR-4 dependencies can supply missing ancestor signatures via
 `vendor/composer/installed.json`, without executing their autoloader or source.
+Source declarations in PHAR archives shipped by those packages are also inspected;
+the qualified declaration name must match the requested ancestor.
 Known parent methods and interfaces preserve their declared input positions across
 analysed files, including implementations imported from traits and trait aliases.
 An input read by a known override also remains part of the base

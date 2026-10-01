@@ -23,6 +23,39 @@ final class ExternalParameterContractsTest extends TestCase
         });
     }
 
+    public function testArchivedDependencyContractsAreParsedWithoutExecution(): void
+    {
+        $this->withProject(function (string $root): void {
+            $this->write($root, 'vendor/composer/installed.json', json_encode(['packages' => [[
+                'name'     => 'vendor/api', 'install-path' => '../vendor/api',
+                'autoload' => ['files' => ['bootstrap.php']],
+            ]]], JSON_THROW_ON_ERROR));
+            $this->write($root, 'vendor/vendor/api/bootstrap.php', '<?php throw new \\RuntimeException("Do not execute");');
+            $archive = new \PharData($root.'/vendor/vendor/api/contracts.zip');
+            $archive['unrelated/Scope.php'] = '<?php namespace Unrelated; interface Scope { public function apply($input); }';
+            $archive['definitions/BaseScope.php'] = '<?php namespace Vendor\\Api; interface BaseScope { public function apply($input, $context); }';
+            $archive['definitions/Scope.php'] = '<?php namespace Vendor\\Api; throw new \\RuntimeException("Do not execute"); interface Scope extends BaseScope {}';
+            unset($archive);
+            $path = $this->write($root, 'src/OwnScope.php', '<?php namespace App; class OwnScope implements \\Vendor\\Api\\Scope { public function apply($input, $context, $extra = null) {} public function ownMethod($input) {} }');
+            $findings = $this->findings([$path]);
+            self::assertCount(2, $findings);
+            self::assertStringContainsString('$extra', $findings[0]->message);
+            self::assertStringContainsString('$input', $findings[1]->message);
+        });
+    }
+
+    public function testUnrelatedArchivedDeclarationDoesNotExemptInput(): void
+    {
+        $this->withProject(function (string $root): void {
+            $this->write($root, 'vendor/vendor/api/bootstrap.php', '<?php throw new \\RuntimeException("Do not execute");');
+            $archive = new \PharData($root.'/vendor/vendor/api/contracts.zip');
+            $archive['definitions/Scope.php'] = '<?php namespace Unrelated; interface Scope { public function apply($input); }';
+            unset($archive);
+            $path = $this->write($root, 'src/OwnScope.php', '<?php namespace App; class OwnScope implements \\Vendor\\Api\\Scope { public function apply($input) {} }');
+            self::assertCount(1, $this->findings([$path]));
+        });
+    }
+
     public function testExternalAncestorsResolveTransitivelyAndExtraInputsRemainChecked(): void
     {
         $this->withProject(function (string $root): void {

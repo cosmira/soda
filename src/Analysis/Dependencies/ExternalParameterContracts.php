@@ -33,18 +33,29 @@ final readonly class ExternalParameterContracts
                 }
 
                 $visited[$key] = true;
-                $path = $sources->locate($parent);
-                if ($path === null) {
-                    continue;
-                }
-
-                $declarations = self::read($path);
+                $declarations = self::declarationsFor($parent, $sources);
                 $types += $declarations;
                 array_push($pending, ...array_values($declarations));
             }
         }
 
         return $types;
+    }
+
+    /**
+     * Verify the qualified declaration so matching filenames cannot exempt unrelated parameters.
+     */
+    private static function declarationsFor(string $class, ComposerTypeSources $sources): array
+    {
+        $key = strtolower($class);
+        foreach ($sources->locate($class) as $path) {
+            $declarations = self::read($path);
+            if (isset($declarations[$key])) {
+                return $declarations;
+            }
+        }
+
+        return [];
     }
 
     /**
