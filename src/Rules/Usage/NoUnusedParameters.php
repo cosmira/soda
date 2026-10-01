@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Cosmira\Soda\Rules\Usage;
 
+use Cosmira\Soda\Analysis\Composition\BehaviorComposition;
+use Cosmira\Soda\Analysis\Composition\ClassBehaviorFacts;
 use Cosmira\Soda\Analysis\Dependencies\ExternalParameterContracts;
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Analysis\Frameworks\LaravelMiddlewareContracts;
@@ -32,7 +34,9 @@ final class NoUnusedParameters extends Check
         }
 
         $types = InheritedParameterContracts::collect($file->nodes);
-        yield from $this->findings($file->path, ParameterInputFacts::collect($file->nodes), new InheritedParameterContracts($types), LaravelMiddlewareContracts::collect($file->nodes));
+        $inherited = new InheritedParameterContracts($types);
+        $surfaces = (new BehaviorComposition)->resolve(ClassBehaviorFacts::collect($file->nodes));
+        yield from $this->findings($file->path, ParameterInputFacts::collect($file->nodes), $inherited, LaravelMiddlewareContracts::collect($file->nodes), $this->composedArities($surfaces, $inherited));
     }
 
     /**
@@ -49,20 +53,21 @@ final class NoUnusedParameters extends Check
 
         $types = ExternalParameterContracts::resolve($types, array_keys($project->files));
         $inherited = new InheritedParameterContracts($types);
+        $arities = $this->composedArities((new BehaviorComposition)->project($project), $inherited);
         foreach ($project->files as $path => $facts) {
-            yield from $this->findings($path, $facts['parameterInputs'] ?? [], $inherited, $middleware);
+            yield from $this->findings($path, $facts['parameterInputs'] ?? [], $inherited, $middleware, $arities);
         }
     }
 
     /**
      * Preserve required positions without exempting extra inputs on the same method.
      */
-    private function findings(string $path, array $candidates, InheritedParameterContracts $inherited, array $middleware): iterable
+    private function findings(string $path, array $candidates, InheritedParameterContracts $inherited, array $middleware, array $arities = []): iterable
     {
         $contracts = array_fill_keys(array_map(strtolower(...), $this->contracts), true);
         foreach ($candidates as $candidate) {
             $identity = $candidate['identity'];
-            $arity = $inherited->arity($candidate['class'], $candidate['method']);
+            $arity = max($arities[strtolower($identity)] ?? 0, $inherited->arity($candidate['class'], $candidate['method']));
             $registered = isset($middleware[strtolower($candidate['class'] ?? '')]);
             $terminate = $registered && strtolower($candidate['method'] ?? '') === 'terminate' && ($candidate['publicInstance'] ?? false);
             $arity = max($arity, $terminate ? 2 : 0);
@@ -84,6 +89,22 @@ final class NoUnusedParameters extends Check
     }
 
     /**
+     * Preserve interface positions on the original method imported from a trait.
+     */
+    private function composedArities(array $surfaces, InheritedParameterContracts $contracts): array
+    {
+        $arities = [];
+        foreach ($surfaces as $class => $surface) {
+            foreach ($surface['methods'] as $name => $method) {
+                $origin = $method['origin'];
+                $arities[$origin] = max($arities[$origin] ?? 0, $contracts->arity($class, $name));
+            }
+        }
+
+        return $arities;
+    }
+
+    /**
      * Identify this check in configuration and diagnostics.
      */
     public function id(): string
@@ -96,6 +117,6 @@ final class NoUnusedParameters extends Check
      */
     public function requiredAnalyses(): array
     {
-        return ['parameterInputs'];
+        return ['parameterInputs', 'classBehavior'];
     }
 }

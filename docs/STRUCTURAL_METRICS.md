@@ -1501,7 +1501,8 @@ Promoted state and abstract declarations are excluded. Closure captures count as
 a same-named variable in an independent nested scope does not. Installed Composer PSR-4 dependencies can supply missing ancestor signatures via
 `vendor/composer/installed.json`, without executing their autoloader or source.
 Known parent methods and interfaces preserve their declared input positions across
-analysed files. An input read by a known override also remains part of the base
+analysed files, including implementations imported from traits and trait aliases.
+An input read by a known override also remains part of the base
 method contract. Extra implementation parameters remain checked; the necessity of
 the interface itself is evaluated by a separate architecture rule. `contracts: ['App\\Callback::handle']` lists exact
 externally fixed signatures. A read after a definite overwrite does not use the incoming

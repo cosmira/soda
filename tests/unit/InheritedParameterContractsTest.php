@@ -21,6 +21,45 @@ final class InheritedParameterContractsTest extends TestCase
         self::assertSame([], $this->findings(array_reverse($sources)));
     }
 
+    public function testInterfacePositionsArePreservedThroughTraitAliases(): void
+    {
+        $sources = [
+            '<?php namespace Api; interface BaseContract { function inspect($reflection); } interface Contract extends BaseContract {}',
+            '<?php namespace App; trait Implementation { function handle($methodReflection, $extra = null) {} }',
+            '<?php namespace App; use Api\Contract; class Worker implements Contract { use Implementation { handle as inspect; } }',
+        ];
+        foreach ([$sources, array_reverse($sources)] as $ordered) {
+            $findings = $this->findings($ordered);
+            self::assertCount(1, $findings);
+            self::assertStringContainsString('$extra', $findings[0]->message);
+            self::assertSame('App\Implementation', $findings[0]->class);
+        }
+    }
+
+    public function testUnusedInterfaceParameterIsKeptButOwnedExtraInputIsReported(): void
+    {
+        $sources = [
+            '<?php namespace Api; interface Contract { function inspect($reflection); }',
+            '<?php namespace App; use Api\Contract; class Worker implements Contract { function inspect($methodReflection, $extra = null) {} function ownMethod($methodReflection) {} }',
+        ];
+        $findings = $this->findings($sources);
+        self::assertCount(2, $findings);
+        self::assertStringContainsString('$extra', $findings[0]->message);
+        self::assertSame('ownMethod', $findings[1]->method);
+        self::assertStringContainsString('$methodReflection', $findings[1]->message);
+    }
+
+    public function testTraitMethodOverriddenByClassDoesNotGainItsInterfaceContract(): void
+    {
+        $findings = $this->findings([
+            '<?php interface Contract { function inspect($input); }',
+            '<?php trait Implementation { function inspect($unused) {} }',
+            '<?php class Worker implements Contract { use Implementation; function inspect($input) {} }',
+        ]);
+        self::assertCount(1, $findings);
+        self::assertSame('Implementation', $findings[0]->class);
+    }
+
     public function testAbstractEnginePreservesInputsButNotExtraPositions(): void
     {
         $sources = [
