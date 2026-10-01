@@ -42,6 +42,7 @@ return [
     'only_list_arrays'                   => ['iteration' => 4, 'attack' => 'Build associative shape incrementally instead of as an array literal.'],
     'no_numeric_array_index'             => ['iteration' => 4, 'attack' => 'Hide numeric positions behind constants and arithmetic expressions.'],
     'unused_methods'                     => ['iteration' => 4, 'attack' => 'Invoke dead-looking methods dynamically or only through framework convention.'],
+    'no_temporary_return_variable'       => ['iteration' => 4, 'attack' => 'Annotate a temporary call result with @var before immediately returning it.'],
     'useless_variable'                   => ['iteration' => 4, 'attack' => 'Pass an alias through closure capture before returning it unchanged.'],
     'no_assignment_in_condition'         => ['iteration' => 4, 'attack' => 'Move mutation into a called predicate used by the condition.'],
     'no_else_branches'                   => ['iteration' => 4, 'attack' => 'Replace else with ternary and switch expressions.'],

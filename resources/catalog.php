@@ -307,6 +307,16 @@ return [
         'advice'     => 'Delete the method; if it is an intended extension point, express that contract explicitly.',
         'comparison' => null,
     ],
+    'no_temporary_return_variable' => [
+        'class'      => 'Cosmira\\Soda\\Rules\\Usage\\NoTemporaryReturnVariable',
+        'arguments'  => [],
+        'section'    => 'structural',
+        'severity'   => 'warning',
+        'default'    => 0,
+        'label'      => 'Temporary return variables:',
+        'advice'     => 'Return the expression directly instead of assigning a temporary variable.',
+        'comparison' => null,
+    ],
     'useless_variable' => [
         'class'      => 'Cosmira\\Soda\\Rules\\Usage\\UselessVariableRule',
         'arguments'  => [],

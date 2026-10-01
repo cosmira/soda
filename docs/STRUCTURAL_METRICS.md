@@ -1576,3 +1576,32 @@ are not treated as commented-out PHP; surrounding disabled code remains checked.
 through `$this->app['router']->aliasMiddleware(...)`. The project pass resolves
 registration across files. A class or method name alone is not evidence; extra
 inputs and unrelated registrations remain checked.
+
+### no_temporary_return_variable
+
+Configure with `new NoTemporaryReturnVariable()` from `Cosmira\Soda\Rules\Usage`.
+Enabled in the standard bundle. Reports a local assignment immediately followed
+by returning the same variable, including assignments annotated with `@var`.
+Functions, methods, closures and nested statement blocks are checked. Variables
+with other uses, parameters, references and functions returning by reference are
+excluded conservatively.
+
+Bad:
+
+```php
+public function version(): int
+{
+    /** @var int $result */
+    $result = $this->invoke('GetVersion');
+    return $result;
+}
+```
+
+Good:
+
+```php
+public function version(): int
+{
+    return $this->invoke('GetVersion');
+}
+```
