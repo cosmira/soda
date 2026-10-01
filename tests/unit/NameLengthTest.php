@@ -28,6 +28,24 @@ final class NameLengthTest extends TestCase
         }
     }
 
+    public function testDefaultVariableBoundsAllowTwoCharactersAndRejectOne(): void
+    {
+        $file = $this->writeFixture('<?php class User { public int $id; public function run(int $db): void { $id = $this->id; $io = $db; $x = 1; } }');
+
+        try {
+            $entry = RuleCatalog::standardDefinitions()['variable_name_length'];
+            foreach ([new VariableNameLength, new VariableNameLength(...$entry['arguments'])] as $rule) {
+                $violations = CheckFixture::forRule($rule, $this->context($file));
+                self::assertCount(1, $violations);
+                self::assertSame('Name "x" has length 1.', $violations->first()->message);
+                self::assertSame(2, $violations->first()->threshold);
+            }
+            self::assertCount(5, CheckFixture::forRule(new VariableNameLength(min: 3), $this->context($file)));
+        } finally {
+            unlink($file);
+        }
+    }
+
     public function testVariableNameLengthReportsTooShortName(): void
     {
         $file = $this->writeFixture('<?php $x = 1; $good = 2;');

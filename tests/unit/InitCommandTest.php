@@ -60,7 +60,7 @@ final class InitCommandTest extends TestCase
             $this->assertStringContainsString('new MaxMethodLength(100)', $content);
             $this->assertStringContainsString('new MaxFileLoc(700)', $content);
             $this->assertStringContainsString('new MaxLineLength(100)', $content);
-            $this->assertStringContainsString('new VariableNameLength(min: 3, max: 16)', $content);
+            $this->assertStringContainsString('new VariableNameLength(min: 2, max: 16)', $content);
             $this->assertStringContainsString('new MethodNameLength(min: 1, max: 32)', $content);
             $this->assertStringContainsString('new ClassNameLength(min: 3, max: 32)', $content);
             $this->assertStringContainsString('new NamespaceNameLength(min: 3, max: 32)', $content);

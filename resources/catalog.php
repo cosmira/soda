@@ -797,7 +797,7 @@ return [
     'variable_name_length' => [
         'class'     => 'Cosmira\\Soda\\Rules\\Naming\\VariableNameLength',
         'arguments' => [
-            'min' => 3,
+            'min' => 2,
             'max' => 16,
         ],
         'section'    => 'naming',

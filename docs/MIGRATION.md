@@ -531,3 +531,8 @@ for another parameter is insufficient. Existing configurations that enable this
 rule may therefore report previously missed properties. Document the property
 in either location; there is no need to undo constructor promotion or duplicate
 the description. Ordinary constructor parameters remain outside this rule.
+
+`VariableNameLength` now defaults to `min: 2, max: 16`, including the standard
+catalog and generated configuration. Two-character names such as `$id`, `$db`
+and declared properties named `$id` are accepted. An explicit `min: 3` retains
+the stricter policy; one-character names are still reported by default.

@@ -26,7 +26,7 @@ final class VariableNameLength extends Check
      * @param int $min Minimum accepted identifier length.
      * @param int $max Maximum accepted identifier length.
      */
-    public function __construct(private readonly int $min = 3, private readonly int $max = 16) {}
+    public function __construct(private readonly int $min = 2, private readonly int $max = 16) {}
 
     /**
      * Use the already parsed syntax tree.
