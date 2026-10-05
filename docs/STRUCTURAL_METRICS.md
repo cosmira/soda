@@ -535,25 +535,50 @@ private function normalizeName(string $name): string
 ### useless_variable
 
 Reports direct variable aliases that can be removed safely, such as `$alias =
-$source`, when the alias is never mutated, captured, passed by reference, or
-protected by later source-variable changes. Array-element assignments, increments,
-reference assignments and `unset()` count as mutations, including nested elements.
-A copy retained while the source changes is not a redundant alias.
+$source`. Stable aliases must not be mutated, captured or passed by reference.
+A copy retained while the source changes is not a redundant alias. Array-element
+assignments, increments, reference assignments and `unset()` count as mutations,
+including nested elements.
+
+The rule also reports a copy followed by a single reassignment that transforms
+its source, including a conditional filter. The original variable must be read
+only in that transformation after the copy. If the original and transformed
+values are both needed, the copy is allowed. Loops, references, shared bindings,
+closure captures and calls that expose local variables prevent this extension
+from treating the copy as redundant.
 
 ```php
 new UselessVariableRule()
 ```
 
 ```php
-// Good
-return $user->email();
+// Bad: a second name for the same pipeline.
+$servers = $this->systemCheck->nodes();
+$selected = $servers;
+if ($serverId !== null) {
+    $selected = $servers->filter($predicate);
+    abort_if($selected->isEmpty(), 404);
+}
+return $selected;
 ```
 
 ```php
-// Bad
-$email = $user->email();
+// Good: one variable holds the current result.
+$servers = $this->systemCheck->nodes();
+if ($serverId !== null) {
+    $servers = $servers->filter($predicate);
+    abort_if($servers->isEmpty(), 404);
+}
+return $servers;
+```
 
-return $email;
+```php
+// Good: both values are needed.
+$selected = $servers;
+if ($serverId !== null) {
+    $selected = $servers->filter($predicate);
+}
+return ['all' => $servers, 'selected' => $selected];
 ```
 
 ---

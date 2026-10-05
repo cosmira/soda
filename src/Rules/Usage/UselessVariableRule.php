@@ -14,7 +14,8 @@ use Cosmira\Soda\Rules\Check;
  *
  * A variable is considered useless when:
  *   - It is assigned directly from another variable: $a = $b
- *   - It is never mutated, reassigned, or incremented
+ *   - It is never mutated or incremented; one source transformation may be inlined
+ *     when no separate original value is retained
  *   - It is never passed by reference
  *   - It is not captured by a closure or arrow function
  *   - The source variable ($b) and its elements are not changed before $a is used

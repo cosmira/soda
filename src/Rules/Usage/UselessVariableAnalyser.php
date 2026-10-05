@@ -19,8 +19,8 @@ use PhpParser\NodeFinder;
 
 /**
  * Detects useless variables — direct copies of another variable ($a = $b)
- * that are never mutated, passed by reference, captured by a closure,
- * or used after the source value changes.
+ * that can be inlined without retaining an independently observed original value.
+ * Handles stable aliases and a single source transformation conservatively.
  *
  * Analysis scope: function / method bodies only (not top-level code).
  */
@@ -48,42 +48,40 @@ final readonly class UselessVariableAnalyser
     {
         $violations = [];
 
-        foreach ($this->collectFunctionBodies($nodes) as $body) {
-            array_push($violations, ...$this->analyseScope($body));
+        foreach ($this->collectScopes($nodes) as $scope) {
+            array_push($violations, ...$this->analyseScope($scope));
         }
 
         return $violations;
     }
 
     /**
-     * @return list<list<Node>>
+     * @return list<Function_|ClassMethod>
      */
-    private function collectFunctionBodies(array $nodes): array
+    private function collectScopes(array $nodes): array
     {
-        /** @var list<Function_|ClassMethod> $scopes */
-        $scopes = $this->finder->find(
-            $nodes,
-            fn (Node $n): bool => $n instanceof Function_ || $n instanceof ClassMethod,
-        );
-
         return array_values(array_filter(
-            array_map(fn (Function_|ClassMethod $s): ?array => $s->stmts, $scopes),
-            fn (?array $stmts): bool => $stmts !== null,
+            $this->finder->find($nodes, static fn (Node $node): bool => $node instanceof Function_ || $node instanceof ClassMethod),
+            static fn (Node $node): bool => ($node instanceof Function_ || $node instanceof ClassMethod) && $node->stmts !== null,
         ));
     }
 
     /**
-     * @param Node[] $stmts
-     *
      * @return list<array{line: int, variable: string, source: string}>
      */
-    private function analyseScope(array $stmts): array
+    private function analyseScope(Function_|ClassMethod $scope): array
     {
+        $stmts = $scope->stmts ?? [];
         $violations = [];
 
         foreach ($stmts as $i => $stmt) {
             $assignment = UselessVariableAliasAssignment::fromNode($stmt);
-            $isUnusedAlias = $assignment instanceof UselessVariableAliasAssignment && $this->isUseless($assignment->variable, $assignment->source, array_slice($stmts, $i + 1));
+            if (! $assignment instanceof UselessVariableAliasAssignment) {
+                continue;
+            }
+            $after = array_slice($stmts, $i + 1);
+            $isUnusedAlias = $this->isUseless($assignment->variable, $assignment->source, $after)
+                || $this->isRedundantReassignment($scope, $assignment, array_slice($stmts, 0, $i), $after);
 
             if ($isUnusedAlias) {
                 $violations[] = $assignment->toViolationRow();
@@ -91,6 +89,17 @@ final readonly class UselessVariableAnalyser
         }
 
         return $violations;
+    }
+
+    /**
+     * A single transformation may reuse the source name if no original value is retained.
+     */
+    private function isRedundantReassignment(Function_|ClassMethod $scope, UselessVariableAliasAssignment $alias, array $before, array $after): bool
+    {
+        return ! $this->isMutated($alias->source, $after)
+            && ! $this->isEscaped($alias->variable, $after)
+            && ! $this->isEscaped($alias->source, $after)
+            && UselessVariableReassignment::canInline($scope, $alias, $before, $after);
     }
 
     /**
