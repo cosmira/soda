@@ -1,0 +1,46 @@
+name: Quality
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+env:
+  COMPOSER_ROOT_VERSION: "1.0-dev"
+
+jobs:
+  quality:
+    name: ${{ matrix.check }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        check: [pint, phpstan, rector, soda, rule-parser]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          tools: composer:v2
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+      - name: Validate Composer configuration
+        run: composer validate --strict
+      - name: Check formatting
+        if: matrix.check == 'pint'
+        run: composer pint:test
+      - name: Static analysis
+        if: matrix.check == 'phpstan'
+        run: composer phpstan
+      - name: Check refactorings
+        if: matrix.check == 'rector'
+        run: composer rector:check
+      - name: Quality gate
+        if: matrix.check == 'soda'
+        run: composer quality
+      - name: Check generated rule parser
+        if: matrix.check == 'rule-parser'
+        run: |
+          composer rules:compile
+          git diff --exit-code -- resources/rules.php
