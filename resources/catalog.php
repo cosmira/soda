@@ -899,4 +899,14 @@ return [
         'advice'     => 'Extract a named predicate when the repeated conditions express the same decision. Reevaluate it at each use; do not cache mutable state.',
         'comparison' => 'max',
     ],
+    'no_consecutive_block_comments' => [
+        'class'      => 'Cosmira\\Soda\\Rules\\Documentation\\NoConsecutiveBlockComments',
+        'arguments'  => [],
+        'section'    => 'structural',
+        'severity'   => 'warning',
+        'default'    => 0,
+        'label'      => 'Consecutive block comments:',
+        'advice'     => 'Merge adjacent block comments, keeping the description and PHPDoc tags together.',
+        'comparison' => null,
+    ],
 ];

@@ -101,4 +101,8 @@ return [
         'iteration' => 3,
         'attack'    => 'Hide the condition behind a call; this check only compares syntax.',
     ],
+    'no_consecutive_block_comments' => [
+        'iteration' => 4,
+        'attack'    => 'Separate adjacent PHPDoc blocks with blank lines.',
+    ],
 ];

@@ -1640,3 +1640,36 @@ public function version(): int
     return $this->invoke('GetVersion');
 }
 ```
+
+### no_consecutive_block_comments
+
+Enabled by default. `new NoConsecutiveBlockComments()` from
+`Cosmira\Soda\Rules\Documentation` reports adjacent `/* ... */` or `/** ... */`
+comments separated only by whitespace, including blank lines. Merge descriptions
+and PHPDoc tags into one block. Each additional block is reported at its opening
+line. Code, attributes, PHP tags and line comments break the sequence. Comment-like
+text inside strings, heredocs and inline HTML is ignored.
+
+Bad:
+
+```php
+/**
+ * Pending changes to the audited model.
+ */
+
+/**
+ * @var array<string, array{from: mixed, to: mixed}>
+ */
+private array $pendingAuditChanges = [];
+```
+
+Good:
+
+```php
+/**
+ * Pending changes to the audited model.
+ *
+ * @var array<string, array{from: mixed, to: mixed}>
+ */
+private array $pendingAuditChanges = [];
+```
