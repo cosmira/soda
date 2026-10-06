@@ -1,0 +1,7 @@
+[files]
+# Imported audit reports contain hashes and verbatim third-party source snippets.
+extend-exclude = ["docs/research/**/findings.json", "docs/research/**/resolved.json"]
+
+[default.extend-words]
+# PHP uses this spelling for objects implementing __invoke.
+invokable = "invokable"
