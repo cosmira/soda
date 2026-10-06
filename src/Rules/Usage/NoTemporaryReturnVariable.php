@@ -70,6 +70,7 @@ final class NoTemporaryReturnVariable extends Check
                 if ($variable === null) {
                     continue;
                 }
+
                 $uses = $finder->find([$scope], static fn (Node $node): bool => $node instanceof Variable
                     && (! is_string($node->name) || $node->name === $variable));
                 if (count($uses) === 2) {
@@ -87,6 +88,7 @@ final class NoTemporaryReturnVariable extends Check
         if (! $statement instanceof Expression || ! $statement->expr instanceof Assign || ! $next instanceof Return_) {
             return null;
         }
+
         $variable = $statement->expr->var;
         if (! $variable instanceof Variable || ! is_string($variable->name) || ! $next->expr instanceof Variable || $next->expr->name !== $variable->name) {
             return null;
@@ -107,10 +109,12 @@ final class NoTemporaryReturnVariable extends Check
                 if ($name === 'stmts') {
                     yield $value;
                 }
+
                 yield from $this->childLists($value);
 
                 continue;
             }
+
             if ($value instanceof Node && ! $value instanceof FunctionLike) {
                 yield from $this->statementLists($value);
             }

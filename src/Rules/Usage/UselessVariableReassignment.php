@@ -64,6 +64,7 @@ final readonly class UselessVariableReassignment
         if ($scope->returnsByRef() || $isRuntimeVariable) {
             return true;
         }
+
         foreach ($scope->getParams() as $parameter) {
             if ($parameter->byRef && $parameter->var instanceof Expr\Variable && in_array($parameter->var->name, $names, true)) {
                 return true;
@@ -84,9 +85,11 @@ final readonly class UselessVariableReassignment
         if (in_array($type, ['Expr_AssignRef', 'Stmt_Global', 'Stmt_Static', 'Expr_Eval', 'ClosureUse'], true)) {
             return true;
         }
+
         if ($node instanceof Expr\Variable && ! is_string($node->name)) {
             return true;
         }
+
         if ($node instanceof Expr\ArrowFunction) {
             return (new NodeFinder)->find($node->expr, static fn (Node $child): bool => $child instanceof Expr\Variable && in_array($child->name, $names, true)) !== [];
         }

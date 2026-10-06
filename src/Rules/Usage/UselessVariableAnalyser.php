@@ -79,6 +79,7 @@ final readonly class UselessVariableAnalyser
             if (! $assignment instanceof UselessVariableAliasAssignment) {
                 continue;
             }
+
             $after = array_slice($stmts, $i + 1);
             $isUnusedAlias = $this->isUseless($assignment->variable, $assignment->source, $after)
                 || $this->isRedundantReassignment($scope, $assignment, array_slice($stmts, 0, $i), $after);
