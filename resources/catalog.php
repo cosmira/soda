@@ -183,7 +183,7 @@ return [
         'severity'   => 'warning',
         'default'    => 100,
         'label'      => 'Line length:',
-        'advice'     => 'Name the intermediate value or wrap the expression so each line communicates one idea.',
+        'advice'     => 'Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit.',
         'comparison' => null,
     ],
     'max_properties_per_class' => [

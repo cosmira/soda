@@ -52,7 +52,7 @@ final class ReportFormatterTest extends TestCase
         $this->assertStringContainsString('Line is too long for this context.', $text);
         $this->assertStringNotContainsString('Line length:', $text);
         $this->assertStringNotContainsString('121 (max 120)', $text);
-        $this->assertStringContainsString('Name the intermediate value or wrap the expression', $text);
+        $this->assertStringContainsString('Format long lines for readability using the project style', $text);
     }
 
     public function testExplainsHowToReduceTooManyArguments(): void

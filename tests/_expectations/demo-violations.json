@@ -8,7 +8,7 @@
         "value": 104,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "variable_name_length",
@@ -547,7 +547,7 @@
         "value": 151,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -558,7 +558,7 @@
         "value": 147,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -569,7 +569,7 @@
         "value": 153,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -580,7 +580,7 @@
         "value": 167,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -591,7 +591,7 @@
         "value": 161,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -602,7 +602,7 @@
         "value": 135,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -613,7 +613,7 @@
         "value": 165,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -624,7 +624,7 @@
         "value": 144,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -635,7 +635,7 @@
         "value": 143,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -646,7 +646,7 @@
         "value": 152,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -657,7 +657,7 @@
         "value": 158,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -668,7 +668,7 @@
         "value": 139,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -679,7 +679,7 @@
         "value": 146,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -690,7 +690,7 @@
         "value": 141,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -701,7 +701,7 @@
         "value": 146,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -712,7 +712,7 @@
         "value": 148,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -723,7 +723,7 @@
         "value": 140,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -734,7 +734,7 @@
         "value": 122,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -745,7 +745,7 @@
         "value": 145,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -756,7 +756,7 @@
         "value": 136,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -767,7 +767,7 @@
         "value": 134,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -778,7 +778,7 @@
         "value": 130,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -789,7 +789,7 @@
         "value": 148,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -800,7 +800,7 @@
         "value": 150,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -811,7 +811,7 @@
         "value": 143,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -822,7 +822,7 @@
         "value": 134,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -833,7 +833,7 @@
         "value": 148,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -844,7 +844,7 @@
         "value": 146,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -855,7 +855,7 @@
         "value": 156,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -866,7 +866,7 @@
         "value": 154,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -877,7 +877,7 @@
         "value": 147,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -888,7 +888,7 @@
         "value": 139,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -899,7 +899,7 @@
         "value": 128,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -910,7 +910,7 @@
         "value": 146,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -921,7 +921,7 @@
         "value": 142,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -932,7 +932,7 @@
         "value": 150,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -943,7 +943,7 @@
         "value": 136,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -954,7 +954,7 @@
         "value": 140,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -965,7 +965,7 @@
         "value": 137,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -976,7 +976,7 @@
         "value": 144,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -987,7 +987,7 @@
         "value": 146,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -998,7 +998,7 @@
         "value": 132,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1009,7 +1009,7 @@
         "value": 151,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1020,7 +1020,7 @@
         "value": 146,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1031,7 +1031,7 @@
         "value": 139,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1042,7 +1042,7 @@
         "value": 138,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1053,7 +1053,7 @@
         "value": 133,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1064,7 +1064,7 @@
         "value": 138,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1075,7 +1075,7 @@
         "value": 131,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1086,7 +1086,7 @@
         "value": 135,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1097,7 +1097,7 @@
         "value": 136,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1108,7 +1108,7 @@
         "value": 140,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1119,7 +1119,7 @@
         "value": 129,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1130,7 +1130,7 @@
         "value": 135,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1141,7 +1141,7 @@
         "value": 139,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1152,7 +1152,7 @@
         "value": 134,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1163,7 +1163,7 @@
         "value": 146,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1174,7 +1174,7 @@
         "value": 134,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1185,7 +1185,7 @@
         "value": 133,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1196,7 +1196,7 @@
         "value": 150,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1207,7 +1207,7 @@
         "value": 137,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1218,7 +1218,7 @@
         "value": 149,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1229,7 +1229,7 @@
         "value": 142,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1240,7 +1240,7 @@
         "value": 144,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1251,7 +1251,7 @@
         "value": 127,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1262,7 +1262,7 @@
         "value": 133,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1273,7 +1273,7 @@
         "value": 130,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1284,7 +1284,7 @@
         "value": 145,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1295,7 +1295,7 @@
         "value": 146,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1306,7 +1306,7 @@
         "value": 162,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1317,7 +1317,7 @@
         "value": 147,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1328,7 +1328,7 @@
         "value": 136,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1339,7 +1339,7 @@
         "value": 155,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1350,7 +1350,7 @@
         "value": 144,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1361,7 +1361,7 @@
         "value": 142,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1372,7 +1372,7 @@
         "value": 142,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1383,7 +1383,7 @@
         "value": 138,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1394,7 +1394,7 @@
         "value": 145,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1405,7 +1405,7 @@
         "value": 144,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "max_line_length",
@@ -1416,7 +1416,7 @@
         "value": 128,
         "threshold": 100,
         "message": null,
-        "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
+        "recommendation": "Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit."
     },
     {
         "rule": "no_global_state",
