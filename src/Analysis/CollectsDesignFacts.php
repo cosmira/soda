@@ -26,7 +26,7 @@ trait CollectsDesignFacts
      * @param list<Node>        $nodes
      * @param list<string>|null $required
      *
-     * @return FileMetrics
+     * @phpstan-return FileMetrics
      */
     private static function designMetrics(array $metrics, array $nodes, ?array $required): array
     {
@@ -63,7 +63,7 @@ trait CollectsDesignFacts
      * @param FileMetrics $metrics
      * @param list<Node>  $nodes
      *
-     * @return FileMetrics
+     * @phpstan-return FileMetrics
      */
     private static function cognitiveMetrics(array $metrics, array $nodes): array
     {

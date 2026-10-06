@@ -150,10 +150,10 @@ final class Cohesion
             }
         }
 
-        foreach ($files as $path => &$file) {
+        foreach ($files as $path => &$resolvedFile) {
             $views = [];
-            $classes = $file['classes'];
-            foreach ($file['cohesion'] ?? [] as $name => $type) {
+            $classes = $resolvedFile['classes'];
+            foreach ($resolvedFile['cohesion'] ?? [] as $name => $type) {
                 $key = $this->typeKey($name, $path);
                 $declared = $this->connections($type);
                 $composed = $this->connections($this->surface($key, $types));
@@ -163,11 +163,11 @@ final class Cohesion
                 }
             }
 
-            $file['classes'] = $classes;
-            $file['cohesion'] = $views;
+            $resolvedFile['classes'] = $classes;
+            $resolvedFile['cohesion'] = $views;
         }
 
-        unset($file);
+        unset($resolvedFile);
 
         return $files;
     }

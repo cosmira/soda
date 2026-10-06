@@ -33,7 +33,7 @@ final readonly class PhpDocTypeReferences
             }
 
             preg_match_all('/\\\\[A-Za-z_][A-Za-z0-9_]*(?:\\\\[A-Za-z_][A-Za-z0-9_]*)*/', $type, $classes);
-            foreach (array_shift($classes) as $class) {
+            foreach ($classes[0] as $class) {
                 $references[strtolower(ltrim($class, '\\'))] = true;
             }
         }
