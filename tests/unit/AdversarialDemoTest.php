@@ -152,6 +152,11 @@ final class AdversarialDemoTest extends TestCase
                 $iterationFile,
                 [$introducedRules[$index]],
             )['violations'];
+            if (basename($iterationFile) === '06-catch-all.php') {
+                $this->assertSame([], $newViolations, 'Returning a recovery value explicitly handles the failure.');
+
+                continue;
+            }
             if (basename($iterationFile) === '44-dynamic-construction.php') {
                 $this->assertSame([], $newViolations, 'Runtime class selection no longer requires a factory.');
 
@@ -181,7 +186,7 @@ final class AdversarialDemoTest extends TestCase
 
         $this->assertSame(1, $status);
         $iterationFiles = glob($root.'/demo-app/iterations/*.php') ?: [];
-        $this->assertStringContainsString((count($iterationFiles) - 8).' issues', $report);
+        $this->assertStringContainsString((count($iterationFiles) - 9).' issues', $report);
         $this->assertStringContainsString('$service', $report);
         $this->assertStringContainsString('Private property ledger is never read', $report);
 

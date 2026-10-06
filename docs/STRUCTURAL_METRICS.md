@@ -1292,6 +1292,10 @@ Forbids `global` and `$GLOBALS` access. Give mutable state an explicit owner.
 
 ### no_environment_reads
 
+Use `ignorePathPrefixes` to permit reads at explicit configuration boundaries.
+The default policy excludes no paths. Directory prefixes match whole path segments,
+so allowing `/project/config` does not allow `/project/configuration`.
+
 Forbids `env()`, `getenv()`, `$_ENV`, and `$_SERVER` outside an application configuration boundary selected by excluding that boundary from analysed paths.
 
 ### no_error_suppression
@@ -1316,7 +1320,10 @@ exceptions or additional strict mode are needed.
 
 ### no_catch_all_exceptions
 
-Forbids catching `Exception` or `Throwable`. Catch only a failure the current boundary can handle.
+Reports broad `Exception` or `Throwable` catches that continue without an explicit outcome.
+Returning a value (including `null` or `false`), rethrowing, and translating an exception
+are accepted. Conditional handling must cover every branch or end in a return/throw.
+Returns inside nested closures do not handle the enclosing catch.
 
 ### no_boolean_parameters
 
@@ -1366,7 +1373,7 @@ new NoObjectCloning()
 new NoClosureRebinding()
 new NoRuntimeContractProbes()
 new NoGlobalState()
-new NoEnvironmentReads()
+new NoEnvironmentReads(ignorePathPrefixes: ['/project/config', '/project/packages/Octopus/config'])
 new NoErrorSuppression()
 new NoDynamicInvocation()
 new NoCatchAllExceptions()

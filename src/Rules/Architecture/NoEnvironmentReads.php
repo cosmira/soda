@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Cosmira\Soda\Rules\Architecture;
 
 use Cosmira\Soda\Analysis\FileFacts;
+use Cosmira\Soda\Config\FnmatchPathExclusion;
 use Cosmira\Soda\Reporting\Violation;
 use Cosmira\Soda\Rules\Check;
 use PhpParser\Node;
@@ -15,6 +16,19 @@ use PhpParser\NodeFinder;
 final class NoEnvironmentReads extends Check
 {
     /**
+     * Configuration boundaries excluded from this rule.
+     */
+    private readonly FnmatchPathExclusion $pathExclusion;
+
+    /**
+     * @param list<string> $ignorePathPrefixes Configuration boundaries allowed to read environment values.
+     */
+    public function __construct(array $ignorePathPrefixes = [])
+    {
+        $this->pathExclusion = new FnmatchPathExclusion([], $ignorePathPrefixes);
+    }
+
+    /**
      * Report each matching PHP construct at its original source position.
      *
      * @return iterable<Violation>
@@ -22,6 +36,10 @@ final class NoEnvironmentReads extends Check
     #[\Override]
     public function checkFile(FileFacts $file): iterable
     {
+        if ($this->pathExclusion->isExcludedPath($file->path)) {
+            return;
+        }
+
         $nodes = (new NodeFinder)->find($file->nodes, fn (Node $node): bool => ($node instanceof Expr\FuncCall && $node->name instanceof Name
                 && in_array(strtolower($node->name->toString()), ['env', 'getenv', 'putenv'], true)) || ($node instanceof Expr\ArrayDimFetch && $node->var instanceof Expr\Variable && in_array($node->var->name, ['_ENV', '_SERVER'], true)));
 

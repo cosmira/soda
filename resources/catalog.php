@@ -597,7 +597,7 @@ return [
         'severity'   => 'warning',
         'default'    => 0,
         'label'      => 'Catch-all exceptions:',
-        'advice'     => 'Catch only failures the current boundary can recover from meaningfully.',
+        'advice'     => 'Return an explicit fallback value, propagate or translate the failure; avoid silently continuing after a broad catch.',
         'comparison' => null,
     ],
     'no_boolean_parameters' => [

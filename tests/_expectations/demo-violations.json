@@ -154,17 +154,6 @@
         "recommendation": "Replace runtime-selected callables with an explicit interface or named dispatch map."
     },
     {
-        "rule": "no_catch_all_exceptions",
-        "file": "demo-app/iterations/06-catch-all.php",
-        "method": null,
-        "class": null,
-        "line": 19,
-        "value": 1,
-        "threshold": 0,
-        "message": "Catching Exception or Throwable hides unrelated failures. Catch the specific failure you can handle.",
-        "recommendation": "Catch only failures the current boundary can recover from meaningfully."
-    },
-    {
         "rule": "no_behavior_magic_methods",
         "file": "demo-app/iterations/08-behavior-magic.php",
         "method": null,
@@ -1171,7 +1160,7 @@
         "method": null,
         "class": null,
         "line": 72,
-        "value": 135,
+        "value": 146,
         "threshold": 100,
         "message": null,
         "recommendation": "Name the intermediate value or wrap the expression so each line communicates one idea."
@@ -1481,8 +1470,8 @@
         "line": 39,
         "value": 1,
         "threshold": 0,
-        "message": "Catching Exception or Throwable hides unrelated failures. Catch the specific failure you can handle.",
-        "recommendation": "Catch only failures the current boundary can recover from meaningfully."
+        "message": "A broad catch continues without returning a value or throwing. Make the failure outcome explicit.",
+        "recommendation": "Return an explicit fallback value, propagate or translate the failure; avoid silently continuing after a broad catch."
     },
     {
         "rule": "no_behavior_magic_methods",

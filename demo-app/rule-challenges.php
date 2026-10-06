@@ -69,7 +69,7 @@ return [
     'no_environment_reads'               => ['iteration' => 5, 'attack' => 'Read configuration through $_SERVER or a wrapper helper.'],
     'no_error_suppression'               => ['iteration' => 5, 'attack' => 'Install a temporary error handler that discards diagnostics.'],
     'no_dynamic_invocation'              => ['iteration' => 5, 'attack' => 'Use reflection, call_user_func, or an invokable object.'],
-    'no_catch_all_exceptions'            => ['iteration' => 6, 'attack' => 'Alias Throwable or catch a broad project base exception.'],
+    'no_catch_all_exceptions'            => ['iteration' => 6, 'attack' => 'Catch Throwable and continue without returning a value or throwing.'],
     'no_boolean_parameters'              => ['iteration' => 6, 'attack' => 'Use nullable bool, union bool, or an integer mode flag.'],
     'no_behavior_magic_methods'          => ['iteration' => 6, 'attack' => 'Move the hidden API to a trait or an invokable object.'],
     'no_static_mutable_properties'       => ['iteration' => 6, 'attack' => 'Hide shared state inside a static local variable or singleton instance.'],
