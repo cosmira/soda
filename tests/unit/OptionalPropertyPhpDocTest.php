@@ -16,11 +16,11 @@ final class OptionalPropertyPhpDocTest extends TestCase
         $this->candidate = dirname(__DIR__, 2).'/demo-app/candidates/58-readonly-dto-properties';
     }
 
-    public function testStandardCatalogAllowsSelfDocumentingReadonlyProperties(): void
+    public function testStandardCatalogRequiresMultilinePhpDocForReadonlyProperties(): void
     {
         $result = Analyzer::analyze($this->candidateFiles(), dirname($this->candidate, 2).'/soda.php');
 
-        self::assertSame([], $result->violations->all());
+        self::assertCount(6, $result->violations->where('rule', 'multiline_property_phpdoc'));
     }
 
     public function testTeamsCanExplicitlyOptIntoMultilinePropertyPhpDoc(): void

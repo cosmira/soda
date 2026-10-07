@@ -47,6 +47,54 @@ final class CatalogPresetsTest extends TestCase
         $this->assertContains(UselessVariableRule::class, $classNames);
     }
 
+    public function testStandardPhpDocRulesCoverAllVisibilities(): void
+    {
+        $temporary = tempnam(sys_get_temp_dir(), 'soda-standard-phpdoc-');
+        self::assertIsString($temporary);
+        $file = $temporary.'.php';
+        rename($temporary, $file);
+        file_put_contents($file, <<<'PHP'
+<?php
+final class DocumentedMembers
+{
+    public const PUBLIC_VALUE = 1;
+    protected const PROTECTED_VALUE = 2;
+    private const PRIVATE_VALUE = 3;
+
+    public string $publicValue;
+    protected string $protectedValue;
+    private string $privateValue;
+
+    public function publicOperation(): void {}
+    protected function protectedOperation(): void {}
+    private function privateOperation(): void {}
+}
+PHP);
+
+        $rules = array_filter(
+            RuleCatalog::standard(),
+            static fn (RuleChecker $rule): bool => str_starts_with($rule->id(), 'multiline_'),
+        );
+
+        try {
+            $violations = CheckFixture::collect($file, $rules)['violations'];
+        } finally {
+            unlink($file);
+        }
+
+        self::assertCount(3, $rules);
+        self::assertCount(9, $violations);
+        foreach (['method', 'property', 'constant'] as $member) {
+            $messages = array_map(
+                static fn ($violation): string => $violation->message,
+                array_filter($violations, static fn ($violation): bool => $violation->rule === 'multiline_'.$member.'_phpdoc'),
+            );
+            foreach (['Public', 'Protected', 'Private'] as $visibility) {
+                self::assertCount(1, array_filter($messages, static fn (string $message): bool => str_starts_with($message, $visibility)));
+            }
+        }
+    }
+
     public function testStructuralRulesContainsClassRules(): void
     {
         $classNames = array_map(fn (RuleChecker $c) => $c::class, RuleCatalog::checks('structural'));

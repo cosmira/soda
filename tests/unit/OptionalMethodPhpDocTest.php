@@ -15,12 +15,12 @@ final class OptionalMethodPhpDocTest extends TestCase
         $this->candidate = dirname(__DIR__, 2).'/demo-app/candidates/53-self-documenting-action';
     }
 
-    public function testStandardCatalogAllowsSelfDocumentingFrameworkActions(): void
+    public function testStandardCatalogRequiresMultilinePhpDocForFrameworkActions(): void
     {
         $files = $this->candidateFiles();
         $result = Analyzer::analyze($files, dirname($this->candidate, 2).'/soda.php');
 
-        self::assertSame([], $result->violations->all());
+        self::assertCount(3, $result->violations->where('rule', 'multiline_method_phpdoc'));
     }
 
     public function testTeamsCanExplicitlyOptIntoMultilineMethodPhpDoc(): void

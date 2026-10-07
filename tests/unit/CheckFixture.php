@@ -48,7 +48,7 @@ final class CheckFixture
                 $args = ['min' => $options['min'] ?? $args['min'], 'max' => $options['max'] ?? $limit];
             } elseif (isset($args['minMethods'])) {
                 $args['minMethods'] = $limit + 1;
-            } elseif ($args !== []) {
+            } elseif ($args !== [] && is_numeric($args[array_key_first($args)])) {
                 $args[array_key_first($args)] = $limit;
             }
             if ($id === 'max_layer_dominance_percentage') {

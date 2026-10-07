@@ -66,9 +66,9 @@ final class InitCommandTest extends TestCase
             $this->assertStringContainsString('new NamespaceNameLength(min: 3, max: 32)', $content);
             $this->assertStringContainsString('new MaxLayerDominancePercentage(', $content);
             $this->assertStringContainsString('new MethodsFollowCallOrder()', $content);
-            $this->assertStringNotContainsString('MultilineMethodPhpDoc', $content);
-            $this->assertStringNotContainsString('MultilinePropertyPhpDoc', $content);
-            $this->assertStringNotContainsString('MultilineConstantPhpDoc', $content);
+            $this->assertStringContainsString('new MultilineMethodPhpDoc(', $content);
+            $this->assertStringContainsString('new MultilinePropertyPhpDoc(', $content);
+            $this->assertStringContainsString('new MultilineConstantPhpDoc(', $content);
 
             $config = (new ConfigLoader())->load($path);
 

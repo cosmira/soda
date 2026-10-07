@@ -19,7 +19,7 @@ final class OptionalVariableNameWordsTest extends TestCase
     {
         $result = Analyzer::analyze($this->candidateFiles(), dirname($this->candidate, 2).'/soda.php');
 
-        self::assertSame([], $result->violations->all());
+        self::assertSame([], $result->violations->where('rule', 'max_variable_name_words')->all());
     }
 
     public function testTeamsCanExplicitlyOptIntoAWordCountPolicy(): void

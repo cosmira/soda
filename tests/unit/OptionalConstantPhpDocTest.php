@@ -16,11 +16,11 @@ final class OptionalConstantPhpDocTest extends TestCase
         $this->candidate = dirname(__DIR__, 2).'/demo-app/candidates/59-self-documenting-constants';
     }
 
-    public function testStandardCatalogAllowsSelfDocumentingTypedConstants(): void
+    public function testStandardCatalogRequiresMultilinePhpDocForTypedConstants(): void
     {
         $result = Analyzer::analyze($this->candidateFiles(), dirname($this->candidate, 2).'/soda.php');
 
-        self::assertSame([], $result->violations->all());
+        self::assertCount(3, $result->violations->where('rule', 'multiline_constant_phpdoc'));
     }
 
     public function testTeamsCanExplicitlyOptIntoMultilineConstantPhpDoc(): void

@@ -592,10 +592,9 @@ return ['all' => $servers, 'selected' => $selected];
 ### multiline_method_phpdoc
 
 Requires a multiline PHPDoc block for methods with configured visibilities.
-This rule is intentionally opt-in: standard SODA accepts self-documenting,
-fully typed application methods without ceremonial comments. Enable it for a
-library or team policy where every selected method must carry a written public
-contract.
+The standard catalog checks public, protected, and private methods. Standalone
+instances check public methods by default; pass a visibility list to customize
+the scope.
 
 ```php
 new MultilineMethodPhpDoc(['public'])
@@ -635,11 +634,9 @@ final class ApiClient
 
 ### multiline_property_phpdoc
 
-This rule is intentionally opt-in. Native property types, visibility,
-`readonly`, and a clear domain name normally communicate the property contract
-without a comment that merely repeats the declaration. Libraries that require
-API documentation or projects with meaningful units, ownership, lifecycle, or
-collection-shape notes can enable it explicitly.
+The standard catalog checks public, protected, and private properties. Standalone
+instances check public properties by default; pass a visibility list to customize
+the scope.
 
 Requires a multiline PHPDoc block for declared properties with configured
 visibilities. Interfaces are ignored for properties; classes, traits, and enums
@@ -680,10 +677,9 @@ final class ApiClient
 
 ### multiline_constant_phpdoc
 
-This rule is intentionally opt-in. A typed constant with a clear name and
-literal value normally documents its own scalar contract. Enable the rule when
-a public API requires systematic notes about units, protocol semantics,
-compatibility constraints, or other meaning that the declaration cannot carry.
+The standard catalog checks public, protected, and private constants. Standalone
+instances check public constants by default; pass a visibility list to customize
+the scope.
 
 Requires a multiline PHPDoc block for class, interface, trait, and enum constants with configured visibilities. Enum cases are not constants and are ignored.
 

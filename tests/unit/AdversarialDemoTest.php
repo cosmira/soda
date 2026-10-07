@@ -186,12 +186,23 @@ final class AdversarialDemoTest extends TestCase
 
         $this->assertSame(1, $status);
         $iterationFiles = glob($root.'/demo-app/iterations/*.php') ?: [];
-        $this->assertStringContainsString((count($iterationFiles) - 9).' issues', $report);
+        $phpDocRules = array_values(array_filter(
+            RuleCatalog::standard(),
+            static fn (SodaRule $rule): bool => str_starts_with($rule->id(), 'multiline_'),
+        ));
+        $phpDocCounts = [];
+        foreach ($iterationFiles as $iterationFile) {
+            $phpDocCounts[$iterationFile] = count(CheckFixture::collect($iterationFile, $phpDocRules)['violations']);
+        }
+        $this->assertStringContainsString((count($iterationFiles) - 9 + array_sum($phpDocCounts)).' issues', $report);
         $this->assertStringContainsString('$service', $report);
         $this->assertStringContainsString('Private property ledger is never read', $report);
 
         foreach ($iterationFiles as $iterationFile) {
             $expectedMentions = in_array(basename($iterationFile), ['07-boolean-parameter.php', '09-static-state.php', '12-nullable-boolean.php', '15-static-local-cache.php', '44-dynamic-construction.php', '45-prototype-copy.php', '48-method-contract-probe.php', '49-property-contract-probe.php', '50-callable-contract-probe.php'], true) ? 0 : 1;
+            if ($phpDocCounts[$iterationFile] > 0) {
+                $expectedMentions = 1;
+            }
             $this->assertSame($expectedMentions, substr_count($report, 'demo-app/iterations/'.basename($iterationFile)));
         }
     }
@@ -239,10 +250,18 @@ PHP;
 
             // New checks also diagnose the unused locator input and the write-only recovery ledger.
             $independent = [0 => '$service', 5 => 'Private property ledger is never read'];
-            $expectedStatus = isset($independent[$index]) ? 1 : 0;
+            $phpDocRules = array_values(array_filter(
+                RuleCatalog::standard(),
+                static fn (SodaRule $rule): bool => str_starts_with($rule->id(), 'multiline_'),
+            ));
+            $phpDocCount = count(CheckFixture::collect($matches[0], $phpDocRules)['violations']);
+            $expectedCount = (isset($independent[$index]) ? 1 : 0) + $phpDocCount;
+            $expectedStatus = $expectedCount > 0 ? 1 : 0;
             $this->assertSame($expectedStatus, $status, basename($matches[0])." produced unexpected diagnostics:\n".implode("\n", $output));
+            if ($expectedCount > 0) {
+                $this->assertStringContainsString($expectedCount.' issue', implode("\n", $output));
+            }
             if (isset($independent[$index])) {
-                $this->assertStringContainsString('1 issue', implode("\n", $output));
                 $this->assertStringContainsString($independent[$index], implode("\n", $output));
             }
 

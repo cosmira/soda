@@ -12,6 +12,9 @@ declare(strict_types=1);
  * @return array<string, array{iteration: int, attack: non-empty-string}>
  */
 return [
+    'multiline_method_phpdoc'         => ['iteration' => 53, 'attack' => 'Use a typed method or a single-line comment without a multiline contract.'],
+    'multiline_property_phpdoc'       => ['iteration' => 58, 'attack' => 'Use readonly typed properties without multiline documentation.'],
+    'multiline_constant_phpdoc'       => ['iteration' => 59, 'attack' => 'Use typed constants without multiline documentation.'],
     'max_delegation_depth'            => ['iteration' => 100, 'attack' => 'Split a pass-through operation across several classes or private methods.'],
     'max_effective_methods_per_class' => ['iteration' => 100, 'attack' => 'Move methods into nested traits and rename them with private aliases.'],
     'max_effective_class_length'      => ['iteration' => 100, 'attack' => 'Move source into traits and import the same nested trait through a diamond.'],

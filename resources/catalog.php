@@ -3,6 +3,36 @@
 declare(strict_types=1);
 
 return [
+    'multiline_method_phpdoc' => [
+        'class'      => 'Cosmira\\Soda\\Rules\\Documentation\\MultilineMethodPhpDoc',
+        'arguments'  => [['public', 'protected', 'private']],
+        'section'    => 'structural',
+        'severity'   => 'error',
+        'default'    => 1,
+        'label'      => 'Multiline method PHPDoc:',
+        'advice'     => 'Document each method with a multiline PHPDoc block describing its contract.',
+        'comparison' => 'min',
+    ],
+    'multiline_property_phpdoc' => [
+        'class'      => 'Cosmira\\Soda\\Rules\\Documentation\\MultilinePropertyPhpDoc',
+        'arguments'  => [['public', 'protected', 'private']],
+        'section'    => 'structural',
+        'severity'   => 'error',
+        'default'    => 1,
+        'label'      => 'Multiline property PHPDoc:',
+        'advice'     => 'Document each property with a multiline PHPDoc block describing its contract.',
+        'comparison' => 'min',
+    ],
+    'multiline_constant_phpdoc' => [
+        'class'      => 'Cosmira\\Soda\\Rules\\Documentation\\MultilineConstantPhpDoc',
+        'arguments'  => [['public', 'protected', 'private']],
+        'section'    => 'structural',
+        'severity'   => 'error',
+        'default'    => 1,
+        'label'      => 'Multiline constant PHPDoc:',
+        'advice'     => 'Document each constant with a multiline PHPDoc block describing its contract.',
+        'comparison' => 'min',
+    ],
     'max_delegation_depth' => [
         'class'      => 'Cosmira\\Soda\\Rules\\Structure\\MaxDelegationDepth',
         'arguments'  => [3],
