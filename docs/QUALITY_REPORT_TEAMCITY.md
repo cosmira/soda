@@ -14,11 +14,13 @@ becomes a failed test named `<file>:<line> <rule>` and appears in the Tests tab
 with the finding summary, the owning method or class, and the remediation
 advice:
 
-    ##teamcity[testSuiteStarted name='soda quality']
-    ##teamcity[testStarted name='src/Flow.php:12 max_effective_class_length']
-    ##teamcity[testFailed name='src/Flow.php:12 max_effective_class_length' message='Source lines including traits: 512 (max 500)' details='…|n…']
-    ##teamcity[testFinished name='src/Flow.php:12 max_effective_class_length']
-    ##teamcity[testSuiteFinished name='soda quality']
+```
+##teamcity[testSuiteStarted name='soda quality']
+##teamcity[testStarted name='src/Flow.php:12 max_effective_class_length']
+##teamcity[testFailed name='src/Flow.php:12 max_effective_class_length' message='Source lines including traits: 512 (max 500)' details='…|n…']
+##teamcity[testFinished name='src/Flow.php:12 max_effective_class_length']
+##teamcity[testSuiteFinished name='soda quality']
+```
 
 A passing run prints only the suite messages. Message values use TeamCity
 escaping (`||`, `|'`, `|n`, `|r`, `|[`, `|]`), so findings with quotes,
