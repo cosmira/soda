@@ -42,7 +42,7 @@ jobs:
 
       - name: Install dependencies
         env:
-          COMPOSER_ROOT_VERSION: "1.1-dev"
+          COMPOSER_ROOT_VERSION: "1.2-dev"
         run: composer install --prefer-dist --no-interaction --no-progress
 
       - name: Check code style
