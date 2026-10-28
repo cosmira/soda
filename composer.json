@@ -23,9 +23,6 @@
         "issues": "https://github.com/cosmira/soda/issues"
     },
     "config": {
-        "platform": {
-            "php": "8.2.0"
-        },
         "optimize-autoloader": true,
         "sort-packages": true,
         "allow-plugins": {
@@ -41,22 +38,22 @@
         "illuminate/support": "^11.0||^12.0||^13.0",
         "laravel/prompts": "^0.1.15||^0.2.0||^0.3.0",
         "nikic/php-parser": "^5.0",
-        "phplrt/parser": "^4.0.3",
-        "phplrt/source": "^4.0.3",
-        "phpunit/php-file-iterator": "^5.1",
-        "sebastian/complexity": "^4.0"
+        "phplrt/parser": "^4.2.4",
+        "phplrt/source": "^4.2.4",
+        "phpunit/php-file-iterator": "^5.1||^6.0||^7.0",
+        "sebastian/complexity": "^4.0||^5.0||^6.0"
     },
     "require-dev": {
         "driftingly/rector-laravel": "^2.1",
-        "infection/infection": "^0.32.6",
+        "infection/infection": "^0.32.6||^0.35.8",
         "laravel/pint": "^1.28",
-        "phplrt/compiler": "4.0.3",
-        "phplrt/lexer-builder": "4.0.3",
-        "phplrt/parser-builder": "4.0.3",
+        "phplrt/compiler": "^4.2.4",
+        "phplrt/lexer-builder": "^4.2.4",
+        "phplrt/parser-builder": "^4.2.4",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-phpunit": "^2.0",
         "phpstan/phpstan-strict-rules": "^2.0",
-        "phpunit/phpunit": "^11.0",
+        "phpunit/phpunit": "^11.5||^12.0||^13.0",
         "rector/rector": "^2.3"
     },
     "scripts": {
