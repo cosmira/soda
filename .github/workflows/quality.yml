@@ -29,13 +29,19 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4'
+          php-version: '8.5'
           extensions: mbstring, dom, fileinfo
           coverage: none
           tools: composer:v2
 
       - name: Validate package metadata
         run: composer validate --strict --no-check-lock
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Check for outdated dependencies
+        run: composer outdated --direct --no-dev --strict
 
   phpstan:
     name: PHPStan

@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
-use Rector\EarlyReturn\Rector\Return_\ReturnBinaryOrToEarlyReturnRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
 use Rector\Php80\Rector\FuncCall\ClassOnObjectRector;
@@ -55,10 +54,6 @@ return RectorConfig::configure()
         // UselessVariableAnalyzer uses strings intentionally (::class would add Ce)
         StringClassNameToClassConstantRector::class => [
             'src/Config/SodaInitFileEmitter.php',
-            'src/Rules/Usage/UselessVariableAnalyzer.php',
-        ],
-        // UselessVariableAnalyzer: early-return conversion raises LCF; FQN ::class adds Ce
-        ReturnBinaryOrToEarlyReturnRector::class => [
             'src/Rules/Usage/UselessVariableAnalyzer.php',
         ],
         ClassOnObjectRector::class => [
