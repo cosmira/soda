@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.2.0 - 2026-10-29
+
+- Support `phpunit/php-file-iterator` 5, 6, and 7, and `sebastian/complexity`
+  4, 5, and 6. Existing projects can install Soda alongside newer PHPUnit dependencies.
+- Resolve dependencies for the actual PHP runtime instead of forcing PHP 8.2
+  during development and CI. PHP 8.2 remains the minimum supported version.
+- Require phplrt 4.2.4 or later and regenerate the rule parser for that runtime.
+- Support PHPUnit 11.5, 12, and 13 and newer Infection releases for development.
+- Reorganize the README and documentation around installation, configuration,
+  rule lookup, and CI. Test the rule index and behavior-preserving code examples.
+- Add a tested Vale writing profile and a separate documentation-style workflow.
+  Validate Composer metadata and reject outdated direct runtime dependencies in CI.
+- Read documentation examples with Windows and Unix line endings.
+
+Existing `soda.php` configurations keep their selected rules. No new quality
+rules or report schema changes are introduced in this release.
+
 ## 1.1.2 — 2026-10-22
 
 - Fix a fatal `Undefined constant GLOB_BRACE` crash on PHP builds whose glob

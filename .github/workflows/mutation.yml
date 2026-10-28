@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 env:
-  COMPOSER_ROOT_VERSION: "1.1-dev"
+  COMPOSER_ROOT_VERSION: "1.2-dev"
 
 concurrency:
   group: mutation-${{ github.workflow }}-${{ github.ref }}
