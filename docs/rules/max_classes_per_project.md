@@ -25,7 +25,7 @@ final class OrderEmailFactory
 }
 ```
 
-The example is illustrative: the metric is project-wide, not per file or per concept. The rule counts every class and trait declared across all analyzed files and reports the project once the total exceeds `limit` (default `300`) — four classes like these do not trigger it on their own, but the same fragmentation multiplied across a codebase does.
+The example is illustrative: the metric is project-wide, not per file or per concept. The rule counts every class and trait declared across the analyzed files. It reports the project when the total exceeds `limit`, which defaults to `300`. Four classes do not trigger it alone, but repeated fragmentation across the codebase can.
 
 ## Options
 

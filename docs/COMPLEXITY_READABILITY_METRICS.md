@@ -1,566 +1,140 @@
-# Complexity Metrics
+# Conditions and control flow
 
-Metrics that measure branches, control flow nesting, returns and exception handling.
+Use this overview to choose between checks for branches, nesting, method size,
+and repeated decisions. Each linked rule page is the primary reference for
+examples, options, and analysis boundaries.
 
-**Config:** Complexity rules are plain objects in `soda.php`.
+- [Decision count](#max_cyclomatic_complexity) measures independent paths.
+- [Nesting](#max_control_nesting) measures depth.
+- [Cognitive complexity](#max_cognitive_complexity) weights control-flow patterns.
+- [Statement count](#max_statements_per_callable) measures executable size.
+- [Expressions and local state](EXPRESSION_AND_LOCAL_STATE_RULES.md) covers
+  assignments, parameter binding, and repeated literals.
+
+Choose a check for the problem you want to expose. Guard clauses can reduce
+nesting without reducing the number of decisions. Extracting a named step may
+help reading, but a lower metric is not proof of better behavior. Every proposed
+refactoring must retain result values, side effects, and evaluation order.
+
+Cognitive complexity is a quality rule derived from a research measurement: its
+violations can fail the check. This differs from a research check such as
+`representation_churn`, which emits evidence separately and never fails it.
+See [rule selection](SODA_PHP_CONFIG.md#rules) and the [rule index](rules/README.md).
 
 ### no_useless_return
 
-`new NoUselessReturn()` reports a final direct bare return in a function, method
-or closure. Keep guards, nested exits, explicit values and reference contracts.
-See [examples and boundaries](rules/no_useless_return.md).
+Reports a bare `return;` at the end of a function, method or closure. Read [examples, options, and analysis boundaries](rules/no_useless_return.md).
 
 ### no_redundant_boolean_returns
 
-`new NoRedundantBooleanReturns()` reports opposite literal boolean returns in
-an `if` and its `else` or immediately adjacent fallback. Return a boolean
-conversion of the condition or its negation, evaluating it once. Additional
-branch work and fallbacks across lexical boundaries remain accepted.
-See [examples and PHP semantics](rules/no_redundant_boolean_returns.md).
+Reports `if` branches that only return opposite boolean literals. Read [examples, options, and analysis boundaries](rules/no_redundant_boolean_returns.md).
 
 ### no_redundant_boolean_comparisons
 
-`new NoRedundantBooleanComparisons()` reports equality comparisons with boolean
-literals only when PHP syntax proves the other operand already returns bool.
-Variables, arbitrary calls and integer-valued spaceship comparisons remain
-accepted. See [examples and boundaries](rules/no_redundant_boolean_comparisons.md).
+Reports comparisons of an already boolean expression with `true` or `false`. Read [examples, options, and analysis boundaries](rules/no_redundant_boolean_comparisons.md).
 
 ### no_useless_concat
 
-`new NoUselessConcat()` reports same-line concatenations of two string literals.
-Preserve decoded bytes and escaping. Multiline text layout and dynamic operands
-are accepted. See [examples and boundaries](rules/no_useless_concat.md).
-
-Rule selection and upstream sources are recorded in
-[the rule research notes](RULE_RESEARCH.md).
+Reports same-line concatenations whose two operands are string literals. Read [examples, options, and analysis boundaries](rules/no_useless_concat.md).
 
 ### prefer_combined_conditions
 
-`new PreferCombinedConditions()` reports a simple `if` containing only another
-simple `if`. Combine the conditions with `&&` while retaining short-circuit order.
-Alternative branches, compound logic, extra work and explanatory inner comments
-remain accepted. See [examples and boundaries](rules/prefer_combined_conditions.md)
-and [research evidence and limitations](RULE_RESEARCH.md#scientific-evidence).
-
-```php
-use Cosmira\Soda\Config\Soda;
-use Cosmira\Soda\Rules\Complexity\MaxBooleanConditions;
-use Cosmira\Soda\Rules\Complexity\MaxControlNesting;
-use Cosmira\Soda\Rules\Complexity\MaxCyclomaticComplexity;
-
-return Soda::configure()
-    ->withPaths(['src/'])
-    ->with([
-        new MaxCyclomaticComplexity(10),
-        new MaxControlNesting(3),
-        new MaxBooleanConditions(4),
-    ]);
-```
+Reports two simple nested conditions that guard the same block. Read [examples, options, and analysis boundaries](rules/prefer_combined_conditions.md).
 
 ### max_cyclomatic_complexity
 
-Counts branching: `if`, `elseif`, `switch`, `case`, `for`, `foreach`, `while`, `catch`, `&&`, `||`, `?:`.
+Limits the number of independent branches a single method may contain. Read [examples, options, and analysis boundaries](rules/max_cyclomatic_complexity.md).
 
-| Config value | Strictness | Interpretation |
-|--------------|------------|----------------|
-| 5–8 | Strict | Simple methods only |
-| 10–15 | Moderate | Acceptable |
-| 20+ | Lenient | Complex logic allowed |
-
-```php
-// ❌ Bad (complexity 20+)
-public function calculateDiscount(User $user, Order $order): float
-{
-    if ($user->isPremium()) {
-        if ($order->total() > 1000) {
-            return 0.2;
-        }
-        return 0.1;
-    }
-    if ($user->isNew()) {
-        if ($order->items()->count() > 5) {
-            return 0.05;
-        }
-        return 0;
-    }
-    if ($order->total() > 500 && $user->hasCoupon()) {
-        return 0.15;
-    }
-    // ... 10 more branches
-}
-```
-
-```php
-// ✅ Good
-public function calculateDiscount(User $user, Order $order): float
-{
-    return $this->strategies
-        ->findFor($user)
-        ->discount($order);
-}
-```
-
----
-
-## Nesting Depth
+## Nesting depth
 
 ### max_control_nesting
 
-Maximum nesting level of `if`, `for`, `foreach`, `while`, `do`, `switch` and
-`try`. Alternative branches (`elseif`, `else`, `catch`, `finally`) share the
-level of their owning structure. A condition or loop inside such a branch adds
-one level. Nested callable bodies are measured independently.
-
-| Config value | Strictness |
-|--------------|------------|
-| 2–3 | Strict |
-| 4 | Moderate |
-| 5+ | Lenient |
-
-```php
-// ❌ Bad (4+ levels)
-if ($a) {
-    foreach ($b as $x) {
-        if ($x->valid()) {
-            switch ($x->type()) {
-                case 1:
-                    if ($y) {
-                        // ...
-                    }
-                    break;
-            }
-        }
-    }
-}
-```
-
-```php
-// ✅ Good
-foreach ($this->filterValid($items) as $item) {
-    $this->handle($item);
-}
-```
-
----
+Limits how deeply control structures may nest inside a method. Read [examples, options, and analysis boundaries](rules/max_control_nesting.md).
 
 ### max_try_catch_blocks (excessive exception handling)
 
-**What it counts:** number of `try { … } catch (…) { … }` statements in a method or top-level function (each `try` counts once; `finally` does not add a second count). Nested `try` inside the same method counts separately. `try` inside closures passed to `array_map` and similar is **not** attributed to the enclosing method.
-
-| Config value | Severity (default labels) | Meaning |
-|--------------|---------------------------|---------|
-| `2` | Warning at ≥3 blocks | Default: allow up to two `try/catch` per method |
-| `0` | Disabled | Rule off |
-
-```php
-// ❌ Bad (3+ try/catch in one method when max_try_catch_blocks is 2)
-function run() {
-    try {} catch (\Exception $e) {}
-    try {} catch (\Exception $e) {}
-    try {} catch (\Exception $e) {}
-}
-```
-
-```php
-// ✅ Good: consolidate error handling or extract helpers with a single try/catch boundary
-function run(): void
-{
-    try {
-        $this->stepOne();
-        $this->stepTwo();
-    } catch (ProcessException $e) {
-        $this->recover($e);
-    }
-}
-```
-
----
+Limits how many `try` blocks a single method may contain. Read [examples, options, and analysis boundaries](rules/max_try_catch_blocks.md).
 
 ### max_return_statements
 
-Optional; not enabled in the standard configuration. Counts all returns, including
-guards. Prefer nesting and complexity checks for a guard-first policy.
-
-Limits the number of `return` statements in a method or function. Multiple
-returns can be fine, but too many exits often mean the method is mixing
-validation, branching, and result construction.
-
-```php
-new MaxReturnStatements(4)
-```
-
-```php
-// Good
-public function status(): string
-{
-    if ($this->cancelled) {
-        return 'cancelled';
-    }
-
-    return $this->paid ? 'paid' : 'open';
-}
-```
-
-```php
-// Bad
-public function status(): string
-{
-    if ($this->cancelled) {
-        return 'cancelled';
-    }
-    if ($this->expired) {
-        return 'expired';
-    }
-    if ($this->refunded) {
-        return 'refunded';
-    }
-    if ($this->paid) {
-        return 'paid';
-    }
-
-    return 'open';
-}
-```
+Limits the number of `return` statements a single method may contain. Read [examples, options, and analysis boundaries](rules/max_return_statements.md).
 
 ### max_boolean_conditions
 
-Limits boolean operands in a single decision. Long condition chains hide named
-business concepts and make branch changes risky.
+Limits the number of boolean operands a single condition inside a method may combine. Read [examples, options, and analysis boundaries](rules/max_boolean_conditions.md).
 
-```php
-new MaxBooleanConditions(4)
-```
+## Exception flow policies
 
-```php
-// Good
-if ($order->canBeRefundedBy($user)) {
-    $order->refund();
-}
-```
-
-```php
-// Bad
-if ($order->isPaid() && ! $order->isExpired() && $user->canRefund() && $gateway->isOnline() && ! $order->isLocked()) {
-    $order->refund();
-}
-```
-
----
-
-## Optional exception checks
-
-```php
-new \Cosmira\Soda\Rules\Complexity\NoRedundantRethrow()
-new \Cosmira\Soda\Rules\Complexity\NoEmptyFinallyBlocks()
-```
+Check the [rule index](rules/README.md) for selection status. A rule appearing
+in this overview is not necessarily enabled by default.
 
 ### no_redundant_rethrow
 
-Reports a final catch whose only executable statement
-throws the exact bound variable. It excludes any earlier catch because deleting
-it could expose an exception to a later handler. Logging, transformation,
-conditional throws, closures and other statements are behavior and excluded.
-Comments and empty statements do not execute. Catch-variable scope, destruction
-of an overwritten binding and uses in `finally` can still matter: the diagnostic
-requests review and does not claim automatic deletion is equivalent.
+Reviews catch blocks whose only executable statement is rethrowing their bound exception. Read [examples, options, and analysis boundaries](rules/no_redundant_rethrow.md).
 
 ### no_empty_finally_blocks
 
-Reports a finally containing only comments/empty
-statements or nothing. With no catch, removing finally alone creates invalid PHP;
-the diagnostic explicitly calls for considering the try body too. A return,
-throw, assignment, call or nested try is executable and makes the block nonempty.
-
-Both checks inspect the shared AST, including nested functions, traits and
-anonymous classes, report the catch/finally keyword line, and use value 1 with
-threshold 0 per finding. `NoEmptyFinallyBlocks` runs by default, including in
-`RuleCatalog::checks()` and `init`. `NoRedundantRethrow` requires explicit selection. There are no auto-fixes or suppressions.
-Adaptations and license notices: [Third-party material](#third-party-material).
+Reports `finally` blocks that contain no executable statements. Read [examples, options, and analysis boundaries](rules/no_empty_finally_blocks.md).
 
 ### max_cognitive_complexity
 
-Standard `MaxCognitiveComplexity(15)` measures the documented **Soda PHP cognitive
-v1** variant. It reports each contribution and retains independent nested callable
-scopes. It is not a replacement for the existing standard or a claim of identical
-Sonar scores. See [Research Metrics](RESEARCH_METRICS.md) for the exact formula,
-PHP boundaries, limitations and corpus protocol.
+Caps Soda's PHP cognitive complexity score per method, reporting every contributing line as evidence. Read [examples, options, and analysis boundaries](rules/max_cognitive_complexity.md).
 
 ### no_repeated_compound_conditions
 
-Enabled by default: `new NoRepeatedCompoundConditions(minMethods: 3)` reports
-an identical compound condition in at least three distinct methods of one class.
-The diagnostic maximum is 2 methods with the default minimum of 3. Values below
-2 for `minMethods` throw `InvalidArgumentException`.
-
-For example, three methods containing `if ($this->active && ! $this->suspended)`
-can call a private `canRenew()` predicate when all three express the same decision.
-The predicate must be reevaluated at each call, not cached across state changes.
-
-Declared instance-property reads, literals, named constants, `!`, `===`, `!==`,
-`&&` and `||` are recognized. Formatting is ignored; operand order and literal
-values remain significant. Immediately preceding local snapshots and direct alias chains
-are normalized; intervening statements end that snapshot scope. Known inherited and trait
-methods are composed across files. Aliases of one body count once. Private state and
-relative `self`/`parent` constants retain lexical identity; late-bound `static` constants
-belong to the effective receiver. Calls and arbitrary computed locals remain excluded.
-Unrelated inheritance, traits, magic methods or hooked properties do not suppress checking
-ordinary declared properties of the class.
-A property with its own hook remains outside the recognized read vocabulary. Conditions inside nested callables belong to their
-own scope. Repetition within one method counts once. Independent decisions should
-not be merged merely because their expressions currently match.
+Reports the same compound condition repeated across several methods of a class. Read [examples, options, and analysis boundaries](rules/no_repeated_compound_conditions.md).
 
 ### no_identical_branches
 
-Enabled by default: `new NoIdenticalBranches()` compares the results of explicit
-`match` arms and the two branches of a full ternary. Identical printed syntax
-ignores formatting and comments; argument order and scalar types remain significant.
-One diagnostic per repeated result points to its second occurrence, lists all
-locations, and reports value = number of extra occurrences with threshold 0.
-
-```php
-// Reported: two explicit arms repeat the result.
-$result = match ($channel) {
-    Channel::Email => send($message),
-    Channel::Sms => send($message),
-};
-
-// Accepted: preserve selection and unmatched-value behavior.
-$result = match ($channel) {
-    Channel::Email, Channel::Sms => send($message),
-};
-```
-
-Default arms, shorthand ternaries, statement branches and `switch` fall-through
-are excluded. Results containing magic constants, closures, arrow functions or
-anonymous classes are excluded because source location or declaration identity can
-matter. Nested expressions are still checked independently. This is a structural
-review signal, not proof that separate cases have the same business meaning.
-There is no automatic fix: retain condition effects, evaluation order, selection
-and exceptions for unmatched values. A warning still fails an enabled quality check.
+Reports full ternary branches and match arms that produce the same expression. Read [examples, options, and analysis boundaries](rules/no_identical_branches.md).
 
 ### no_nested_ternary
 
-Enabled by default: `new NoNestedTernary()` reports a full ternary directly used
-as a result branch of another full ternary. Each outer decision is reported once
-at its starting line with value 1 and threshold 0, even if both branches are nested.
-
-```php
-// Reported.
-$price = $premium ? ($annual ? 100 : 10) : 20;
-
-// Accepted: name the inner decision and retain lazy evaluation.
-$price = $premium ? premiumPrice($annual) : 20;
-```
-
-Single ternaries, shorthand `?:`, `??` chains, nesting in a condition and decisions
-inside call arguments are outside this narrow policy. Callable bodies are checked
-independently; a ternary inside a closure is not a branch of its enclosing expression.
-There is no automatic fix. Do not eagerly compute a previously conditional branch
-when extracting it. Both checks run through the existing catalog, `init`,
-`list:rules` and JSON schema 4 without additional configuration.
-
+Reports a full ternary used directly as a result branch of another full ternary. Read [examples, options, and analysis boundaries](rules/no_nested_ternary.md).
 
 ### max_statements_per_callable
 
-The standard set includes `new MaxStatementsPerCallable(20)`, limiting executable
-statements independently of line breaks and comments. The threshold is inclusive; zero accepts only empty
-bodies, and negative limits are rejected. Methods (including trait and anonymous
-class methods), named functions, closures and arrow functions are checked separately.
-An arrow function counts as one implicit return statement.
-
-Expression statements, returns, throws, loop controls and control structures
-count once each; statements within control bodies count too. For example,
-`if ($ready) { execute(); }` counts as two statements. `else`, `elseif`, `case`,
-`catch` and `finally` are wrapper clauses and do not add a count, but their bodies
-do. Empty statements and comments do not count. Nested class and function
-declarations do not add to their enclosing callable; their methods and functions
-are evaluated independently. File-level code is outside this rule.
-
-```php
-use Cosmira\Soda\Rules\Complexity\MaxStatementsPerCallable;
-
-new MaxStatementsPerCallable(20);
-```
-
-Diagnostics identify the callable declaration line and measured count. This is
-a size signal, not proof of separate responsibilities: extract a step
-when its name clarifies the operation, rather than introducing forwarding helpers
-solely to lower the count.
-
+Limits how many executable statements a single method, function, closure or arrow function may contain. Read [examples, options, and analysis boundaries](rules/max_statements_per_callable.md).
 
 ### no_assignment_in_return
 
-The standard set includes `NoAssignmentInReturn`. It reports ordinary, reference
-and compound assignments evaluated within a return expression, including call
-arguments, array elements, ternary branches and match results. Arrow-function
-expressions are implicit returns and follow the same policy. Each return is
-reported once at the return keyword (or arrow-function declaration) line.
-
-```php
-// Rejected: the return also changes state.
-return $this->value = calculate();
-
-// Accepted: the state change is explicit.
-$this->value = calculate();
-return $this->value;
-```
-
-Returning a closure does not attribute its deferred assignments to the outer
-return. Explicit returns and arrow functions within that closure are checked
-independently. Anonymous-class bodies are also separate; constructor arguments
-still belong to the surrounding expression. Bare returns, comparisons and
-increments/decrements are outside this rule. No automatic fix is offered: moving
-assignments out of expressions must preserve conditional evaluation, evaluation
-order and reference semantics.
+Reports hidden assignments inside return expressions. Read [examples, options, and analysis boundaries](rules/no_assignment_in_return.md).
 
 ### no_chained_assignments
 
-The standard set includes `NoChainedAssignments`. It rejects an assignment whose
-immediate right-hand expression is another ordinary, reference or compound
-assignment. Parentheses do not change that syntax boundary. A contiguous chain
-is reported once at the outermost assignment line, including in file-level code,
-methods, functions, closures and arrow functions.
-
-```php
-// Rejected: two assignments in one direct chain.
-$first = $second = calculate();
-
-// Accepted: evaluate once and make both writes explicit.
-$second = calculate();
-$first = $second;
-```
-
-`$first += $second = calculate()` and `$first = $second =& $source` are also
-reported. An assignment nested in a call argument or ternary result is not a
-direct chain: `$first = consume($second = calculate())` is outside this rule.
-Separate assignments and ordinary compound updates remain accepted. There is no
-automatic fix: property/array targets, side-effecting expressions and references
-require preserving PHP's original evaluation and aliasing behavior.
-
-These checks complement `NoAssignmentInCondition`, which covers mutation in
-control-flow conditions. A chain within a return can legitimately trigger both
-new policies, with one finding per rule.
+Forbids chained assignments such as `$a = $b = calculate();`. Read [examples, options, and analysis boundaries](rules/no_chained_assignments.md).
 
 ### no_unneeded_ternary
 
-Standard `new NoUnneededTernary()` reports opposite literal boolean branches,
-or one literal branch paired with an expression whose PHP result is provably bool.
-The latter can use `&&` or `||` while preserving condition and branch evaluation.
-Use `(bool) $condition` or `! $condition` to preserve the boolean result type and
-single evaluation. Shorthand ternaries and nonliteral results are outside this
-policy. See [boolean ternaries](EXPRESSION_AND_LOCAL_STATE_RULES.md#nounneededternary).
+Reports full ternaries that restate a boolean conversion or short-circuit decision. Read [examples, options, and analysis boundaries](rules/no_unneeded_ternary.md).
 
 ### no_return_in_finally
 
-Standard `new NoReturnInFinally()` reports explicit returns owned by a finally
-block, including its nested control flow. Deferred callables and class bodies
-have independent ownership. See [finally returns](EXPRESSION_AND_LOCAL_STATE_RULES.md#noreturninfinally)
-for exception suppression and safe cleanup examples.
+Forbids `return` statements executed inside `finally` blocks. Read [examples, options, and analysis boundaries](rules/no_return_in_finally.md).
 
 ### max_consecutive_local_assignments
 
-Standard `new MaxConsecutiveLocalAssignments(8)` allows eight consecutive first simple
-local assignments in each direct callable body. It reports maximal longer runs
-once, ignores comments/empty statements, and reserves input and previously
-encountered bindings. See [local preparation runs](EXPRESSION_AND_LOCAL_STATE_RULES.md#maxconsecutivelocalassignments)
-for reset conditions and nested-body boundaries.
+Limits the number of consecutive first assignments to new local variables at the start of a callable body. Read [examples, options, and analysis boundaries](rules/max_consecutive_local_assignments.md).
 
 ### no_repeated_string_literals
 
-Standard `new NoRepeatedStringLiterals(3)` reports expression strings occurring at least
-three times in one class-like owner, with a default minimum length of three bytes.
-Defaults, constants and metadata are excluded. Intentional repeated strings can
-be configured with `ignoredStrings`. See [repeated literals](EXPRESSION_AND_LOCAL_STATE_RULES.md#norepeatedstringliterals)
-for exact ownership, counting and threshold semantics.
+Reports string literals repeated several times as expressions within one class-like declaration. Read [examples, options, and analysis boundaries](rules/no_repeated_string_literals.md).
 
 ### no_declarations_before_early_exit
 
-Standard `new NoDeclarationsBeforeEarlyExit()` reports statement-level assignments
-declared before a guard clause whose every branch ends with `return`, `throw`,
-`break` or `continue`, when the declared variable is unread between the declaration
-and the guard (including inside the guard itself) but read somewhere after it.
-One diagnostic points at the declaration line and names the guard line. Reads
-inside the guard condition or body keep the declaration in place; closure captures
-count as reads. Loops take part through `continue` and `break` guards in their bodies.
-
-Invocations, construction, cloning and shell execution remain before the guard:
-their effects may be required on the exiting path. Writes, output and termination
-also remain in place; nested callable bodies are deferred. Property reads are
-retained because they can invoke getters or hooks and their snapshots can change
-across intervening work.
-
-```php
-// Reported: the local snapshot is only read after the guard.
-$report = ['name' => $request['name'], 'email' => $request['email']];
-if (! $allowed) {
-    return [];
-}
-return $report;
-
-// Accepted: the assertion must run even when no value was specified.
-$output = $this->assertPresent($name);
-if ($value === null) {
-    return;
-}
-consume($output);
-```
-
-There is no automatic fix: keep evaluation order and reference semantics when
-moving a declaration below its guard.
+Reports declarations before a guard clause when only the code behind the guard reads them. Read [examples, options, and analysis boundaries](rules/no_declarations_before_early_exit.md).
 
 ### prefer_combined_guards
 
-Standard `new PreferCombinedGuards()` reports adjacent `if` statements without
-`else` whose body is exactly one `return`, `throw`, `break` or `continue` and whose
-exits match by kind and printed expression. One diagnostic per pair points at the
-second guard. Combining the conditions with `||` preserves condition evaluation
-order and short-circuit behavior.
-
-```php
-// Reported: the same exit is written twice.
-if ($build->failed) {
-    return;
-}
-if ($build->cancelled) {
-    return;
-}
-
-// Accepted: one guard answers one question.
-if ($build->failed || $build->cancelled) {
-    return;
-}
-```
-
-Exits whose expressions assign while returning or throwing, bodies with more than
-one statement, `elseif` chains and non-adjacent guards are excluded.
+Reports consecutive guard clauses that exit with the same statement. Read [examples, options, and analysis boundaries](rules/prefer_combined_guards.md).
 
 ### prefer_continue
 
-Reports a trailing `if` without alternatives only when it wraps nested executable
-control flow in the same scope and does not already exit on all proven paths.
-Flat positive branches and early continues are both accepted. Preceding statements
-must stay before the guard; jump levels must stay unchanged. See
-[examples and boundaries](rules/prefer_continue.md).
-
+Reports trailing conditions that add a level around nested control flow. Read [examples, options, and analysis boundaries](rules/prefer_continue.md).
 
 ### prefer_null_coalesce_assignment
 
-Standard `new PreferNullCoalesceAssignment()` reports assignments whose right side
-is a null coalesce whose left operand prints exactly like the assignment target:
-`$value = $value ?? $fallback`, `$cache['key'] = $cache['key'] ?? []` and property
-fetches all qualify. The `??=` operator assigns the fallback in one step and
-evaluates the target once.
-
-```php
-// Reported: the target is spelled twice.
-$this->scope = $this->scope ?? 'web';
-
-// Accepted: one operator carries the fallback.
-$this->scope ??= 'web';
-```
-
-Targets evaluated through calls stay outside the comparison, because the merged
-operator would evaluate them once instead of twice.
+Reports fallback assignments that repeat the target on both sides. Read [examples, options, and analysis boundaries](rules/prefer_null_coalesce_assignment.md).
 
 ## Third-party material
 

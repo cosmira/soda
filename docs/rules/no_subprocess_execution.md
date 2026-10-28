@@ -6,7 +6,7 @@
 
 ## Why
 
-Spawning a subprocess inline hides a hard dependency: the command name, its failure modes, and its platform assumptions are invisible at the type level, tests must actually run the process, and failures arrive as strings, exit codes, or empty output. The rule reports calls to `shell_exec`, `exec`, `system`, and `popen` and advises wrapping the external capability in an injected, typed gateway that declares its failures explicitly.
+An inline subprocess hides a dependency on an external command. The type contract does not expose the command, its failure modes, or its platform assumptions. Tests must run the process, and failures arrive as strings, exit codes, or empty output. The rule reports calls to `shell_exec`, `exec`, `system`, and `popen`. Wrap the external capability in an injected, typed gateway that declares its failures.
 
 ## Examples
 

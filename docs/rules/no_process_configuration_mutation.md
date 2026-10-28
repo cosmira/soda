@@ -6,7 +6,7 @@
 
 ## Why
 
-Calling `ini_set`, `chdir`, `setlocale`, or `date_default_timezone_set` creates action-at-a-distance: the change silently affects every other collaborator in the process, and behavior now depends on which code happened to run first. The rule reports calls to these four functions wherever they appear in analyzed code — there is no bootstrap exemption — and advises configuring the runtime through `php.ini` or deployment configuration, then injecting the resulting settings as typed values.
+Calling `ini_set`, `chdir`, `setlocale`, or `date_default_timezone_set` changes configuration shared by the whole process. Other collaborators silently receive those changes, so behavior depends on which code ran first. The rule reports calls to these four functions wherever they appear in analyzed code, with no bootstrap exemption. Configure the runtime through `php.ini` or deployment configuration, then inject the resulting settings as typed values.
 
 ## Examples
 

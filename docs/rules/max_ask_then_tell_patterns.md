@@ -6,7 +6,7 @@
 
 ## Why
 
-Asking an object for a fact and then deciding what to do with it moves the object's policy into its caller. The decision lives in the wrong place, every new caller repeats it, and the object cannot protect its own invariants. The rule reports a query on a receiver followed by a command on the same receiver — in an `if`, a ternary, a short-circuit or a loop — and advises telling the object what outcome you want instead of querying its state and deciding for it.
+Asking an object for a fact and then deciding what to do moves the object's policy into its caller. Every new caller repeats the decision, and the object cannot protect its own invariants. The rule reports a query on a receiver followed by a command on that same receiver. It covers `if`, ternary, short-circuit, and loop expressions. Tell the object what outcome you want instead of querying its state and deciding for it.
 
 The pattern is only reported when the question and the command target the same receiver; branching on one object to act on another is a different concern. Objects deciding on their own state (`$this->isStale()` then `$this->destroy()`) are accepted. Indexed services retain their keys, and factory results retain their method and selector arguments: querying a container does not query its service, and selecting two different services does not establish a shared receiver. Variable selectors must keep the same binding between the question and command; effectful selectors do not establish identity. Creating a first-class callable does not execute a query or a command.
 

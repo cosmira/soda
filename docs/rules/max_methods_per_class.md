@@ -6,7 +6,7 @@
 
 ## Why
 
-A class with dozens of methods usually owns more than one responsibility, which spreads every change across unrelated scenarios. The rule reports each class whose declared method count exceeds the limit and advises reviewing the public scenario and unrelated responsibilities: a cohesive concern may stay on the owner as a trait, while a new object needs a distinct purpose.
+A class with dozens of methods often owns several responsibilities, spreading changes across unrelated scenarios. The rule reports each class whose declared method count exceeds the limit. Review the public scenario and unrelated responsibilities. A cohesive concern may stay on the owner as a trait; a new object needs a distinct purpose.
 
 ## Examples
 

@@ -6,7 +6,7 @@
 
 ## Why
 
-`class_alias` rewrites the global symbol table so a second name resolves to an existing class: readers and static tools see two unrelated types, deprecations become invisible because old call sites keep working under the alias, and the mapping only exists at runtime. The rule reports every call to `class_alias` and advises migrating callers to the real type explicitly, or introducing a visible adapter type when a compatibility name is genuinely required.
+`class_alias` changes the global symbol table so a second name resolves to an existing class. Readers and static tools see two unrelated types, while old call sites keep working under an alias. The mapping exists only at runtime and can hide deprecations. The rule reports every call to `class_alias`. Migrate callers to the real type, or introduce a visible adapter when a compatibility name is required.
 
 ## Examples
 

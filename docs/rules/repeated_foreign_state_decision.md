@@ -44,7 +44,7 @@ function show(Post $post): bool
 }
 ```
 
-A single read such as `$post->deleted`, a question mixed with outside context (`$post->isPublished() && $context`), or an expression over two different `Post` instances is not reported. The ❌ shape also requires the owner type itself to be declared in the analyzed paths, with exactly the public members the expression reads (here the `$deleted` field and the proved `isPublished()` getter); with an undeclared owner type the reads cannot be proven and nothing is reported. The three consumers shown are the minimum needed at the default `minConsumers`.
+A single read such as `$post->deleted` is not reported. A question mixed with outside context, such as `$post->isPublished() && $context`, is also accepted, as is an expression over two different `Post` instances. The ❌ shape requires the owner type to be declared in the analyzed paths with the public members the expression reads. Here these are `$deleted` and the proved `isPublished()` getter. An undeclared owner type cannot prove the reads, so nothing is reported. The three consumers shown are the minimum at the default `minConsumers`.
 
 ## Options
 

@@ -1,0 +1,44 @@
+name: Documentation style
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  VALE_VERSION: '3.24.0'
+
+concurrency:
+  group: vale-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  vale:
+    name: Vale
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check documentation prose
+        uses: vale-cli/vale-action@v3
+        with:
+          version: ${{ env.VALE_VERSION }}
+          files: '["README.md", "docs"]'
+          sync: false
+          fail_level: any
+          filter_mode: nofilter
+          min_alert_level: suggestion
+          vale_flags: --no-global
+
+      - name: Test the writing profile
+        run: |
+          VALE_BIN="$RUNNER_TOOL_CACHE/vale/$VALE_VERSION/x64/vale"
+          "$VALE_BIN" --version
+          "$VALE_BIN" --no-global test --coverage .github/styles
+          bash .github/styles/test-scope.sh "$VALE_BIN"

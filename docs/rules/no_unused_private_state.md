@@ -6,7 +6,9 @@
 
 ## Why
 
-A private declaration or a write does not establish a state responsibility. A property that is assigned and incremented but never read, or a constant defined only as decoration, is dead weight: it widens the class's internal surface without contributing to its behavior. The rule composes a class with its traits — a trait member counts as part of every class that uses the trait — and reports any private property or constant that has no read anywhere in that composed surface. Public and protected state is exempt because external code may read it. Ordinary writes, including array element writes, do not protect a field. Reads and explicit releases do: assigning `null` or unsetting a slot releases its previous value and can end a resource or allocation lifetime.
+A private declaration or write does not establish a state responsibility. A property that is assigned and incremented but never read contributes no behavior. A constant defined only as decoration has the same problem.
+
+The rule composes each class with its traits; a trait member belongs to every class using that trait. It reports private properties or constants with no read anywhere in the composed surface. Public and protected state is exempt because external code may read it. Ordinary writes, including array element writes, do not protect a field. Reads and explicit releases do: assigning `null` or unsetting a slot releases the previous value and can end a resource or allocation lifetime.
 
 ## Examples
 
@@ -67,7 +69,7 @@ class Record
 }
 ```
 
-Reads through a `$this` alias are tracked, but a nested or anonymous class cannot read the outer class's private state, and a read from an unrelated receiver (e.g. `$other->value` on a foreign type) does not protect the field.
+Reads through a `$this` alias are tracked. A nested or anonymous class cannot read the outer class's private state. A read from an unrelated receiver, such as `$other->value` on a foreign type, does not protect the field.
 
 Storage released by a later callback remains meaningful even without a value read.
 For example, an emergency memory reserve can hold a generated string until a

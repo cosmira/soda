@@ -6,7 +6,7 @@
 
 ## Why
 
-A static property — or a `static` local variable — is process-wide mutable state: every caller shares one storage location, writes from one method are invisible at every other call site, and tests observe whatever the previous test left behind. The rule reports static property declarations and `static` local variable declarations, and advises moving the state behind an injected object whose lifetime and ownership are explicit.
+A static property or `static` local variable is process-wide mutable state. Every caller shares one storage location, writes are invisible at other call sites, and tests observe whatever previous tests left behind. The rule reports static property declarations and `static` local variable declarations. Move the state behind an injected object with explicit lifetime and ownership.
 
 ## Examples
 

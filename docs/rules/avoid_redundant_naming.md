@@ -6,7 +6,11 @@
 
 ## Why
 
-When a method lives inside `PostCollection`, a name like `addPost` repeats context the reader already has. The same applies to class names that slot a redundant middle word before a generic suffix, such as `PostItemCollection` (the `Item` adds nothing to `PostCollection`). This redundancy inflates identifiers, makes call sites noisy, and hides the actual action behind repeated words. The rule compares each public method name with its owning class and parameter-type context, and checks class names for a redundant middle word before a generic suffix (`Collection`, `Repository`, `Service`, `Manager`, `Factory`, `Handler`, `Provider`); when the name is largely reproducible from that context, it reports the shorter form (`addPost` → `add`, `PostItemCollection` → `PostCollection`). Methods marked with `#[\Override]` and methods implementing a parent, interface or abstract trait contract are left alone, because their names are fixed by that contract.
+When a method lives inside `PostCollection`, a name like `addPost` repeats context the reader already has. Class names can also contain a redundant middle word before a generic suffix. For example, `Item` adds nothing to `PostCollection` in `PostItemCollection`. Repeated context makes identifiers longer and hides the action.
+
+The rule compares each public method name with its owning class and parameter types. It also checks class names for redundant words before `Collection`, `Repository`, `Service`, `Manager`, `Factory`, `Handler`, or `Provider`. When the name is largely reproducible from that context, it reports the shorter form: `addPost` becomes `add`, and `PostItemCollection` becomes `PostCollection`.
+
+Methods marked with `#[\Override]` remain accepted. Methods implementing a parent, interface, or abstract trait contract are also accepted because that contract fixes their names.
 
 Method suggestions also preserve unresolved ancestor contracts: an unavailable
 declaration does not establish that a public method name is free to change. A

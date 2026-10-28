@@ -2,18 +2,19 @@
 
 📝 Flags value paths where a primitive is extracted from a representation object, processed, and reconstructed into the same representation, for inspection before changing its representation.
 
-💼 This rule is enabled in the ✅ `standard` config.
+This research check is enabled in the `standard` configuration. It never creates
+quality violations and cannot fail CI. Export its evidence with `--research-json`.
 
 ## Why
 
-When a value travels as `$str->value()` → `trim()` → `new Str(...)`, the representation round trip is spread across call sites and classes. Each hop reads well, but the actual data path, the contracts between steps, and the purpose of the boundary become hard to see — and small changes to one step silently break the round trip. The rule investigates such paths and advises inspecting the actual data path, contracts, and boundary purpose before changing the representation.
-
-This is a research check, not a gate: it reports structural witnesses, never violations. A candidate is retained only when the detector can prove a confirmed data dependency from extraction to reconstruction of the same representation type through known scalar callables, typically spanning several files. Unresolved semantics (branch merges, references, unknown effects, virtual dispatch, lazy execution) remain visible as `partial` entries; concept-changing calls such as `strlen()` or `md5()` are listed under `excluded`. The report also discloses analysis coverage, budget limits, and callable resolution profiles.
+When a value is extracted from an object, transformed, and wrapped again, the
+conversion can be spread across several callers. This check collects evidence
+for reviewing whether the conversions have a useful purpose.
 
 ## Examples
 
 ```php
-// ❌ research candidate
+// Connected path to inspect; this is not a quality violation
 final readonly class Str
 {
     public function __construct(private string $text) {}
@@ -70,7 +71,14 @@ final class Pipeline
     }
 }
 
-// ✅ processing contracts take the primitive
+```
+
+The next fragment illustrates a possible scalar-processing boundary. It is not
+a complete replacement for the pipeline or an automatic fix. Review the domain
+contract and all callers before changing the representation boundary.
+
+```php
+// Design alternative to review in context
 final class Cleaner
 {
     public function clean(string $input): string
@@ -83,6 +91,10 @@ final class Cleaner
 A candidate is only produced when extraction and reconstruction are actually connected through call paths: without a consumer such as `Pipeline::handle()` that wires `load()` → `normalize()` → `clean()` → `rebuild()` together, the declarations above stay disconnected and nothing is reported. The round trip typically spans several files, and each step must be provable: known scalar callables (`trim()`, `str_replace()`) and constructors with a direct, unconditional assignment to the stored field.
 
 Disconnected flows are not reported: an overwritten value, independent calls of one helper, or reconstruction slots fed from different instances cannot close a round trip. Candidates are grouped per representation with their extraction and reconstruction locations and the connecting path, so review can start at the reported path instead of the whole codebase.
+
+## Scope and exceptions
+
+This is a research check, not a gate: it reports structural witnesses, never violations. A candidate is retained only when the detector can prove a confirmed data dependency from extraction to reconstruction of the same representation type through known scalar callables, typically spanning several files. Unresolved semantics (branch merges, references, unknown effects, virtual dispatch, lazy execution) remain visible as `partial` entries; concept-changing calls such as `strlen()` or `md5()` are listed under `excluded`. The report also discloses analysis coverage, budget limits, and callable resolution profiles.
 
 ## Options
 

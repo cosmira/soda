@@ -6,7 +6,7 @@
 
 ## Why
 
-Probing an object for a method, a property, or callability before using it replaces a declared contract with duck typing: the supported capabilities are only knowable by running the code, every caller repeats the same probes, and a missing capability degrades into a runtime branch instead of a type error. The rule reports calls to `method_exists`, `property_exists`, and `is_callable` and advises requiring an explicit interface or a typed value shape instead.
+Probing an object for methods, properties, or callability replaces a declared contract with runtime discovery. Each caller repeats the probes, and a missing capability becomes a runtime branch instead of a type error. The rule reports calls to `method_exists`, `property_exists`, and `is_callable`. Require an explicit interface or a typed value shape instead.
 
 ## Examples
 

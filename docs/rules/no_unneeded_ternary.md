@@ -6,22 +6,9 @@
 
 ## Why
 
-`$ready ? true : false` restates the condition itself; a cast or a negation says the same thing. For full ternaries selecting opposite `true`/`false` literals, the rule suggests `(bool) (condition)` for `$cond ? true : false` and `! (condition)` for `$cond ? false : true`. Matching literals on both sides stay accepted. Preserve boolean conversion and evaluate the condition once; drop the cast only when the condition is known to return bool.
-
-With one literal boolean branch, a logical operator can express the decision when
-the other branch already returns bool. For example, `$condition ? true : isset($value)`
-becomes `($condition) || isset($value)`, while `$condition ? isset($value) : false`
-becomes `($condition) && isset($value)`. Inverse forms negate the condition.
-The condition is evaluated once and the non-literal branch retains its original
-short-circuit evaluation. Keep parentheses around the original expressions and
-use `&&` or `||`, rather than PHP's low-precedence `and` or `or`.
-
-Syntax proves boolean results for negation, boolean casts, `isset`, `empty`,
-`instanceof`, equality and ordering comparisons, and logical operations. Arbitrary
-variables, calls, ternaries and match expressions are not inferred to be bool.
-The integer-valued spaceship operator remains accepted, as do shorthand ternaries.
-An unknown branch may return a meaningful non-boolean value and cannot be replaced
-by a logical operator without additional proof.
+A ternary that only restates a boolean result hides the decision in extra
+branches. Use a boolean conversion, negation, or logical operator when it
+preserves the result and evaluation order.
 
 ## Examples
 
@@ -54,6 +41,25 @@ $missing = ! $enabled && isset($value);
 $result = $enabled ? $value : false;
 $result = $enabled ? true : isReady();
 ```
+
+## Scope and exceptions
+
+`$ready ? true : false` restates the condition itself; a cast or a negation says the same thing. For full ternaries selecting opposite `true`/`false` literals, the rule suggests `(bool) (condition)` for `$cond ? true : false` and `! (condition)` for `$cond ? false : true`. Matching literals on both sides stay accepted. Preserve boolean conversion and evaluate the condition once; drop the cast only when the condition is known to return bool.
+
+With one literal boolean branch, a logical operator can express the decision when
+the other branch already returns bool. For example, `$condition ? true : isset($value)`
+becomes `($condition) || isset($value)`, while `$condition ? isset($value) : false`
+becomes `($condition) && isset($value)`. Inverse forms negate the condition.
+The condition is evaluated once and the non-literal branch retains its original
+short-circuit evaluation. Keep parentheses around the original expressions and
+use `&&` or `||`, rather than PHP's low-precedence `and` or `or`.
+
+Syntax proves boolean results for negation, boolean casts, `isset`, `empty`,
+`instanceof`, equality and ordering comparisons, and logical operations. Arbitrary
+variables, calls, ternaries and match expressions are not inferred to be bool.
+The integer-valued spaceship operator remains accepted, as do shorthand ternaries.
+An unknown branch may return a meaningful non-boolean value and cannot be replaced
+by a logical operator without additional proof.
 
 ## Configuration
 

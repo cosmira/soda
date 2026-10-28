@@ -231,7 +231,7 @@ specific PHP detector's precision or make it a simulation of container behavior.
 
 [Fowler's Fluent Interface](https://martinfowler.com/bliki/FluentInterface.html)
 uses Java object assembly to explain expressive construction APIs. Fluency is
-about a readable domain language, not simply chaining setters. Soda extends
+about a readable domain language, not chaining setters alone. Soda extends
 [repeated_configuration_sequence](rules/repeated_configuration_sequence.md) to
 fresh objects returned after repeated state-only setup. This identifies a pattern
 that can be spread among several factory classes without requiring another builder
@@ -240,16 +240,17 @@ locations; no automatic class deletion is inferred.
 
 [Towards Heuristics for Supporting the Validation of Code Smells](https://arxiv.org/abs/2110.02916)
 (Junionello and de Mello, CIbSE 2021) studies 12 experienced developers validating
-24 Java snippets and derives heuristics from 303 arguments for eight smell types,
+24 Java snippets. It derives heuristics from 303 arguments for eight smell types,
 including middle man and speculative generality. The study emphasizes that smell
 validation depends on complementary contextual perspectives. It motivates reporting
 concrete cross-consumer evidence and leaving real lifecycle or orchestration
 responsibilities intact; it does not validate this PHP detector or its thresholds.
 
-Tests cover factory classes in separate files with aliased owner imports, minimum
-consumer/setup counts, different call orders, separate return/execution groups,
-effectful setters, escaping receivers, returned aliases, computed arguments,
-branch boundaries and unreachable steps after a return. No new class, option,
+Tests cover factory classes in separate files with aliased owner imports,
+minimum consumer/setup counts, different call orders, and separate
+return/execution groups. They also cover effectful setters, escaping receivers,
+returned aliases, computed arguments, branch boundaries, and unreachable steps
+after a return. No new class, option,
 dependency or public entry point is required.
 
 ## Existing coverage

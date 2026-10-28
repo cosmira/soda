@@ -1,6 +1,6 @@
 # Adding a quality rule
 
-1. Create a final named class extending `Rules\Check` or `Rules\ExpressionCheck` in the relevant
+1. Create a final named class extending `Contracts\Check` or `Rules\ExpressionCheck` in the relevant
    `src/Rules` area. Keep its constructor options, condition, violation metadata
    and any dedicated algorithm together.
 2. Add one flat entry to `resources/catalog.php` with its class, default arguments,
@@ -43,3 +43,50 @@ not alternative check contracts.
 For example, `Architecture/NoRuntimeHooks.php` contains the actual function names
 it rejects. `Documentation/MultilineMethodPhpDoc.php` selects methods explicitly.
 Changing either policy requires reading and changing that concrete rule.
+
+## Document the rule
+
+Add a page under `docs/rules/` and link it from the [rule reference](rules/README.md).
+Keep its identifier, default arguments, severity, and standard membership aligned
+with `resources/catalog.php`. Use this structure:
+
+````markdown
+# <rule-id>
+
+<Describe the finding in one sentence. State whether the standard bundle enables it.>
+
+## Why
+
+<Explain the problem this rule detects.>
+
+## Examples
+
+```php
+// Violating code
+<example>
+
+// Passing code
+<example>
+```
+
+## Options
+
+<Constructor arguments and defaults. Omit this section if there are none.>
+
+## Configuration
+
+```php
+<?php
+
+use Cosmira\Soda\Config\Soda;
+use Cosmira\Soda\Rules\<Section>\<Rule>;
+
+return Soda::configure()
+    ->withPaths(['src/'])
+    ->with([new <Rule>()]);
+```
+
+## Related rules
+
+- [<rule-id>](<rule-id>.md). <Explain the relationship.>
+````

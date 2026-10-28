@@ -6,7 +6,7 @@
 
 ## Why
 
-The `@` operator turns errors and warnings into invisible failures: the surrounding code keeps running with whatever partial state the failed call left behind, and the caller has no way to tell success from a suppressed problem. The rule reports every `@` expression and advises handling the failure, translating it into a typed error, or deliberately propagating it instead of hiding it.
+The `@` operator hides errors and warnings. The surrounding code keeps running with whatever partial state the failed call left behind. The caller cannot distinguish success from a suppressed failure. The rule reports every `@` expression. Handle the failure, translate it into a typed error, or propagate it deliberately.
 
 ## Examples
 

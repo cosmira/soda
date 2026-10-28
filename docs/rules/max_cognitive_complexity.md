@@ -6,37 +6,78 @@
 
 ## Why
 
-Cognitive complexity estimates how hard a method is to follow: nesting increases the weight of each decision, boolean operator runs, jumps and recursion add points. When the score exceeds the limit, the violation message lists each contributing line with its increment and reason, so the report points at concrete control flow rather than an opaque severity. The rule is documented as a research measurement: review the reported evidence before changing the code, and do not extract objects, traits or value objects solely to lower the score.
+Nested decisions are harder to follow than the same decisions in a named step.
+This rule reports methods above the configured score and identifies the source
+lines that contribute to it.
+
+Exceeding the limit produces a quality violation and can fail CI. The metric's
+research origin does not make it a nongating research check.
 
 ## Examples
 
 ```php
-// ❌ cognitive complexity 16 (nested loops and ifs, boolean run)
-function run(array $items): void
+// ❌ run has cognitive complexity 16
+final class BatchRunner
 {
-    for ($i = 0; $i < 3; $i++) {
-        foreach ($items as $item) {
-            if ($item->ready() && $item->valid()) {
-                if ($item->priority()) {
-                    if ($item->fresh()) {
-                        work($item);
+    public function run(array $items): void
+    {
+        for ($i = 0; $i < 3; $i++) {
+            foreach ($items as $item) {
+                if ($item->ready() && $item->valid()) {
+                    if ($item->priority()) {
+                        if ($item->fresh()) {
+                            $item->process();
+                        }
                     }
                 }
             }
         }
     }
 }
+```
 
-// ✅ cognitive complexity 3 (flat decisions only)
-function run(array $items): void
+The named step below preserves all three passes, every eligibility condition,
+and their short-circuit evaluation. An eligible item is processed once per pass.
+
+```php
+// ✅ run has cognitive complexity 3; processEligible has complexity 4
+final class BatchRunner
 {
-    foreach ($items as $item) {
-        if ($item->ready()) {
-            work($item);
+    public function run(array $items): void
+    {
+        for ($i = 0; $i < 3; $i++) {
+            foreach ($items as $item) {
+                $this->processEligible($item);
+            }
         }
+    }
+
+    private function processEligible(Item $item): void
+    {
+        if (! $item->ready() || ! $item->valid()) {
+            return;
+        }
+
+        if (! $item->priority() || ! $item->fresh()) {
+            return;
+        }
+
+        $item->process();
     }
 }
 ```
+
+## Scope and exceptions
+
+Soda's PHP cognitive metric counts nesting, boolean operator runs, jumps, and
+recursion. Every contribution appears with its line and reason in the diagnostic.
+See [the metric definition](../RESEARCH_METRICS.md#soda-php-cognitive-v1) for the
+counting rules and limits of this measurement.
+
+Review the reported control flow before changing the code. Extract a named step
+when it clarifies the operation; do not introduce objects, traits, or value
+objects solely to lower the score. Unlike
+[representation_churn](representation_churn.md), this rule produces violations.
 
 ## Options
 

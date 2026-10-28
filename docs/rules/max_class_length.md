@@ -6,7 +6,7 @@
 
 ## Why
 
-A class that keeps growing usually owns more than one responsibility. Long types are harder to navigate, harder to test in isolation, and every change risks colliding with unrelated work in the same file. The rule reports each class whose logical source length exceeds the limit and advises reviewing the responsibilities together: keep related behavior local, organize a cohesive concern in a trait, or extract an object with its own state or boundary.
+A class that keeps growing usually owns more than one responsibility. Long types are harder to navigate and test in isolation. Changes can also collide with unrelated work in the same file. The rule reports each class whose logical source length exceeds the limit. Review the responsibilities together: keep related behavior local, organize a cohesive concern in a trait, or extract an object with its own state or boundary.
 
 The measurement counts logical code lines inside the class body — physical lines that contain PHP tokens — so blank lines and comments do not inflate the count.
 

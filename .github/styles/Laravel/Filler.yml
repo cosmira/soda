@@ -1,0 +1,26 @@
+extends: existence
+message: "Remove '%s' and state the instruction directly."
+level: error
+ignorecase: true
+tokens:
+  - please note that
+  - it is important to note that
+  - as you can see
+  - needless to say
+  - obviously
+  - basically
+  - simply
+  - easily
+tests:
+  - name: avoid assumed ease
+    input: Simply run the check.
+    contains: Laravel.Filler
+  - name: clear instruction
+    input: Run the check.
+    want: ''
+  - name: code examples are not prose
+    input: |
+      ```php
+      simply();
+      ```
+    want: ''

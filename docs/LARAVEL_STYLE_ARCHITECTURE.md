@@ -1,10 +1,10 @@
-# Laravel-Style DX
+# Laravel-style developer experience
 
 Soda should feel familiar to Laravel developers: one config file, clear console commands, readable defaults, and no hidden compatibility paths.
 
 See [Practical Design](DESIGN_PHILOSOPHY.md) for the design principles and executable examples behind the rules.
 
-## Target Experience
+## Target experience
 
 ```bash
 php soda init

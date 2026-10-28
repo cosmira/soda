@@ -1,183 +1,189 @@
-# Config: `soda.php`
+# Configuration
 
-Soda has one project config file: `soda.php` in the project root.
-Run `vendor/bin/soda` to check its configured paths. Without a config,
-`vendor/bin/soda quality src/` uses the standard rules.
+- [Create a configuration](#create-a-configuration)
+- [Generate editable rules](#generate-editable-rules)
+- [Paths](#paths)
+- [Rules](#rules)
+- [Exclusions](#exclusions)
+- [Per-rule exclusions](#per-rule-exclusions)
+- [Custom rules](#custom-rules)
 
-To generate an expanded starting configuration, run:
+Without a configuration file, Soda uses its standard rules when you pass a source
+path. A project configuration saves the paths and rules for your daily check.
+Choose one starting point:
+
+- [Create a short configuration](#create-a-configuration) to keep the standard
+  bundle and set paths or exclusions.
+- [Generate editable rules](#generate-editable-rules) to tune thresholds or remove
+  individual standard rules. Use this instead of first creating the short file.
+
+Both approaches use the same `soda.php` format. `init` refuses to overwrite an
+existing file.
+
+## Create a configuration
+
+Create `soda.php` in your project root:
+
+```php
+<?php
+
+use Cosmira\Soda\Config\RuleCatalog;
+use Cosmira\Soda\Config\Soda;
+
+return Soda::configure()
+    ->withPaths([__DIR__.'/src'])
+    ->with(RuleCatalog::standard());
+```
+
+Replace `src` with your source directory, then run:
+
+```bash
+vendor/bin/soda
+```
+
+This runs the standard bundle against the configured paths. Commit `soda.php`
+so your team and [CI](CI.md) use the same check.
+
+## Generate editable rules
+
+To change individual thresholds or remove standard rules, generate the expanded
+configuration instead of writing the short configuration above:
 
 ```bash
 vendor/bin/soda init
 ```
 
-It creates an editable PHP file with the built-in rule catalog expanded into
-plain rule objects. A shortened example:
+The generated file lists each standard rule as a PHP object, including its
+configured constructor arguments. Its initial path is `src/`; change that path
+for your project. Edit a constructor argument to tune a threshold, or remove the
+object to disable that rule. `init` refuses to replace an existing `soda.php`.
+
+## Paths
+
+Use `withPaths()` to choose the default source directories. Paths built with
+`__DIR__` stay relative to the configuration file, even when you run Soda from
+another directory.
+
+Explicit command-line paths replace the configured paths for that run:
+
+```bash
+vendor/bin/soda quality src/ tests/
+```
+
+The selected configuration still supplies the rules and exclusions. To choose a
+configuration explicitly, use:
+
+```bash
+vendor/bin/soda quality src/ --config=tools/soda.php
+```
+
+Without `--config`, Soda looks for an exactly named `soda.php` in each source
+directory and its parents, up to ten directories including the starting one.
+Without source arguments, that search starts in your current directory. If the
+sources resolve to different configurations, select one with `--config`.
+
+## Rules
+
+A custom configuration starts with no rules. To run only selected checks, pass
+rule objects to `with()`:
 
 ```php
 <?php
 
-declare(strict_types=1);
-
 use Cosmira\Soda\Config\Soda;
-use Cosmira\Soda\Rules\Complexity\NoAssignmentInCondition;
-use Cosmira\Soda\Rules\Structure\MaxFileLoc;
-use Cosmira\Soda\Rules\Structure\MaxLineLength;
-use Cosmira\Soda\Rules\Structure\MaxMethodLength;
-use Cosmira\Soda\Rules\Structure\MethodsFollowCallOrder;
+use Cosmira\Soda\Rules\Complexity\MaxCyclomaticComplexity;
+use Cosmira\Soda\Rules\Structure\MaxArguments;
 
 return Soda::configure()
-    ->withPaths([
-        'src/',
-    ])
+    ->withPaths([__DIR__.'/src'])
     ->with([
-        new MaxFileLoc(700),
-        new MaxLineLength(100),
-        new MaxMethodLength(100),
-        new MethodsFollowCallOrder(),
-        new NoAssignmentInCondition(),
-        // ... more generated built-in rules
+        new MaxCyclomaticComplexity(10),
+        new MaxArguments(5),
     ]);
 ```
 
-## Paths
+This configuration runs only those two rules. It does not add them to the
+standard bundle. Repeated `with()` calls append rules in order; they do not
+replace an earlier rule with the same ID. To tune the standard bundle, edit the
+expanded configuration produced by `init`.
 
-Use `withPaths()` for the default paths analyzed by `vendor/bin/soda quality`:
+Use `RuleCatalog::standard()` for the complete standard bundle, or
+`RuleCatalog::checks('complexity')` for its complexity section. Both use the
+arguments in the built-in catalog. Optional rules must be added explicitly.
 
-```php
-use Cosmira\Soda\Config\Soda;
-
-return Soda::configure()
-    ->withPaths([
-        'app/',
-        'src/',
-    ])
-    ->with([
-        // rules
-    ]);
-```
-
-CLI paths still work and override the need for configured paths:
+The [rule reference](rules/README.md) lists constructor options and standard
+membership. To inspect your installed version, run:
 
 ```bash
-vendor/bin/soda quality src tests
+vendor/bin/soda list:rules
 ```
 
 ## Exclusions
 
-Keep generated code and caches out of daily checks in the same configuration:
+Vendor directories are excluded automatically. Exclude generated code and
+caches in your configuration:
 
 ```php
+<?php
+
+use Cosmira\Soda\Config\RuleCatalog;
+use Cosmira\Soda\Config\Soda;
+
 return Soda::configure()
-    ->withPaths([__DIR__.'/app', __DIR__.'/packages', __DIR__.'/bootstrap'])
+    ->withPaths([__DIR__.'/app', __DIR__.'/packages'])
     ->exclude([
-        __DIR__.'/packages/Octopus/Generated',
-        __DIR__.'/bootstrap/cache',
+        __DIR__.'/app/Generated',
+        __DIR__.'/packages/Legacy',
+        '*.blade.php',
     ])
     ->with(RuleCatalog::standard());
 ```
 
-`exclude()` accepts non-empty paths and file masks and can be called repeatedly.
-A basename mask such as `*.blade.php` excludes matching files at every depth.
-Absolute paths apply directly; relative paths expand against each analysis root, just like
-`--exclude`. For multiple roots, absolute paths avoid ambiguity. A directory
-exclusion does not exclude siblings whose names merely share its prefix.
+Configuration exclusions combine with repeated `--exclude` options:
 
-The `quality` command combines configuration exclusions with `--exclude`, including
-when source paths or `--config` are supplied explicitly. Vendor exclusions remain
-automatic. If no source files remain, the command reports `No files found to scan`
+```bash
+vendor/bin/soda quality app/ --exclude=Generated --exclude=cache
+```
+
+Relative exclusions expand against each source root. Absolute exclusions apply
+directly. A basename mask such as `*.blade.php` matches files at every depth.
+Directory exclusions include their descendants without matching siblings with
+similar names. Repeated `exclude()` calls add exclusions.
+
+If exclusions remove every source file, Soda reports `No files found to scan`
 and exits with status `1`.
 
 ## Per-rule exclusions
 
-Every rule inherits `exclude()` from `Cosmira\Soda\Contracts\Check`:
+To exempt files from one rule while keeping the other checks, call `exclude()`
+on that rule instance:
 
 ```php
-(new MaxPublicMethods(20))->exclude([
-    __DIR__.'/packages/Octopus/Clients/*',
-]),
-```
+<?php
 
-This exemption belongs to that rule instance. Repeated calls add exclusions.
-For these masks, `*` may cross directory separators: `*/Data/*` matches files
-inside a `Data` directory at any depth, including its subdirectories. It does not
-match a directory named `Metadata` or `DataExtra`.
-File paths, directory boundaries, and filename masks are accepted; matched
-boundaries include descendants without matching similarly named siblings.
-File checks skip matching sources. Project and research checks receive a filtered
-view of the project after inherited class surfaces have been resolved. Other rules
-still receive all files, and excluding a parent does not exempt child classes in
-other files or reduce their inherited public method count. Parse errors remain
-visible because exclusions do not disable source parsing.
-
-## Rules
-
-Rules are plain objects. Thresholds and options live in constructors:
-
-```php
 use Cosmira\Soda\Config\Soda;
-use Cosmira\Soda\Rules\Complexity\MaxCyclomaticComplexity;
-use Cosmira\Soda\Rules\Naming\BooleanMethodPrefix;
+use Cosmira\Soda\Rules\Structure\MaxPublicMethods;
 
 return Soda::configure()
-    ->withPaths(['src/'])
+    ->withPaths([__DIR__.'/src'])
     ->with([
-        new MaxCyclomaticComplexity(10),
-        new BooleanMethodPrefix(
-            ignore: ['runningUnitTests'],
-            prefix: ['is', 'has', 'can'],
-        ),
+        (new MaxPublicMethods(20))->exclude([__DIR__.'/src/Generated/*']),
     ]);
 ```
 
-Remove a rule from `with([...])` to disable it.
+Repeated calls add exclusions. In per-rule masks, `*` can cross directory
+separators. For example, `*/Data/*` matches a `Data` directory at any depth and
+its descendants, but not a directory named `Metadata` or `DataExtra`.
 
-Rules without thresholds are configured as objects too:
+These exclusions do not disable parsing, so parse errors remain visible. Project
+and research checks receive filtered project facts after inheritance is resolved.
+Excluding a parent class does not exempt children in other files or reduce their
+inherited public method count.
 
-```php
-new NoAssignmentInCondition()
-```
+## Custom rules
 
-Line length is configured the same way:
+Custom rules extend `Cosmira\Soda\Contracts\Check`. Register their instances in
+`with()` like built-in rules. See [Custom checks and rule sets](PLUGINS.md) for a
+complete implementation.
 
-```php
-new MaxLineLength(100)
-```
-
-PHPDoc visibility is configured with a list. Method, property, and constant
-PHPDoc rules are opt-in so clear, fully typed application code does not require
-ceremonial comments.
-
-Libraries and teams with an explicit documentation policy can
-add those rules manually. Every violation in the selected visibility scope is reported:
-
-```php
-new MultilineMethodPhpDoc(['public'])
-new MultilinePropertyPhpDoc(['public'])
-new MultilineConstantPhpDoc(['public'])
-```
-
-Enabling these rules reports every violation; there is no project-wide allowance
-for a number of failures. `MethodsFollowCallOrder()` also takes no allowance.
-When migrating an older configuration, remove its numeric argument and the
-second argument of the PHPDoc rules. Thresholds such as `MaxArguments(5)` still
-define what constitutes a violation; they do not hide existing violations.
-
-Soda currently has no docblock suppression directive. Any future exception
-mechanism must be explicit at the affected declaration in a docblock, rather
-than hiding an arbitrary number of findings across the project.
-
-## Custom Rules
-
-Custom rules extend `Cosmira\Soda\Rules\Check` and can be placed directly in `with([...])`:
-
-```php
-use Cosmira\Soda\Config\Soda;
-
-return Soda::configure()
-    ->withPaths(['src/'])
-    ->with([
-        new App\Soda\Rules\NoRepositoryFromController(),
-    ]);
-```
-
-There is no separate JSON config and no secondary `config/soda.php`. Keep the root `soda.php` as the single source of truth.
+For changes to an older configuration, see the [migration guide](MIGRATION.md).

@@ -1,10 +1,12 @@
-# Report JSON
+# JSON reports
 
-Use `--report-type=json` to emit a machine-readable quality report; add
-`--report-file=` to write it to a file instead of stdout:
+Use `--report-type=json` with `--report-file=` to write a machine-readable quality report. These examples
+use the paths and rules in your project's [configuration](SODA_PHP_CONFIG.md).
+Create the output directory before running the check:
 
 ```bash
-php soda quality --report-type=json --report-file=build/soda-quality.json
+mkdir -p build
+vendor/bin/soda --report-type=json --report-file=build/soda-quality.json
 ```
 
 The top-level `schema_version` is an integer. The current schema is **4**.
@@ -39,7 +41,8 @@ Research checks, including `representation_churn` in the standard bundle, write
 evidence with `--research-json=`:
 
 ```bash
-php soda quality --report-type=json --report-file=build/soda-quality.json --research-json=build/soda-research.json
+mkdir -p build
+vendor/bin/soda --report-type=json --report-file=build/soda-quality.json --research-json=build/soda-research.json
 ```
 
 This separate report has schema **1**:

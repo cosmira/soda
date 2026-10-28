@@ -6,7 +6,7 @@
 
 ## Why
 
-The same string spelled out in several places couples those spots to one protocol value with no name: a change to the value means finding every copy, and a typo in one copy fails silently. The rule groups equal strings per class, trait, enum, interface or anonymous class — decoding escapes and heredocs so `'ready'`, `"\x72eady"` and a heredoc containing `ready` count as one value — and reports each group at the occurrence that crosses the threshold. Name a repeated protocol value when it has one meaning; literal array keys are excluded by default, and intentional repetitions can be listed explicitly.
+Repeated strings couple several locations to one unnamed protocol value. Changing the value requires finding every copy, and a typo can fail silently. The rule groups equal strings within each class, trait, enum, interface, or anonymous class. It decodes escapes and heredocs, so `'ready'`, `"\x72eady"`, and a heredoc containing `ready` count as one value. Each group is reported at the occurrence that crosses the threshold. Name a repeated protocol value when it has one meaning. Literal array keys are excluded by default, and intentional repetitions can be listed explicitly.
 
 ## Examples
 
