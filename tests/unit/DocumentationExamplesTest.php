@@ -114,6 +114,7 @@ final class DocumentationExamplesTest extends TestCase
     private function sourceExamples(string $rule): array
     {
         $source = file_get_contents(__DIR__.'/../../docs/rules/'.$rule.'.md');
+        $source = str_replace("\r\n", "\n", $source);
         preg_match_all('/```php\n(.*?)\n```/s', $source, $matches);
 
         $examples = array_slice($matches[1], 0, 2);
