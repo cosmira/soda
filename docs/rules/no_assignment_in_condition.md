@@ -6,7 +6,7 @@
 
 ## Why
 
-An assignment inside a condition hides a state change inside a question. Readers can easily mistake `=` for `==`, and the condition stops being a pure test because evaluating it mutates the program. The rule reports assignments (including compound and reference assignments) in `if`, `elseif`, `while`, `do-while`, `for` conditions and ternary conditions, and advises assigning first, then making the condition a pure question with no hidden state change. Assignments in the initialization and loop expressions of a `for` statement are the accepted idiom and are not reported; assignments inside nested callable bodies also stay outside this rule.
+An assignment inside a condition hides a state change inside a question. Readers can mistake `=` for `==`; evaluating the condition also mutates the program. The rule reports assignments, including compound and reference assignments, in `if`, `elseif`, `while`, `do-while`, `for` conditions, and ternary conditions. Assign first, then make the condition a pure question. Assignments in a `for` statement's initialization and loop expressions are accepted. Assignments inside nested callable bodies also remain outside this rule.
 
 ## Examples
 

@@ -6,7 +6,7 @@
 
 ## Why
 
-When the methods that share a piece of state are spread across a class, the reader must reconstruct the behavior group by scanning unrelated code in between. The rule first proves a substantive group — methods connected through shared fields and resolved local calls, with at least one state write, one decision or calculation, and at least two public members — and then reports it only when another method sits between the group's first and last declarations.
+When methods sharing state are spread across a class, the reader must reconstruct the behavior group between unrelated methods. The rule first proves a group connected through shared fields and resolved local calls. It requires at least one state write, one decision or calculation, and two public members. It reports that group only when another method sits between its first and last declarations.
 
 A class that contains several cohesive, adjacent groups does not fail this rule. The advice is to group the methods together beside their state first; a concern (trait) is worth considering only when a separate file improves navigation. Extraction keeps the behavior on the owner conceptually and does not reduce effective method or length measurements.
 

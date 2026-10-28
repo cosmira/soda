@@ -32,7 +32,7 @@ function daily(string $period): string
 }
 ```
 
-A single consumer, a one-call setup, or a sequence where the receiver escapes mid-way (`consume($r)` between setters) is not reported; the detector cannot prove a scenario from one occurrence. The ❌ shape is reported only when the same ordered sequence repeats in `minOccurrences` (default `3`) distinct consumers across the analyzed paths, and the `Report` type itself is declared there — the single consumer shown above is the repeating unit, not a complete triggering example.
+A single consumer or one-call setup is not reported. Neither is a sequence where the receiver escapes mid-way, such as `consume($r)` between setters. The detector cannot prove a scenario from one occurrence. The ❌ shape requires the same ordered sequence in `minOccurrences` distinct consumers across the analyzed paths; the default is `3`. The `Report` type must also be declared there. The single consumer above shows a repeating unit, not a complete triggering example.
 
 The same repetition can hide behind separate construction classes:
 

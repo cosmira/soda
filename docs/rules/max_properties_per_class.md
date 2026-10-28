@@ -6,7 +6,7 @@
 
 ## Why
 
-A class with many properties carries many pieces of state, and each one widens the set of valid combinations the class must keep consistent. The rule reports classes whose declared property count exceeds the limit and advises keeping state with its behavior: group values when they share meaning or invariants, and remember that a property count alone does not justify another object.
+A class with many properties carries many pieces of state. Each property widens the set of combinations the class must keep consistent. The rule reports classes whose declared property count exceeds the limit. Keep state with its behavior and group values when they share meaning or invariants. A property count alone does not justify another object.
 
 ## Examples
 

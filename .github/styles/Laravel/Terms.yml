@@ -1,0 +1,23 @@
+extends: substitution
+message: "Write '%s' instead of '%s'."
+level: error
+swap:
+  SODA: Soda
+  '(?:PhpDoc|PHPdoc|phpdoc)': PHPDoc
+  '(?:PhpStan|PHPstan|phpstan)': PHPStan
+  '(?:Github|github)': GitHub
+  '(?:Json|json)': JSON
+  '(?:Yaml|yaml)': YAML
+tests:
+  - name: consistent product names
+    input: SODA checks PHPdoc while PhpStan checks types.
+    contains:
+      - "'SODA'"
+      - "'PHPdoc'"
+      - "'PhpStan'"
+  - name: canonical terms
+    input: Soda checks PHPDoc while PHPStan checks types.
+    want: ''
+  - name: literal identifiers stay intact
+    input: 'Run `phpstan` and write `json`.'
+    want: ''

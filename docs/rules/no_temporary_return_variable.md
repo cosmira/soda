@@ -6,7 +6,7 @@
 
 ## Why
 
-A variable assigned on one line and returned on the next — `$result = load(); return $result;` — duplicates the expression without adding a name that carries meaning. It lengthens the method and forces the reader to track a binding that exists for a single statement. The rule reports the assignment and advises returning the expression directly. Variables with any other use (logged, transformed, captured by a closure, or part of a larger expression) are not reported, nor are reference returns, `global`/`static` bindings, or assignments where the right-hand side already uses the same variable.
+Assigning a variable on one line and returning it on the next can repeat an expression without adding useful context. For example, `$result = load(); return $result;` makes the reader track a binding used only once. The rule reports this assignment and advises returning the expression directly. Variables that are logged, transformed, captured by a closure, or used in a larger expression are accepted. Reference returns, `global` and `static` bindings, and assignments whose right-hand side uses the same variable are also accepted.
 
 A relevant `@var` on the assignment is a type assertion, not a disposable alias.
 Both a named annotation for the returned variable and an unambiguous nameless type

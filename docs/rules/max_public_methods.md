@@ -6,7 +6,7 @@
 
 ## Why
 
-Every public method is part of the contract all callers depend on: the more operations a class publishes, the harder it is to change or test, and the easier it becomes for clients to reach behavior that should stay internal. The rule counts the effective public surface — declared methods plus public methods inherited from parents and contributed by traits — and reports classes above the limit. Review which operations callers need; supporting behavior can remain private on its owner, while useful fluent operations and framework contracts may be preserved.
+Every public method is part of the contract callers depend on. Publishing more operations makes a class harder to change or test and exposes behavior that could remain internal. The rule counts the effective public surface: declared methods, public methods inherited from parents, and public methods contributed by traits. It reports classes above the limit. Review which operations callers need. Supporting behavior can remain private on its owner, while useful fluent operations and framework contracts may be preserved.
 
 ## Examples
 

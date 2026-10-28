@@ -6,9 +6,9 @@
 
 ## Why
 
-A long parameter list forces every caller to know the order and meaning of many values, and it usually means the operation reaches into data that belongs somewhere else. The rule reports methods whose argument count exceeds the limit and advises moving behavior to the owner of its data, or grouping related arguments into a value object when they share meaning, operations or an invariant. Wrapping arguments in a container solely to reduce the count does not help.
+A long parameter list forces every caller to know the order and meaning of many values. It often means the operation reaches into data that belongs somewhere else. The rule reports methods whose argument count exceeds the limit. Move behavior to the owner of its data, or group related arguments into a value object when they share meaning, operations, or an invariant. Wrapping arguments in a container solely to reduce the count does not help.
 
-The check accounts for reality: signatures imposed by external APIs (native stream wrappers, framework overrides declared in `contracts`) are exempt, a constructor that forwards to an inherited contract may match the parent arity, and a readonly data constructor whose field count fits the configured `max_properties_per_class` policy is accepted as a value object.
+Signatures imposed by external APIs are exempt. These include native stream wrappers and framework overrides declared in `contracts`. A constructor forwarding to an inherited contract may match the parent arity. A readonly data constructor is accepted as a value object when its field count fits the configured `max_properties_per_class` policy.
 
 ## Examples
 

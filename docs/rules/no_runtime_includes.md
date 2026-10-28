@@ -6,7 +6,7 @@
 
 ## Why
 
-An `include`/`require` executed at runtime hides an executable dependency: the loaded file is invisible to autoloaders and static analysis, its path is often computed, and it can execute arbitrary code as a side effect of data flow. The rule reports every `include`, `require`, `include_once`, and `require_once` expression and advises relying on autoloaded classes, or on validated data files when configuration is the actual need.
+A runtime `include` or `require` hides an executable dependency. Autoloaders and static analysis cannot see the loaded file, its path may be computed, and loading it can execute arbitrary code. The rule reports every `include`, `require`, `include_once`, and `require_once` expression. Rely on autoloaded classes, or use validated data files when configuration is the actual need.
 
 ## Examples
 

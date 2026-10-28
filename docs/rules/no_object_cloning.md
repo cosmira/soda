@@ -6,7 +6,7 @@
 
 ## Why
 
-`clone` copies private state without a declared protocol: the copy shares references with the original for any object properties, magic `__clone` side effects run invisibly, and readers cannot tell a deliberate deep copy from an accidental shallow one. This is a strict policy: it forbids every `clone` expression, including well-behaved value-copy APIs, because the syntax alone does not prove unsafe copying. Fresh construction satisfies the policy; if your codebase relies on clone-based value APIs, simply choose a different rule selection.
+`clone` copies private state without a declared protocol. Object properties retain shared references, and magic `__clone` side effects run without an explicit call. Readers cannot distinguish a deliberate deep copy from an accidental shallow one. This strict policy forbids every `clone` expression, including well-behaved value-copy APIs. The syntax alone does not prove unsafe copying. Fresh construction satisfies the policy. If your codebase relies on clone-based value APIs, choose a different rule selection.
 
 ## Examples
 

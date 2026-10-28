@@ -6,7 +6,7 @@
 
 ## Why
 
-Splitting a declaration's documentation into two adjacent blocks — prose in one, tags in the next — breaks tooling that reads the docblock, hides the description from IDEs that attach only the last comment, and scatters one explanation across two places. The rule scans comment tokens and reports every block comment (`/** ... */` or `/* ... */`) that directly follows another block comment, separated only by whitespace. Line comments (`//`, `#`) are outside this policy, and any code, attribute, or `?>` between the blocks breaks the sequence.
+Splitting a declaration's documentation into adjacent blocks can hide its description from tools that read only the last comment. It also scatters one explanation across two places. The rule reports a block comment (`/** ... */` or `/* ... */`) that follows another block comment, separated only by whitespace. Line comments (`//`, `#`) are outside this policy. Any code, attribute, or `?>` between the blocks breaks the sequence.
 
 An ordinary block containing only a directive, such as `/* @section */` or
 `/* @end-section */`, also breaks the sequence. Source tools can require these

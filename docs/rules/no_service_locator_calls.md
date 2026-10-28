@@ -6,7 +6,7 @@
 
 ## Why
 
-Calling `app()` or `resolve()` hides which collaborators a piece of code actually needs: the dependency graph is invisible to readers, the required services only surface at runtime, and the code cannot be constructed or tested without the container. The rule reports every call to the global functions `app` and `resolve` (case-insensitive, including fully qualified calls) and advises declaring the dependencies in the constructor instead. Method calls with the same names are not affected.
+Calling `app()` or `resolve()` hides a piece of code's collaborators. Readers cannot see the dependency graph, services appear only at runtime, and the code cannot be constructed or tested without the container. The rule reports calls to the global functions `app` and `resolve`, including case-insensitive and fully qualified calls. Declare the dependencies in the constructor instead. Method calls with the same names are unaffected.
 
 ## Examples
 

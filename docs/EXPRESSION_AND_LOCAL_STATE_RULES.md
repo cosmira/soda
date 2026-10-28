@@ -3,13 +3,18 @@
 These checks use PHP syntax and lexical ownership. They do not infer runtime
 values, alias propagation, or application-wide meanings of strings.
 
-| Check | Default selection | Configuration | Finding |
-|---|---|---|---|
-| `NoUnneededTernary` | Standard | No arguments | Each ternary with opposite boolean literals, or one literal and a syntactically boolean branch |
-| `NoReturnInFinally` | Standard | No arguments | Each explicit return owned by a finally block |
-| `NoReassignedParameters` | Standard | `ignoredParameters: []` | Each direct write to a by-value parameter binding |
-| `MaxConsecutiveLocalAssignments` | Standard | `limit: 8` | Each maximal direct-body run exceeding the limit |
-| `NoRepeatedStringLiterals` | Standard | `minOccurrences: 3, minLength: 3, ignoredStrings: []` | Each repeated literal group in one class-like declaration |
+| Concern | Rule |
+| --- | --- |
+| Boolean conversion and short-circuit decisions | [no_unneeded_ternary](rules/no_unneeded_ternary.md) |
+| Returns that override pending outcomes | [no_return_in_finally](rules/no_return_in_finally.md) |
+| Rebinding an input parameter | [no_reassigned_parameters](rules/no_reassigned_parameters.md) |
+| Long runs of local preparation | [max_consecutive_local_assignments](rules/max_consecutive_local_assignments.md) |
+| Repeated expression literals | [no_repeated_string_literals](rules/no_repeated_string_literals.md) |
+
+Use this overview to choose between policies for expressions and local state.
+The linked rule pages are the primary reference for options and analysis
+boundaries. These checks report violations when their selected policies are
+broken; they are not nongating research checks.
 
 ## Configuration
 
@@ -43,110 +48,23 @@ straight-line data preparation, and repeated framework keys can all be useful.
 
 ## NoUnneededTernary
 
-```php
-// Reported:
-return $value ? true : false;
-return $value ? false : true;
-
-// Equivalent boolean results, evaluating the condition once:
-return (bool) $value;
-return ! $value;
-```
-
-Keep the cast unless the condition is already known to be boolean. Returning the
-condition directly can change the result type for integers, strings, objects,
-arrays or null. Only literal `true` and `false` in opposite branches match,
-including case variants and parentheses. Equal branches belong to
-`NoIdenticalBranches`. Numeric/string branches, shorthand ternaries, null
-coalescing and named constants do not match. There is no automatic rewrite.
+Reports full ternaries that restate a boolean conversion or short-circuit decision. Read [examples, options, and scope](rules/no_unneeded_ternary.md).
 
 ## NoReturnInFinally
 
-A return in `finally` overrides a pending return and can suppress a pending
-exception. Move the return to the normal control flow and leave cleanup in
-`finally`:
-
-```php
-try {
-    return $reader->read();
-} finally {
-    $reader->close();
-}
-```
-
-Returns nested in conditions, loops or nested try/catch inside the finally block
-are reported. A closure, arrow function, named function or class declaration
-starts an independent owner: its return is not attributed to the enclosing
-finally. Its own finally blocks are still checked. File-level finally blocks and
-generator returns are covered. This policy does not report `throw`, `yield` or
-`break` as returns.
+Forbids `return` statements executed inside `finally` blocks. Read [examples, options, and scope](rules/no_return_in_finally.md).
 
 ## NoReassignedParameters
 
-Reports direct rebinding of by-value parameters through ordinary, reference,
-compound and coalescing assignments; increment/decrement; `unset`; foreach
-key/value bindings; catch bindings; destructuring; and global/static bindings.
-Every occurrence has its own source location. Repeated targets within one write
-produce one finding per parameter.
-
-```php
-// Reported:
-function render($input) { $input = normalize($input); }
-// A separate local preserves the incoming value:
-function render($input) { $normalized = normalize($input); }
-```
-
-By-reference parameters are intentional output bindings and are exempt. Object
-property and array-offset writes are allowed: the check concerns the parameter
-binding, not deep immutability. Explicit by-reference closure captures preserve
-the outer binding policy; by-value captures, arrows and separately declared
-functions/classes have their own scopes. Their own parameters are checked.
-Dynamic variable names, writes through aliases, and mutations hidden in called
-functions are not inferred. Promoted and variadic parameters are covered.
+Rejects direct rebinding of by-value input parameters. Read [examples, options, and scope](rules/no_reassigned_parameters.md).
 
 ## MaxConsecutiveLocalAssignments
 
-Counts consecutive **first simple assignments** to named local variables in the
-direct body of each method, function or closure. Eight is allowed by default;
-nine produces one finding at the first assignment with value nine and threshold
-eight. Zero forbids any qualifying initial binding; negative limits are invalid.
-
-Comments and empty statements do not break a run. Other operations, returns,
-control-flow statements, reassignments, parameter writes, compound/reference
-assignments, destructuring, property/offset writes and assignment chains break
-it. Parameters and explicit closure captures are reserved from the start.
-Previously encountered variable names, including reads and control-flow bindings,
-are conservatively treated as existing locals. Nested callable bodies are
-measured separately; runs inside control-flow blocks are not measured by this
-policy. Deferred arrow bodies are not inspected to reserve outer variable names.
-
-This is a signal to inspect a preparation phase, not a requirement to replace
-locals with a data container. Dependent calculations count too; use a higher
-project limit when a straight-line algorithm is clearer.
+Limits the number of consecutive first assignments to new local variables at the start of a callable body. Read [examples, options, and scope](rules/max_consecutive_local_assignments.md).
 
 ## NoRepeatedStringLiterals
 
-Groups exact decoded string bytes within one class, trait, enum, interface or
-anonymous class. A group needs at least three occurrences and three **bytes** by
-default. A finding points to the triggering third occurrence, lists all occurrence
-lines, and carries the total count with threshold two (the permitted maximum).
-`minOccurrences` must be at least two and `minLength` at least one.
-
-```php
-// Three uses of 'pending' in class behavior are a review signal.
-// If they name one protocol value, a constant can express that meaning:
-private const PENDING = 'pending';
-```
-
-Quoted escape variants, constant heredoc and nowdoc strings with the same decoded
-bytes form one group. Array keys count. Whitespace-only and shorter literals do
-not. Interpolated strings, attributes, parameter/property defaults, class
-constants and enum backing values are excluded. Property-hook behavior is
-included. Expression closures/arrows belong to their class; separately declared
-functions and nested classes do not. Nested classes are checked independently.
-Traits are not merged into consuming classes; top-level functions are outside
-this owner-based policy. Equal text does not prove equal meaning: configure
-intentional repeats rather than introducing misleading shared constants.
+Reports string literals repeated several times as expressions within one class-like declaration. Read [examples, options, and scope](rules/no_repeated_string_literals.md).
 
 ## Verification evidence
 

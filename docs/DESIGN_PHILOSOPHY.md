@@ -10,7 +10,7 @@ Fluent APIs work well when their call sequence describes a task. A mutable build
 
 Value objects express a concept and its operations or invariants. Related amounts and units, or a date interval, can deserve a value object. A one-off array, transport payload, simple readonly record or primitive does not automatically deserve a wrapper, factory and service. Prefer an object when it removes repeated interpretation or keeps a rule about the data in one place.
 
-Follow the data across application components. Within a connected processing region, keep a consistent representation of a concept and adapt where another contract requires it. Distributed extraction and rebuilding, including object/primitive transitions, can make individually clear APIs difficult to change together. Review the purpose of boundaries and the guarantees they preserve. See [representation consistency](REPRESENTATION_CONSISTENCY.md).
+Follow the data across application components. Within a connected processing region, keep a consistent representation of a concept and adapt where another contract requires it. Distributed extraction and rebuilding, including object/primitive transitions, can make individually clear APIs difficult to change together. Review the purpose of boundaries and the guarantees they preserve. See [representation consistency (Russian)](REPRESENTATION_CONSISTENCY.md).
 
 Use functions and private helpers for small local work. Preserve adapters that convert data or implement a required external contract, decorators with behavior, framework contracts and named public rule classes. An interface added only to silence a detector is not evidence that a boundary became useful.
 

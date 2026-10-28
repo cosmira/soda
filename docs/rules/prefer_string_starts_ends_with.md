@@ -6,7 +6,7 @@
 
 ## Why
 
-`substr($text, 0, 3) === 'sku'` answers a yes-or-no question by cutting the string first. `str_starts_with($text, 'sku')` answers it directly, and `str_ends_with()` covers the suffix; the `mb_*` variants handle multibyte subjects. The rule reports `substr()` and `mb_substr()` compared with a string literal using `===`, `!==`, `==`, or `!=` when the offsets match the literal: offset zero with a length equal to the literal length asks the prefix question, a negative offset with no length or a matching length asks the suffix question.
+`substr($text, 0, 3) === 'sku'` answers a yes-or-no question by cutting the string first. `str_starts_with($text, 'sku')` answers it directly. `str_ends_with()` covers the suffix, and the `mb_*` variants handle multibyte subjects. The rule reports `substr()` and `mb_substr()` compared with a string literal using `===`, `!==`, `==`, or `!=` when their offsets match the literal. Offset zero with a matching length asks the prefix question. A negative offset with no length or a matching length asks the suffix question.
 
 Middle substrings, comparisons with variables or other calls, and calls whose length does not match the literal stay outside the policy, because `str_starts_with()` and `str_ends_with()` would not answer them.
 

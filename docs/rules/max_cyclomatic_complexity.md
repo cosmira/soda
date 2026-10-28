@@ -6,7 +6,9 @@
 
 ## Why
 
-Cyclomatic complexity counts the decision points in a method: every `if`, `elseif`, loop, `case`, `catch`, boolean operator and ternary adds one path. A high score means many distinct scenarios share one body, so each change risks breaking paths the author no longer remembers. The rule reports methods whose complexity exceeds the limit and advises reviewing the branches and duplicate decisions; use a private method for a named step or an object for an independent responsibility. Note that guard clauses reduce nesting but do not reduce this score.
+A method with many independent branches has many paths to review and test. This
+rule reports methods above the configured branch limit. Extract a named step
+when it represents work that a reader can understand separately.
 
 ## Examples
 
@@ -53,16 +55,70 @@ final class OrderPricer
         return $total;
     }
 }
+```
 
-// ✅ each named step keeps its own small score
+The revised method delegates each item's charges without removing a surcharge,
+tax, iteration, or condition. Both versions read the order and its items in the
+same order.
+
+```php
+// ✅ price has complexity 4; itemCharges has complexity 6
 final class OrderPricer
 {
     public function price(Order $order): int
     {
-        return $order->total() + prioritySurcharge($order) + internationalSurcharge($order);
+        $total = $order->total();
+
+        if ($order->isPriority()) {
+            $total += 10;
+        }
+
+        if ($order->isInternational()) {
+            $total += 25;
+        }
+
+        foreach ($order->items() as $item) {
+            $total += $this->itemCharges($item);
+        }
+
+        return $total;
+    }
+
+    private function itemCharges(OrderItem $item): int
+    {
+        $total = 0;
+
+        if ($item->fragile()) {
+            $total += 5;
+        }
+
+        if ($item->oversized()) {
+            $total += 15;
+        }
+
+        if ($item->hazmat()) {
+            $total += 30;
+        }
+
+        if ($item->perishable()) {
+            $total += 20;
+        }
+
+        if ($item->requiresSignature()) {
+            $total += 12;
+        }
+
+        return $total + $item->tax();
     }
 }
 ```
+
+## Scope and exceptions
+
+Every `if`, `elseif`, loop, `case`, `catch`, boolean operator, and ternary adds a
+path to the base score of one. Guard clauses can reduce nesting without reducing
+this branch count. A lower score does not prove that behavior is correct; retain
+all calculations and observable effects when refactoring.
 
 ## Options
 

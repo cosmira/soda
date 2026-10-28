@@ -1,631 +1,104 @@
-# Structural / Formal Metrics
+# Structure and dependencies
 
-Metrics that measure **size**, **structure**, and **coupling** of code. They are easy to count and enforce.
+Use these topics to choose which structural policies fit your project. For a
+specific diagnostic, open its individual rule page; that page is the primary
+reference for behavior, constructor options, and analysis boundaries.
 
-**Config:** Structural rules are plain objects in `soda.php`. Run `php soda init` for a full config.
+- [Size of classes and methods](#size-of-classes-and-methods)
+- [Structural smells](#structural-smells)
+- [Method reading order](#method-reading-order)
+- [Control flow clarity](#control-flow-clarity)
+- [PHPDoc contracts](#phpdoc-contracts)
+- [Structure and coupling](#structure-and-coupling)
+- [Owner behavior](#owner-behavior-recommendations-standard)
 
-```php
-use Cosmira\Soda\Config\Soda;
-use Cosmira\Soda\Rules\Structure\MaxArguments;
-use Cosmira\Soda\Rules\Structure\MaxClassLength;
-use Cosmira\Soda\Rules\Structure\MaxFileLoc;
-use Cosmira\Soda\Rules\Structure\MaxLayerDominancePercentage;
-use Cosmira\Soda\Rules\Structure\MaxLineLength;
-use Cosmira\Soda\Rules\Structure\MaxMethodLength;
-use Cosmira\Soda\Rules\Structure\MethodsFollowCallOrder;
-use Cosmira\Soda\Rules\Documentation\MultilineMethodPhpDoc;
-use Cosmira\Soda\Rules\Documentation\MultilinePropertyPhpDoc;
-use Cosmira\Soda\Rules\Documentation\MultilineConstantPhpDoc;
-use Cosmira\Soda\Rules\Structure\NoAskThenTellPatterns;
-use Cosmira\Soda\Rules\Structure\NoCommentedOutCode;
-use Cosmira\Soda\Rules\Structure\NoEmptyCatchBlocks;
-use Cosmira\Soda\Rules\Structure\NoTodoFixmeComments;
-use Cosmira\Soda\Rules\Structure\NoTrivialDelegatingClasses;
-use Cosmira\Soda\Rules\Complexity\NoAssignmentInCondition;
-use Cosmira\Soda\Rules\Usage\ListOnlyArrayStrictness;
-use Cosmira\Soda\Rules\Usage\OnlyListArraysAllowed;
-use Cosmira\Soda\Rules\Usage\NoUnusedMethods;
-use Cosmira\Soda\Rules\Usage\NoNumericArrayIndex;
-use Cosmira\Soda\Rules\Usage\UselessVariableRule;
+Choose limits that reveal a concrete reading or maintenance problem. A lower
+number alone does not justify changing an API, extracting a class, or discarding
+behavior. Compare related checks before adding multiple limits for the same
+concern. See [Configuration](SODA_PHP_CONFIG.md) for rule selection.
 
-return Soda::configure()
-    ->withPaths(['src/'])
-    ->with([
-        new MaxMethodLength(50),
-        new MaxClassLength(500),
-        new MaxFileLoc(400),
-        new MaxLineLength(100),
-        new MaxArguments(3),
-        new MaxLayerDominancePercentage(60),
-        new MethodsFollowCallOrder(),
-        new MultilineMethodPhpDoc(['public']),
-        new MultilinePropertyPhpDoc(['public']),
-        new MultilineConstantPhpDoc(['public']),
-        new NoAskThenTellPatterns(),
-        new NoCommentedOutCode(),
-        new NoEmptyCatchBlocks(),
-        new NoTodoFixmeComments(),
-        new NoTrivialDelegatingClasses(),
-        new NoAssignmentInCondition(),
-        new OnlyListArraysAllowed(),
-        new NoNumericArrayIndex(),
-        new NoUnusedMethods(),
-        new UselessVariableRule(),
-    ]);
-```
+These are documentation topics, not API section names. The CLI and
+`RuleCatalog::checks()` use `structural`, `complexity`, and `naming`. Enabling a
+rule and deciding whether it can fail the check are separate properties; the
+[rule index](rules/README.md) records both.
 
----
-
-## Size of Classes and Methods
+## Size of classes and methods
 
 ### max_method_length
 
-Maximum lines of code per method.
-
-| Config value | Strictness | Typical use |
-|--------------|------------|-------------|
-| 20–30 | Strict | New projects |
-| 50–80 | Moderate | Legacy refactoring |
-| 100+ | Lenient | Temporary |
-
-```php
-// ❌ Bad (80+ lines)
-public function processOrder(Order $order): void
-{
-    $order->validate();
-    $items = $order->items();
-    foreach ($items as $item) {
-        $product = $item->product();
-        $stock = $product->stock();
-        if ($stock < $item->quantity()) {
-            throw new InsufficientStockException();
-        }
-        $stock -= $item->quantity();
-        $product->updateStock($stock);
-        $this->inventory->log($product, -$item->quantity());
-    }
-    $order->markAsProcessed();
-    $this->notifyWarehouse($order);
-    $this->sendConfirmation($order);
-    $this->updateAnalytics($order);
-    // ... 60 more lines
-}
-```
-
-```php
-// ✅ Good
-public function processOrder(Order $order): void
-{
-    $this->reserveStock($order);
-    $order->markAsProcessed();
-    $this->notifyWarehouse($order);
-    $this->sendConfirmation($order);
-}
-
-private function reserveStock(Order $order): void
-{
-    foreach ($order->items() as $item) {
-        $this->inventory->reserve($item->product(), $item->quantity());
-    }
-}
-```
-
----
+Limits the source length of a single method. Read [examples, options, and analysis boundaries](rules/max_method_length.md).
 
 ### max_class_length
 
-Maximum lines per class. God classes violate Single Responsibility.
-
-| Config value | Strictness |
-|--------------|------------|
-| 200–350 | Strict |
-| 400–500 | Moderate |
-| 800+ | Lenient |
-
-```php
-// ❌ Bad (500+ lines)
-class UserService
-{
-    // 50 methods: create, update, delete, sendEmail, resetPassword,
-    // validateAddress, exportPdf, importCsv, syncWithLdap, ...
-}
-```
-
-```php
-// ✅ Good
-class UserService
-{
-    public function __construct(
-        private UserRepository $users,
-        private UserMailer $mailer,
-    ) {}
-
-    public function create(array $data): User { /* ~15 lines */ }
-    public function update(User $user, array $data): void { /* ~10 lines */ }
-}
-// Separate classes: UserMailer, UserExporter, UserImporter
-```
-
----
+Limits the source length of a single class declaration. Read [examples, options, and analysis boundaries](rules/max_class_length.md).
 
 ### max_file_loc
 
-Maximum lines per file.
-
-| Config value | Strictness |
-|--------------|------------|
-| 300–400 | Strict |
-| 500–600 | Moderate |
-| 1000+ | Lenient |
-
----
+Limits the source length of a single file. Read [examples, options, and analysis boundaries](rules/max_file_loc.md).
 
 ### max_line_length
 
-Maximum characters per physical line. The default generated by `php soda init` is 100.
+Limits the length of physical source lines. Read [examples, options, and analysis boundaries](rules/max_line_length.md).
 
-Format long lines for readability using the project style, consistent indentation,
-and logical breakpoints. In multiline lists, place each argument or array item on
-its own line. Avoid arbitrary line breaks that only satisfy the limit.
-
-| Config value | Strictness |
-|--------------|------------|
-| 80–100 | Strict |
-| 100–120 | Moderate |
-| 140+ | Lenient |
-
-```php
-new MaxLineLength(100)
-```
-
----
-
-## Structural Smells
+## Structural smells
 
 ### max_todo_fixme_comments
 
-Forbids `TODO` and `FIXME` comments in code that is expected to stay clean.
-Track planned work in an issue tracker or a failing test instead of leaving it
-inside the implementation.
-
-```php
-new NoTodoFixmeComments()
-```
-
-```php
-// Good
-$this->reprice($order);
-```
-
-```php
-// Bad
-// TODO: handle discounts later
-$this->reprice($order);
-```
+Reports TODO and FIXME comments left in source code. Read [examples, options, and analysis boundaries](rules/max_todo_fixme_comments.md).
 
 ### max_commented_out_code_lines
 
-Forbids commented-out code. Deleted code belongs in version control, not in the
-current reading path.
-
-```php
-new NoCommentedOutCode()
-```
-
-```php
-// Good
-$this->sendReceipt($order);
-```
-
-```php
-// Bad
-// $this->sendLegacyReceipt($order);
-$this->sendReceipt($order);
-```
+Reports source code that has been disabled by turning it into comments. Read [examples, options, and analysis boundaries](rules/max_commented_out_code_lines.md).
 
 ### no_vacuous_docblocks
 
-Flags PHPDoc descriptions that add nothing beyond the member's own name. A
-description built from filler verbs (`stores`, `defines`, `holds`) and generic
-context nouns (`this instance`, `this policy`) restates the declaration; either
-describe the member's purpose or delete the comment.
-
-```php
-new NoVacuousDocblocks()
-```
-
-```php
-// Good
-/** Ruler width printed above each report section. */
-private const int SEPARATOR_WIDTH = 60;
-```
-
-```php
-// Bad
-/** Defines separator width used by this policy. */
-private const int SEPARATOR_WIDTH = 60;
-```
+Flags PHPDoc descriptions that add nothing beyond the member's own name. Read [examples, options, and analysis boundaries](rules/no_vacuous_docblocks.md).
 
 ### max_empty_catch_blocks
 
-Forbids empty `catch` blocks. If an exception is intentionally ignored, make
-that decision explicit.
-
-```php
-new NoEmptyCatchBlocks()
-```
-
-```php
-// Good
-try {
-    $this->sync($order);
-} catch (SyncUnavailable $e) {
-    $this->logger->notice($e->getMessage());
-}
-```
-
-```php
-// Bad
-try {
-    $this->sync($order);
-} catch (SyncUnavailable $e) {
-}
-```
+Reports catch blocks that silently discard the caught exception. Read [examples, options, and analysis boundaries](rules/max_empty_catch_blocks.md).
 
 ### max_ask_then_tell_patterns
 
-Reports code that asks an object for state and immediately tells the same
-object what to do. Prefer moving the decision to the object that owns the state.
-Guarding a computed value and forwarding that complete value to the next call
-does not establish a state decision: `$settings = $engine->configure($input);
-if ($settings) { $engine->update($settings); }` is a data flow. This exclusion is
-per command; a separate command that does not consume the result is still checked.
-Creating a first-class callable is not executing a command.
-
-```php
-new NoAskThenTellPatterns()
-```
-
-```php
-// Good
-$order->cancelIfUnpaid();
-```
-
-```php
-// Bad
-if (! $order->isPaid()) {
-    $order->cancel();
-}
-```
+Reports code that queries an object's state and then commands the same object based on the answer. Read [examples, options, and analysis boundaries](rules/max_ask_then_tell_patterns.md).
 
 ### no_trivial_delegating_classes
 
-Reports a concrete class whose operations forward unchanged arguments to its
-only dependency. Interface declarations, attributes, constants and renamed calls
-do not establish additional behavior. A second forwarding method does not remove
-the signal. The rule emits one violation per class and lists the operations.
-This is a narrow structural signal, not proof that every wrapper is useless.
-
-```php
-new NoTrivialDelegatingClasses()
-```
-
-```php
-// Bad — OrderSaver adds a name and another file, but no policy or abstraction.
-final class OrderSaver
-{
-    public function __construct(private OrderRepository $repository) {}
-
-    public function save(Order $order): void
-    {
-        $this->repository->save($order);
-    }
-}
-```
-
-Inline a pass-through class when it has no independent reason to change. Keep
-the small class when it owns behavior or establishes a real boundary:
-
-Interfaces and attributes do not grant an automatic exemption. A transformation,
-additional state or constructor behavior distinguishes an operation from a pure
-forwarder. Known parent and trait methods are composed across analyzed files, including
-precedence and aliases. Only explicit `contracts: ['App\\StoragePort']` entries preserve
-an established boundary class or interface; source attributes alone grant no exemption.
-
-```php
-// This operation transforms the domain input before storage.
-final class DatabaseOrderSaver implements SavesOrders
-{
-    public function __construct(private OrderRepository $repository) {}
-
-    public function save(Order $order): void
-    {
-        $this->repository->save($order->normalized());
-    }
-}
-```
-
-There is no minimum class size. The prohibition concerns transparent forwarding,
-not tiny value objects or classes with an actual operation.
+Reports behavior-free classes that only pass their operations through to one dependency. Read [examples, options, and analysis boundaries](rules/no_trivial_delegating_classes.md).
 
 ### max_layer_dominance_percentage
 
-Reports a mixed feature directory when one explicit architectural role reaches
-the configured percentage of all PHP files. Roles are recognized by class-name
-suffix: `Controller`, `Service`, `Repository`, `Model`, `Job`, `Command`, `Event`,
-`Listener`, `Policy`, `Middleware`, `Resource`, and `Request`.
+Reports directories where one architectural role dominates beyond a configured percentage without the directory being named for that role. Read [examples, options, and analysis boundaries](rules/max_layer_dominance_percentage.md).
 
-At least two roles must be present. Helpers without a recognized role contribute
-to the file total but do not constitute another layer. Inheritance and implemented
-interfaces are not role evidence. A directory named for its dominant role (such
-as `Services`) remains an intentional layer. A file declaring multiple recognized
-roles is classified as `Mixed`.
-
-This is a naming heuristic, not a proof of architecture: roles expressed through
-other names are outside its scope. It no longer treats sibling checks and AST
-visitors as architectural layers merely because they have different base classes.
-
-```php
-new MaxLayerDominancePercentage(60)
-```
-
-The optional second constructor argument sets the minimum file count before the
-rule reports a layer:
-
-```php
-new MaxLayerDominancePercentage(60, minFiles: 5)
-```
-
----
-
-## Method Reading Order
+## Method reading order
 
 ### methods_follow_call_order
 
-Review the order of private helpers called exclusively by one local method in
-straight-line expression statements. Public and protected methods are not moved.
-Shared helpers, conditional and loop calls, deferred callbacks, nested classes,
-first-class callables and contradictory order constraints do not establish an order.
-Names are case-insensitive; direct `$this->helper()` and `self::helper()` calls
-are supported. Unknown dynamic calls, unresolved receivers and possible array
-callbacks conservatively suppress the class finding.
+Flags private helpers declared in an order that contradicts the order their sole caller uses them. Read [examples, options, and analysis boundaries](rules/methods_follow_call_order.md).
 
-```php
-new MethodsFollowCallOrder()
-```
-
-The diagnostic is a reading-order suggestion for this limited case, not proof
-that declaration order affects runtime behavior.
-
-```php
-// Good
-final class SomeClass
-{
-    public function someMethod(): void
-    {
-        $this->method1();
-        $this->method2();
-    }
-
-    private function method1(): void
-    {
-        $this->method11();
-    }
-
-    private function method11(): void {}
-
-    private function method2(): void {}
-}
-```
-
-```php
-// Bad: method2() appears before method1(), but method1() is called first.
-final class SomeClass
-{
-    public function someMethod(): void
-    {
-        $this->method1();
-        $this->method2();
-    }
-
-    private function method2(): void {}
-
-    private function method1(): void {}
-}
-```
-
----
-
-## Control Flow Clarity
+## Control flow clarity
 
 ### no_assignment_in_condition
 
-📝 Forbids assignments inside control-flow conditions.
-
-💼 This rule is enabled in the ✅ `standard` config.
-
-Why:
-
-An assignment inside a condition hides a state change inside a question. Readers can easily mistake `=` for `==`, and the condition stops being a pure test because evaluating it mutates the program. The rule reports assignments (including compound and reference assignments) in `if`, `elseif`, `while`, `do-while`, `for` conditions and ternary conditions, and advises assigning first, then making the condition a pure question with no hidden state change. Assignments in the initialization and loop expressions of a `for` statement are the accepted idiom and are not reported; assignments inside nested callable bodies also stay outside this rule.
-
-Examples:
-
-```php
-// ❌ hidden state change in the condition
-if ($value = $next()) {
-    $consume($value);
-}
-
-// ✅ assign first, then test
-$value = $next();
-if ($value) {
-    $consume($value);
-}
-```
-
-```php
-// ❌ compound assignment inside a loop condition
-while ($offset += $step()) {
-    $consume($offset);
-}
-
-// ✅ the for loop expressions are the accepted place for it
-for ($offset += $step(); $offset; $offset += $step()) {
-    $consume($offset);
-}
-```
-
-The first rewrite preserves PHP truthiness, including `false`, `0`, `'0'`, `''`
-and `[]`; a null comparison would change behavior. The loop preserves the initial
-offset and performs the same update before each condition, including after a
-`continue`. Do not hoist a loop read into a one-time assignment.
-
-
-Configure with `new NoAssignmentInCondition()`.
+Forbids assignments inside control-flow conditions. Read [examples, options, and analysis boundaries](rules/no_assignment_in_condition.md).
 
 ### only_list_arrays
 
-Discourages structured-array access in domain code. In pragmatic mode it reports
-chained `[]` access; strict mode also rejects associative array usage.
-
-```php
-new OnlyListArraysAllowed()
-```
-
-```php
-// Good
-$orderId = $order->id();
-$customerName = $customer->name();
-```
-
-```php
-// Bad
-$customerName = $payload['customer']['name'];
-```
-
-Use strict mode when a project is ready to push associative arrays to DTOs,
-value objects, or explicit boundary layers:
-
-```php
-new OnlyListArraysAllowed(strictness: ListOnlyArrayStrictness::Strict)
-```
+Discourages structured array usage; only list arrays are allowed. Read [examples, options, and analysis boundaries](rules/only_list_arrays.md).
 
 ### no_numeric_array_index
 
-Review a documented tuple when one callable reads at least two different fixed
-positions of the same parameter. Ordinary lists and unknown shapes are accepted.
-The rule only understands native `array` parameters documented as closed PHPDoc
-scalar tuples, such as `array{string, int}` or `array{0: string, 1: int}`. Supported
-field types are `string`, `int`, `float`, `bool` and `null`; positions are contiguous.
-Reads must be straight-line scalar expressions (return, echo, concatenation,
-addition, subtraction, multiplication or string casts). Other syntax is unknown.
-
-Reassignment, writes, references, escapes to calls, ambiguous control flow and
-unsupported PHPDoc (including aliases, unions, optional or nested shapes) suppress
-the candidate. Local `@var` annotations are not interpreted. No general type
-inference or framework-specific exceptions are used.
-
-```php
-new NoNumericArrayIndex()
-
-// Accepted: a list offset does not require a wrapper.
-function first(array $keys): mixed { return $keys[0]; }
-
-// Review whether named fields would explain these two different meanings.
-/** @param array{string, int} $row */
-function label(array $row): string { return $row[0].': '.$row[1]; }
-```
-
-One finding is located at the first fixed-position read of each qualifying
-parameter. This is a readability heuristic, not a claim that tuple access is unsafe.
+Review repeated positional reads of an explicitly documented array tuple. Read [examples, options, and analysis boundaries](rules/no_numeric_array_index.md).
 
 ### unused_methods
 
-Reports unused private methods and eligible protected class methods after all configured files have been analyzed. Full type names and case-insensitive method names connect owners, nested traits and descendants across files. Magic methods, configured ignored names, protected trait methods, abstract declarations and existing abstract/interface/`Override` contract exclusions remain excluded. An unconsumed trait is not reported.
-
-The rule distinguishes `$this`, `self`, `parent`, `static`, explicit class receivers and directly declared parameter types. An unrelated `$other->save()` does not prove that the current class's `save()` is used. Trait aliases preserve the original declaration and apply visibility at the consuming class; `as final` alone retains the original visibility. Precedence selections, class overrides and private lexical scope are respected. First-class callables, callback arrays and supported literal callback strings count as possible use.
-
-Dynamic calls and missing/cyclic/ambiguous composition prevent a claim of non-use for affected methods. Fluent receiver results, escaping object aliases, and a factory receiving a class literal can introduce local uncertainty. No dependency directory is scanned implicitly. This is a bounded structural analysis, not a whole-program type or reachability proof; add all relevant source paths for meaningful results. It does not infer arbitrary union types, return types, reflection targets or variable data flow.
-
-One violation points to the original declaration even when multiple classes use the trait. Project storage keeps scalar/array usage facts, not AST nodes. The rule now runs in `checkProject()`, requesting `methodUsage` during the existing parse.
-
-```php
-new NoUnusedMethods(ignore: ['seedDatabase'])
-```
-
-```php
-// Good
-private function normalizeName(string $name): string
-{
-    return trim($name);
-}
-
-public function rename(string $name): void
-{
-    $this->name = $this->normalizeName($name);
-}
-```
-
-```php
-// Bad
-private function normalizeName(string $name): string
-{
-    return trim($name);
-}
-```
+Flags private and protected methods that are never called in the project. Read [examples, options, and analysis boundaries](rules/unused_methods.md).
 
 ### useless_variable
 
-Reports direct variable aliases that can be removed safely, such as `$alias =
-$source`. Stable aliases must not be mutated, captured or passed by reference.
-A copy retained while the source changes is not a redundant alias. Array-element
-assignments, increments, reference assignments and `unset()` count as mutations,
-including nested elements.
+Detects variables that are direct copies of another variable and adds nothing. Read [examples, options, and analysis boundaries](rules/useless_variable.md).
 
-The rule also reports a copy followed by a single reassignment that transforms
-its source, including a conditional filter. The original variable must be read
-only in that transformation after the copy. If the original and transformed
-values are both needed, the copy is allowed. Loops, references, shared bindings,
-closure captures and calls that expose local variables prevent this extension
-from treating the copy as redundant.
-
-```php
-new UselessVariableRule()
-```
-
-```php
-// Bad: a second name for the same pipeline.
-$servers = $this->systemCheck->nodes();
-$selected = $servers;
-if ($serverId !== null) {
-    $selected = $servers->filter($predicate);
-    abort_if($selected->isEmpty(), 404);
-}
-return $selected;
-```
-
-```php
-// Good: one variable holds the current result.
-$servers = $this->systemCheck->nodes();
-if ($serverId !== null) {
-    $servers = $servers->filter($predicate);
-    abort_if($servers->isEmpty(), 404);
-}
-return $servers;
-```
-
-```php
-// Good: both values are needed.
-$selected = $servers;
-if ($serverId !== null) {
-    $selected = $servers->filter($predicate);
-}
-return ['all' => $servers, 'selected' => $selected];
-```
-
----
-
-## PHPDoc Contracts
+## PHPDoc contracts
 
 All three rules require a description of the member's purpose or contract before
 any block tags. A block containing only `@test`, `@param`, `@return`, `@var`, or
@@ -652,874 +125,197 @@ public function verifiesDelivery(): void {}
 
 ### multiline_method_phpdoc
 
-Requires a multiline PHPDoc block for methods with configured visibilities.
-The standard catalog checks public, protected, and private methods. Standalone
-instances check public methods by default; pass a visibility list to customize
-the scope.
-
-```php
-new MultilineMethodPhpDoc(['public'])
-new MultilineMethodPhpDoc(['public', 'protected'])
-```
-
-Every missing or single-line PHPDoc in the selected visibility scope is reported.
-The rule has no numeric allowance for existing violations.
-
-```php
-// Good
-final class ApiClient
-{
-    /**
-     * Send the configured request and return the decoded response.
-     */
-    public function send(): array
-    {
-        return [];
-    }
-}
-```
-
-```php
-// Bad: missing, ordinary comments, and one-line PHPDoc are rejected.
-final class ApiClient
-{
-    public function missing(): void {}
-
-    // This is not PHPDoc.
-    public function ordinaryComment(): void {}
-
-    /** This is not multiline. */
-    public function oneLine(): void {}
-}
-```
+Requires methods to be documented with a multiline PHPDoc block that contains a written description before any tags. Read [examples, options, and analysis boundaries](rules/multiline_method_phpdoc.md).
 
 ### multiline_property_phpdoc
 
-The standard catalog checks public, protected, and private properties. Standalone
-instances check public properties by default; pass a visibility list to customize
-the scope.
-
-Requires a multiline PHPDoc block for declared properties with configured
-visibilities. Interfaces are ignored for properties; classes, traits, and enums
-are checked. Constructor-promoted properties follow the same visibility policy.
-They may use either a multiline PHPDoc immediately before the parameter or a
-matching `@param` tag in the constructor's multiline PHPDoc, which must also
-contain a description before its tags. A constructor summary
-alone does not document its promoted properties. Parameter names must match
-exactly; ordinary constructor parameters are not properties. Findings point to
-the promoted parameter declaration and retain `multiline_property_phpdoc`.
-
-```php
-new MultilinePropertyPhpDoc(['public'])
-new MultilinePropertyPhpDoc(['public', 'protected', 'private'])
-```
-
-```php
-// Good
-final class ApiClient
-{
-    /**
-     * The configured API endpoint.
-     */
-    private string $endpoint;
-}
-```
-
-```php
-// Bad
-final class ApiClient
-{
-    // This is not PHPDoc.
-    public string $token;
-
-    /** This is not multiline. */
-    public int $retries = 3;
-}
-```
+Requires properties — including promoted constructor parameters — to be documented with a multiline PHPDoc block that contains a written description before any tags. Read [examples, options, and analysis boundaries](rules/multiline_property_phpdoc.md).
 
 ### multiline_constant_phpdoc
 
-The standard catalog checks public, protected, and private constants. Standalone
-instances check public constants by default; pass a visibility list to customize
-the scope.
+Requires class constants to be documented with a multiline PHPDoc block that contains a written description before any tags. Read [examples, options, and analysis boundaries](rules/multiline_constant_phpdoc.md).
 
-Requires a multiline PHPDoc block for class, interface, trait, and enum constants with configured visibilities. Enum cases are not constants and are ignored.
-
-```php
-new MultilineConstantPhpDoc(['public'])
-new MultilineConstantPhpDoc(['public', 'protected', 'private'])
-```
-
-```php
-// Good
-final class RetryPolicy
-{
-    /**
-     * Maximum attempts before the operation is considered failed.
-     */
-    private const int MAX_ATTEMPTS = 3;
-}
-```
-
-```php
-// Bad: ordinary comments and one-line PHPDoc are rejected.
-final class RetryPolicy
-{
-    // This is not PHPDoc.
-    public const int DEFAULT_ATTEMPTS = 1;
-
-    /** This is not multiline. */
-    private const int MAX_ATTEMPTS = 3;
-}
-```
-
----
-
-## Number of Dependencies
+## Number of dependencies
 
 ### max_arguments
 
-Opt-in policy. Argument count alone does not justify wrapper objects.
-
-Maximum parameters per method.
-
-Externally imposed signatures can be listed explicitly:
-
-```php
-new MaxArguments(3, contracts: [
-    'Cosmira\\Sandbox\\HasSandbox::newBelongsToMany',
-    'Cosmira\\Sandbox\\Relations\\SandboxBelongsToMany::__construct',
-])
-```
-
-Use the fully qualified declaring class or trait and method. Matching ignores case
-and an initial backslash. The project pass also resolves actual inherited signatures,
-including parent trait methods from installed Composer sources, without executing them.
-A trait override is checked in the context of its known consuming class. Only the
-inherited arity is protected; extra positions still violate the limit. Ordinary
-concrete parent constructors do not impose a PHP signature contract. `#[Override]`
-or a matching short method name alone grants no exemption. Unknown external
-contracts can still be listed explicitly; the default list is empty.
-
-Native stream hooks registered through the declaring class's `__CLASS__` in
-`stream_wrapper_register()` preserve their PHP protocol arity: `stream_open` (4),
-`stream_set_option` (3), `url_stat` (2). Extra inputs remain checked. The same
-recognition protects these native positions in `no_unused_parameters`.
-
-Constructors of transparent immutable data carriers are not treated as
-behavioral calls: SODA ignores the constructor count only when the class is
-both `final` and `readonly` and every constructor parameter is a promoted
-`public` property. The exemption is active only while
-`max_properties_per_class` is enabled and the number of promoted fields stays
-within its configured limit. Mutable DTOs, private injected dependencies,
-mixed inputs, oversized data shapes, and all ordinary methods remain checked.
-
-| Config value | Strictness |
-|--------------|------------|
-| 2–3 | Strict |
-| 4–5 | Moderate |
-| 6+ | Lenient |
-
-```php
-// ❌ Bad (7 args)
-public function createUser(
-    string $name,
-    string $email,
-    string $password,
-    ?string $phone,
-    ?string $address,
-    ?string $city,
-    ?string $country,
-): User
-```
-
-```php
-// ✅ Good
-public function createUser(CreateUserRequest $request): User
-{
-    return $this->users->create($request->toUserData());
-}
-```
-
----
-
-A constructor that only forwards every unchanged positional parameter to the actual
-parent constructor preserves that parent's known arity, including promoted inputs.
-This does not make all concrete constructors inherited contracts. Extra arguments,
-reordered inputs, unknown parents and additional body behavior do not receive this
-exception. Parent sources are read without executing application code.
+Limits the number of parameters a method or constructor may accept. Read [examples, options, and analysis boundaries](rules/max_arguments.md).
 
 ### max_dependencies
 
-Maximum constructor parameters (injected dependencies).
-
-| Config value | Strictness |
-|--------------|------------|
-| 3–5 | Strict |
-| 6–8 | Moderate |
-| 10+ | Lenient |
-
-```php
-// ❌ Bad (10 dependencies)
-public function __construct(
-    private UserRepository $users,
-    private OrderRepository $orders,
-    private ProductRepository $products,
-    private Mailer $mailer,
-    private Logger $logger,
-    private Cache $cache,
-    private EventDispatcher $events,
-    private Config $config,
-    private Validator $validator,
-    private PdfGenerator $pdf,
-) {}
-```
-
-```php
-// ✅ Good
-public function __construct(
-    private OrderRepository $orders,
-    private OrderNotifier $notifier,  // encapsulates Mailer, Logger, Events
-) {}
-```
-
----
+Limits the number of constructor dependencies of a class. Read [examples, options, and analysis boundaries](rules/max_dependencies.md).
 
 ### max_efferent_coupling (Ce)
 
-Standard policy. Dependency count alone does not justify another service layer.
-
-**Efferent coupling:** number of **distinct** external classes/types the class or trait depends on (same type counted once).
-
-**Included (minimum set):** `extends`, `implements`, `use Trait`, property/param/return types (incl. promoted ctor), `catch` types, `new Class`, static calls `Class::…`, static property, `Class::CONST`, `instanceof Class`.
-
-**Not counted:** `self`, `static`; scalar/builtin types (`int`, `string`, …). The enclosing class itself is excluded.
-
-| Config value | Strictness |
-|--------------|------------|
-| ≤10 | Default (warning when Ce **>** 10) |
-| 15–20 | Lenient |
-| `0` | Disabled |
-
-```php
-// ❌ Bad (Ce > 10 with default limit)
-final class ReportBuilder
-{
-    public function __construct(
-        private Formatter $f,
-        private Exporter $e,
-        private Mailer $m,
-        // … many more distinct types across methods, properties, new …
-    ) {}
-}
-```
-
-```php
-// ✅ Good: fewer outward types, façade or aggregates
-final class ReportBuilder
-{
-    public function __construct(private ReportingPipeline $pipeline) {}
-}
-```
-
----
+Limits the number of distinct external types a class references. Read [examples, options, and analysis boundaries](rules/max_efferent_coupling.md).
 
 ### max_properties_per_class
 
-Opt-in policy. Property counts alone do not justify splitting model configuration into objects.
-
-Counts the effective project-known instance state, not only explicit property
-statements in the current class. Constructor-promoted properties, properties
-composed from project traits, and properties inherited from project classes are
-included recursively. Repeated non-private names represent one inherited slot;
-private names retain their declaring type. State from a parent outside the
-analyzed project cannot be inferred and is not fabricated.
-
-Maximum properties (fields) per class.
-
-| Config value | Strictness |
-|--------------|------------|
-| 5–6 | Strict |
-| 8–10 | Moderate |
-| 15+ | Lenient |
-
-```php
-// ❌ Bad (15+ properties)
-class Order
-{
-    public string $id;
-    public string $customerName;
-    public string $customerEmail;
-    public string $customerPhone;
-    public string $shippingAddress;
-    public string $billingAddress;
-    public string $status;
-    public float $subtotal;
-    public float $tax;
-    public float $shipping;
-    public float $discount;
-    public \DateTime $createdAt;
-    public \DateTime $updatedAt;
-    public ?\DateTime $shippedAt;
-    public ?string $trackingNumber;
-}
-```
-
-```php
-// ✅ Good
-class Order
-{
-    public function __construct(
-        private OrderId $id,
-        private Customer $customer,
-        private Address $shipping,
-        private OrderTotals $totals,
-        private OrderStatus $status,
-    ) {}
-}
-```
-
----
+Limits the number of properties declared in a single class. Read [examples, options, and analysis boundaries](rules/max_properties_per_class.md).
 
 ### max_public_methods
 
-Counts the effective project-known public API of each class. Locally declared
-methods are combined recursively with public methods from used project traits
-and project-local parent classes. Overrides and aliases are deduplicated by the
-name callers see. Methods supplied only by an external parent cannot be inferred
-without loading third-party code and are therefore not fabricated.
+Limits the number of public methods a class exposes, including inherited and trait-composed ones. Read [examples, options, and analysis boundaries](rules/max_public_methods.md).
 
-Maximum effective public methods per class (API surface). Public methods imported from traits—including nested traits and public aliases—belong to the consuming class's API and count toward the same limit. Overrides and trait conflicts with the same final method name count once.
-
-Traits remain fully supported; this prevents a large API from being hidden by splitting it across several concerns. A few focused Laravel-style traits stay well below the configurable threshold.
-
-| Config value | Strictness |
-|--------------|------------|
-| 8–12 | Strict |
-| 15–20 | Moderate |
-| 30+ | Lenient |
-
----
-
-## Structure and Coupling
+## Structure and coupling
 
 ### max_methods_per_class
 
-Maximum total methods per class.
-
-| Config value | Strictness |
-|--------------|------------|
-| 15–25 | Strict |
-| 30–40 | Moderate |
-| 50+ | Lenient |
-
-```php
-// ❌ Bad (30+ methods)
-class ReportGenerator
-{
-    public function generatePdf() {}
-    public function generateExcel() {}
-    public function generateCsv() {}
-    public function generateJson() {}
-    public function exportToEmail() {}
-    public function exportToFtp() {}
-    public function scheduleDaily() {}
-    // ... 23 more methods
-}
-```
-
-```php
-// ✅ Good
-class ReportGenerator
-{
-    public function __construct(private array $formatters) {}
-
-    public function generate(Report $report, string $format): string
-    {
-        return $this->formatters[$format]->format($report);
-    }
-}
-```
-
----
+Limits the number of methods declared in a single class. Read [examples, options, and analysis boundaries](rules/max_methods_per_class.md).
 
 ### max_classes_per_file
 
-Maximum classes/interfaces/traits per file.
-
-| Config value | Typical |
-|--------------|---------|
-| 1 | One class per file (recommended) |
-| 2 | Class + its interface |
-
-```php
-// ❌ Bad — 4 classes in one file
-// UserService.php
-class UserService {}
-class UserServiceException extends \Exception {}
-class UserCreatedEvent {}
-class UserValidator {}
-```
-
-```php
-// ✅ Good — one class per file
-// UserService.php
-class UserService {}
-
-// UserServiceException.php
-class UserServiceException extends \Exception {}
-```
-
----
+Limits the number of named classes and traits declared in a single file. Read [examples, options, and analysis boundaries](rules/max_classes_per_file.md).
 
 ### max_namespace_depth
 
-Maximum namespace nesting. `App\Domain\User\Repository\Cache\Redis` = 5 levels.
-
-| Config value | Strictness |
-|--------------|------------|
-| 3–4 | Strict |
-| 5 | Lenient |
-
-```php
-// ❌ Bad (6+ levels)
-namespace App\Domain\Order\Service\Processor\Handler\Validator;
-```
-
-```php
-// ✅ Good
-namespace App\Domain\Order;
-// or
-namespace App\Order\Processor;
-```
-
----
+Limits the number of segments in the namespace enclosing a class. Read [examples, options, and analysis boundaries](rules/max_namespace_depth.md).
 
 ### max_classes_per_namespace
 
-Maximum classes in one namespace.
-
-| Config value | Typical |
-|--------------|---------|
-| 16–40 | Recommended |
-| 50+ | Consider splitting |
-
----
+Limits the number of classes and traits that share one namespace. Read [examples, options, and analysis boundaries](rules/max_classes_per_namespace.md).
 
 ### max_traits_per_class
 
-Maximum traits used by a class.
-
-| Config value | Strictness |
-|--------------|------------|
-| 1–2 | Strict |
-| 3 | Lenient |
-
-```php
-// ❌ Bad — too many traits
-class User extends Model
-{
-    use HasUuid, HasTimestamps, SoftDeletes, HasEvents, LogsActivity,
-        BelongsToTenant, HasPermissions, Cacheable, Searchable;
-}
-```
-
-```php
-// ✅ Good
-class User extends Model
-{
-    use HasUuid, SoftDeletes;
-}
-```
-
----
+Limits the number of traits a single class composes. Read [examples, options, and analysis boundaries](rules/max_traits_per_class.md).
 
 ### max_interfaces_per_class
 
-Counts the effective project-known contract surface. Directly implemented
-interfaces are combined with contracts inherited from project-local parent
-classes, and project interface inheritance is expanded transitively. Duplicate
-names count once, graph cycles are guarded, and directly declared external
-interfaces still count as contracts. Interfaces supplied only by an unknown
-external parent are not fabricated.
-
-Maximum interfaces implemented by a class.
-
-| Config value | Strictness |
-|--------------|------------|
-| 1–2 | Strict |
-| 3 | Lenient |
-
-```php
-// ❌ Bad — too many interfaces
-class UserService implements
-    UserRepositoryInterface,
-    CacheableInterface,
-    EventDispatcherInterface,
-    LoggableInterface,
-    SerializableInterface
-{}
-```
-
-```php
-// ✅ Good
-class UserService implements UserRepositoryInterface {}
-```
-
----
+Limits the number of interfaces a single class implements. Read [examples, options, and analysis boundaries](rules/max_interfaces_per_class.md).
 
 ### max_classes_per_project
 
-Maximum classes/traits in the project. Indicator of project size.
+Limits the total number of classes and traits declared across the analyzed project. Read [examples, options, and analysis boundaries](rules/max_classes_per_project.md).
 
-| Config value | Project size |
-|--------------|--------------|
-| 500–1000 | Medium |
-| 2000–5000 | Large |
-
----
-
-## Method-level Structure
+## Method-level structure
 
 ### no_else_branches
 
-📝 Reports redundant alternatives after a proven unconditional exit.
-
-💼 This rule is enabled in the ✅ `standard` config.
-
-Why:
-
-After `return`, `throw`, `exit`, `break` or `continue`, the alternative can become
-the following path without adding another exit. Exhaustive `if` branches whose
-paths all exit are recognized too. The rule does not prohibit meaningful
-non-exiting alternatives or require artificial returns, helper methods or `match`.
-
-An `elseif` is reported only when every preceding branch in that chain exits.
-A return in a later branch does not justify moving the final `else` across an
-earlier non-exiting branch. Loops and try/catch statements do not prove an exit.
-
-Examples:
-
-```php
-// ❌ the first path already exits
-if ($user->isBanned()) {
-    return false;
-} else {
-    return $user->hasAccess();
-}
-
-// ✅ the same paths without a redundant alternative
-if ($user->isBanned()) {
-    return false;
-}
-
-return $user->hasAccess();
-```
-
-```php
-// ✅ meaningful mutually exclusive operations
-if ($driver === 'pgsql') {
-    createPostgresIndex();
-} elseif ($driver === 'mysql') {
-    createMysqlIndex();
-}
-
-// ✅ the last alternative still belongs to this chain
-if ($first) {
-    work();
-} elseif ($second) {
-    return;
-} else {
-    rest();
-}
-```
-
-
-Configure with `new NoElseBranches()`.
+Reports redundant alternatives after a proven unconditional exit. Read [examples, options, and analysis boundaries](rules/no_else_branches.md).
 
 ### no_complex_control_conditions
 
-📝 Requires explicit grouping when a condition mixes logical families.
-
-💼 This rule is enabled in the ✅ `standard` config.
-
-Why:
-
-Mixing AND (`&&`, `and`), OR (`||`, `or`) and XOR (`xor`) without grouping makes
-readers reconstruct PHP precedence. Parenthesize each child expression that uses
-a different logical family. Parentheses around the whole condition are not enough.
-Keep the original evaluation order: changing the grouping can change behavior.
-
-Fluent receivers, calls in arguments, comparisons, ternaries and `match` are
-accepted. The rule does not require a temporary boolean or a named query.
-Callback bodies are visited independently. A lone XOR and homogeneous chains are
-accepted. When source positions are unavailable, absence of grouping cannot be
-proven and the rule stays silent.
-
-Examples:
-
-```php
-// ❌ implicit precedence
-if ($active && $verified || $admin) {
-    $grant();
-}
-```
-
-```php
-// ✅ the same expression with its existing precedence made explicit
-if (($active && $verified) || $admin) {
-    $grant();
-}
-```
-
-`$active && ($verified || $admin)` is also clearly grouped, but means something
-different. It is not an equivalent replacement for the first example.
-
-```php
-// ✅ natural predicates do not need intermediary variables
-if ($data->parentGroups()->isNotEmpty()) {
-    attachParents();
-}
-
-if ($user->hasRole(config('auth.admin_role'))) {
-    grantAccess();
-}
-
-// ✅ rebuild the query and reevaluate the changing name on every iteration
-while (Person::query()->where('samaccountname', $name)->exists()) {
-    $name = nextName();
-}
-```
-
-
-Configure with `new NoComplexControlConditions()`.
+Requires explicit grouping when a condition mixes logical families. Read [examples, options, and analysis boundaries](rules/no_complex_control_conditions.md).
 
 ### no_service_locator_calls
 
-Opt-in syntax policy. A container fallback can preserve optional constructor dependencies.
-
-Forbids `app()` and `resolve()` calls. Inject the dependency explicitly.
+Declare dependencies in the constructor instead of pulling them from the global container with `app()` or `resolve()`. Read [examples, options, and analysis boundaries](rules/no_service_locator_calls.md).
 
 ### no_singleton_access
 
-Forbids static `instance()` and `getInstance()` acquisition. Construct the collaborator at the composition root and inject its lifetime explicitly.
+Construct collaborators at the composition root instead of reaching for a static `instance()`/`getInstance()` accessor. Read [examples, options, and analysis boundaries](rules/no_singleton_access.md).
 
 ### no_reflection
 
-Forbids construction through PHP reflection classes. Prefer explicit factories, mapping, and framework conventions whose contracts remain visible.
+Replace reflective construction with explicit factories, mapping, or framework conventions. Read [examples, options, and analysis boundaries](rules/no_reflection.md).
 
 ### no_runtime_hooks
 
-Forbids request-global hooks such as `register_shutdown_function()` and `set_error_handler()`. Register lifecycle behavior once at an explicit application boundary.
+Do not install global runtime hooks from analyzed code; keep lifecycle and error handling in infrastructure configured outside the analyzed paths. Read [examples, options, and analysis boundaries](rules/no_runtime_hooks.md).
 
 ### no_runtime_code_evaluation
 
-Forbids `eval`. Keep executable policy in typed code or represent variable policy as validated data.
+Represent policy as typed code or validated data instead of evaluating generated source with `eval`. Read [examples, options, and analysis boundaries](rules/no_runtime_code_evaluation.md).
 
 ### no_process_configuration_mutation
 
-Forbids changing ini settings, working directory, locale, or default timezone inside analyzed code. Configure process state once at startup.
+Do not mutate ini settings, working directory, locale, or timezone from analyzed code; configure the runtime through `php.ini` or deployment configuration. Read [examples, options, and analysis boundaries](rules/no_process_configuration_mutation.md).
 
 ### no_direct_response_globals
 
-Forbids direct `header()`, cookie, and session-start calls. Return an explicit response or isolate these effects in an excluded adapter boundary.
+Reports `header()`, `setcookie()`, `setrawcookie()`, and `session_start()` calls that mutate response or session state outside an explicit boundary. Read [examples, options, and analysis boundaries](rules/no_direct_response_globals.md).
 
 ### no_symbol_table_mutation
 
-Forbids `extract()`. Map fields explicitly or hydrate a typed value object.
+Map named input fields explicitly instead of manufacturing local variables with `extract`. Read [examples, options, and analysis boundaries](rules/no_symbol_table_mutation.md).
 
 ### no_implicit_arguments
 
-Forbids the `func_get_args()` family. Declare named parameters or accept a typed command.
+Reports `func_get_args()`, `func_get_arg()`, and `func_num_args()` calls. Read [examples, options, and analysis boundaries](rules/no_implicit_arguments.md).
 
 ### no_direct_filesystem_mutation
 
-Forbids direct file writes, deletes, renames, and directory creation. Inject a storage boundary with explicit failures and ownership.
+Reports direct file writes, deletes, moves, and directory creation calls in application code. Read [examples, options, and analysis boundaries](rules/no_direct_filesystem_mutation.md).
 
 ### no_subprocess_execution
 
-Forbids direct shell execution through `shell_exec()`, `exec()`, `system()`, and `popen()`. Use a typed external-capability gateway.
+Wrap external commands in an injected, typed gateway with explicit failures instead of calling `shell_exec`, `exec`, `system`, or `popen` inline. Read [examples, options, and analysis boundaries](rules/no_subprocess_execution.md).
 
 ### no_native_deserialization
 
-Forbids `unserialize()`. Decode validated scalar data and construct explicitly allowed types.
+Reports `unserialize()` calls. Read [examples, options, and analysis boundaries](rules/no_native_deserialization.md).
 
 ### no_runtime_includes
 
-Forbids runtime `include` and `require` expressions. Use autoloaded collaborators or validated data configuration.
+Use autoloaded collaborators or validated data configuration instead of including files at runtime. Read [examples, options, and analysis boundaries](rules/no_runtime_includes.md).
 
 ### no_runtime_type_aliases
 
-Forbids `class_alias()`. Migrate callers or introduce a visible adapter type.
+Migrate callers to the real type or declare a visible adapter instead of aliasing class names at runtime with `class_alias`. Read [examples, options, and analysis boundaries](rules/no_runtime_type_aliases.md).
 
 ### no_dynamic_properties
 
-Forbids `AllowDynamicProperties`. Declare typed state with a stable object shape.
+Reports the `#[AllowDynamicProperties]` attribute that licenses undeclared object state. Read [examples, options, and analysis boundaries](rules/no_dynamic_properties.md).
 
 ### no_anonymous_classes
 
-Forbids anonymous classes. Promote hidden responsibilities to named, testable types.
-Laravel's conventional anonymous migration form is allowed when it directly
-extends `Illuminate\Database\Migrations\Migration` and declares the public
-zero-argument `up()` and `down()` hooks; this is a framework-owned schema boundary rather than a hidden
-application collaborator.
+Promote anonymous classes to named, independently testable types. Read [examples, options, and analysis boundaries](rules/no_anonymous_classes.md).
 
 ### no_object_cloning
 
-Not enabled in the standard catalog. `clone` is a normal copying operation;
-its presence does not prove unsafe aliasing or an architectural defect. Direct
-copies of query builders and value objects require no framework-specific exception.
-
-`(clone $query)->exists()` is a single predicate on a copied value. A nested factory
-such as `(clone createQuery())->exists()` still violates the separate simple-condition
-policy because it executes a call inside the receiver expression.
-
-The existing `new NoObjectCloning()` remains available only when explicitly selected
-for a project that intentionally forbids all cloning. It retains that literal meaning,
-including inside named copy methods. Remove it from previously generated configurations
-to adopt the standard policy; this change does not silently edit user configuration.
+Construct a new value instead of copying an object with `clone`. Read [examples, options, and analysis boundaries](rules/no_object_cloning.md).
 
 ### no_closure_rebinding
 
-Forbids `Closure::bind()` and `Closure::bindTo()`. Keep scope and ownership explicit.
+Forbid `Closure::bind()` and `bindTo()`; pass an explicit collaborator instead of changing a closure scope at runtime. Read [examples, options, and analysis boundaries](rules/no_closure_rebinding.md).
 
 ### no_runtime_contract_probes
 
-Opt-in syntax policy. Capability checks can preserve integrations without imposing interfaces.
-
-Forbids `method_exists()`, `property_exists()`, and `is_callable()`. Require explicit interfaces and value shapes.
+Require an interface or typed value instead of discovering capabilities at runtime with `method_exists`, `property_exists`, or `is_callable`. Read [examples, options, and analysis boundaries](rules/no_runtime_contract_probes.md).
 
 ### no_global_state
 
-Forbids `global` and `$GLOBALS` access. Give mutable state an explicit owner.
+Reports `global` statements and `$GLOBALS` access. Read [examples, options, and analysis boundaries](rules/no_global_state.md).
 
 ### no_environment_reads
 
-Use `ignorePathPrefixes` to permit reads at explicit configuration boundaries.
-The default policy excludes no paths. Directory prefixes match whole path segments,
-so allowing `/project/config` does not allow `/project/configuration`.
-
-Forbids `env()`, `getenv()`, `$_ENV`, and `$_SERVER` outside an application configuration boundary selected by excluding that boundary from analyzed paths.
+Reports `env()`, `getenv()`, `putenv()`, and `$_ENV`/`$_SERVER` access outside explicitly configured configuration boundaries. Read [examples, options, and analysis boundaries](rules/no_environment_reads.md).
 
 ### no_error_suppression
 
-Forbids PHP's `@` error-suppression operator. Handle or translate failures explicitly.
+Reports the `@` error-suppression operator. Read [examples, options, and analysis boundaries](rules/no_error_suppression.md).
 
 ### no_dynamic_invocation
 
-Runtime-selected construction such as `new $modelClass()` is allowed. A factory
-that only hides this expression adds no contract; validate class-string types with
-a type checker. This rule is not a security or type-safety analysis.
-
-Forbids computed method names and the indirect
-helpers `call_user_func*()` and `forward_static_call*()`. These are explicit syntax
-policies; their diagnostics identify the actual forbidden mechanism.
-
-Direct callback invocation (`$callback()`, property values, method results and array
-values) does not violate this rule. Missing type information does not prove a
-violation. This rule does not check whether a value is callable at runtime. Native
-type declarations remain subject to their own rules. No framework-specific callback
-exceptions or additional strict mode are needed.
+Reports indirect callable helpers and method calls whose name is selected at runtime. Read [examples, options, and analysis boundaries](rules/no_dynamic_invocation.md).
 
 ### no_catch_all_exceptions
 
-Reports broad `Exception` or `Throwable` catches that continue without an explicit outcome.
-Returning a value (including `null` or `false`), rethrowing, and translating an exception
-are accepted. Conditional handling must cover every branch or end in a return/throw.
-Returns inside nested closures do not handle the enclosing catch.
+Make broad `catch (Throwable)` / `catch (Exception)` blocks end with an explicit outcome: return a value, throw, or terminate the process. Read [examples, options, and analysis boundaries](rules/no_catch_all_exceptions.md).
 
 ### no_boolean_parameters
 
-Opt-in policy; absent from the standard selection. Boolean state and named boolean
-arguments do not by themselves justify an enum or a separate operation.
-
-Forbids boolean parameter declarations, including nullable/union forms, literal
-`true`/`false` types and boolean defaults. A truth test, cast or comparison does
-not prove that a parameter is a flag: counts, optional callbacks, pagination
-values and validation inputs also appear in these expressions. Untyped and
-`mixed` inputs without boolean defaults are not inferred to be boolean parameters.
-Readonly initialization is accepted only when the parameter exclusively initializes
-readonly state. Using that input to select behavior removes the initialization exemption.
+Replace boolean parameters that select behavior with named methods or readonly value state. Read [examples, options, and analysis boundaries](rules/no_boolean_parameters.md).
 
 ### no_behavior_magic_methods
 
-Forbids `__call`, `__callStatic`, `__get`, `__set`, `__isset`, and `__unset`. Constructors and serialization magic remain available.
+Replace `__call`, `__callStatic`, `__get`, `__set`, `__isset`, and `__unset` with explicit methods and contracts. Read [examples, options, and analysis boundaries](rules/no_behavior_magic_methods.md).
 
 ### no_static_mutable_properties
 
-Opt-in syntax policy. A declaration alone does not distinguish model configuration from request state.
-
-Forbids static properties and static local variables because they create process-wide mutable state. Constants are unaffected.
+Put shared mutable state in an injected object with explicit lifetime and ownership instead of static properties. Read [examples, options, and analysis boundaries](rules/no_static_mutable_properties.md).
 
 ### no_blocking_sleep
 
-Forbids `sleep()`, `usleep()`, `time_nanosleep()`, and `time_sleep_until()`. Inject a scheduler, clock, retry policy, or backoff port.
-
-```php
-new NoServiceLocatorCalls()
-new NoSingletonAccess()
-new NoReflection()
-new NoRuntimeHooks()
-new NoRuntimeCodeEvaluation()
-new NoProcessConfigurationMutation()
-new NoDirectResponseGlobals()
-new NoSymbolTableMutation()
-new NoImplicitArguments()
-new NoDirectFilesystemMutation()
-new NoSubprocessExecution()
-new NoNativeDeserialization()
-new NoRuntimeIncludes()
-new NoRuntimeTypeAliases()
-new NoDynamicProperties()
-new NoAnonymousClasses()
-new NoObjectCloning()
-new NoClosureRebinding()
-new NoRuntimeContractProbes()
-new NoGlobalState()
-new NoEnvironmentReads(ignorePathPrefixes: ['/project/config', '/project/packages/Octopus/config'])
-new NoErrorSuppression()
-new NoDynamicInvocation()
-new NoCatchAllExceptions()
-new NoBooleanParameters()
-new NoBehaviorMagicMethods()
-new NoStaticMutableProperties()
-new NoBlockingSleep()
-```
-
-See the [demo fixtures](../demo-app/README.md) for executable examples of these checks.
+Replace blocking sleep calls with injected time, scheduler, retry, or backoff coordination. Read [examples, options, and analysis boundaries](rules/no_blocking_sleep.md).
 
 ### max_return_statements
 
-Maximum `return` statements per method.
-
-| Config value | Strictness |
-|--------------|------------|
-| 1–2 | Strict (single exit) |
-| 3–4 | Moderate |
-| 5+ | Lenient |
+Limits the number of `return` statements a single method may contain. Read [examples, options, and analysis boundaries](rules/max_return_statements.md).
 
 ### max_boolean_conditions
 
-Maximum boolean operands (`&&`, `||`) per condition.
-
-| Config value | Strictness |
-|--------------|------------|
-| 2–3 | Strict |
-| 4–5 | Lenient |
-
-```php
-// ❌ Bad — 4 boolean operands
-if ($user->vip && $order->total > 1000 && $order->valid && $user->hasCoupon()) {
-    return 'gold';
-}
-```
-
-```php
-// ✅ Good
-if ($this->eligibility->isGoldTier($user, $order)) {
-    return 'gold';
-}
-```
+Limits the number of boolean operands a single condition inside a method may combine. Read [examples, options, and analysis boundaries](rules/max_boolean_conditions.md).
 
 ### Research cohesion facts
 
@@ -1531,39 +327,7 @@ specified in [Research Metrics](RESEARCH_METRICS.md).
 
 ### no_trivial_factories
 
-Declared non-private ancestor methods and observed bounded factory dispatch can
-require construction hooks. A same-object dynamic call using a method name built
-from literal concatenation segments preserves matching hooks; the conventional
-method name alone does not. Installed ancestor declarations are read through the
-Composer source resolver without execution. This is bounded recognition, not a
-complete dynamic dispatch analysis: ambiguous/reassigned names and nested callable
-assignments do not supply the supported evidence.
-
-Enabled by default. `new NoTrivialFactories()` reports each method that returns
-`new ConcreteClass(...)` with all mandatory parameters forwarded unchanged.
-Names, visibility, static status, annotations, interfaces, unrelated state and
-additional methods do not exempt it. Named arguments and direct local aliases
-and returned construction-result aliases are recognized. Defaults, references, variadics, dynamic construction and
-`new self`/`new static`/`new parent` are outside this mechanical-construction pattern.
-
-```php
-/** @internal */
-final class ReceiptFactory
-{
-    public function create(int $amount): Receipt
-    {
-        return new Receipt($amount);
-    }
-}
-```
-
-Consider `new Receipt($amount)` at the call site. Preserve argument names, input
-and return type contracts and useful integration boundaries. A factory that
-transforms data or supplies domain values, such as a fixed currency, is allowed.
-A name alone does not justify a factory; relative self/static construction is treated separately.
-Exact published entry points can be preserved with
-`contracts: ['App\\ReceiptFactory::create']`. The default contract list is empty.
-There is no automatic fix.
+Reports methods whose only work is constructing an object and forwarding all parameters unchanged. Read [examples, options, and analysis boundaries](rules/no_trivial_factories.md).
 
 ## Strict composition and behavior checks
 
@@ -1573,139 +337,47 @@ Diagnostics describe observed syntax and resolved project facts, not the author'
 
 ### max_effective_methods_per_class
 
-`new MaxEffectiveMethodsPerClass(40)` counts concrete method names owned by a class,
-including nested traits and aliases of every visibility. Overridden names count once;
-abstract requirements do not count as implementations. It rejects non-positive limits.
-The existing `max_methods_per_class` continues to measure declarations in one class.
+Limits the method count of a class including the methods contributed by its traits. Read [examples, options, and analysis boundaries](rules/max_effective_methods_per_class.md).
 
 ### max_effective_class_length
 
-`new MaxEffectiveClassLength(500)` sums logical source lines of the owning class and
-its known traits. A trait reached through several paths counts once. This measures the
-source maintained for the composition, including overridden trait source; it is not a
-measurement of executed statements. Parent source belongs to the parent. Non-positive
-limits are rejected. The existing `max_class_length` remains a local source measurement.
+Limits the source length of a class counting the source of all composed traits once. Read [examples, options, and analysis boundaries](rules/max_effective_class_length.md).
 
 ### max_delegation_depth
 
-`new MaxDelegationDepth(3)` counts consecutive methods that forward unchanged parameters
-in a single direct call. It resolves named dependency property types across analyzed files,
-local `$this` calls and named static calls. Inherited and trait methods, local argument
-aliases and returned result variables are included. Private calls bind to their lexical
-owner; virtual calls bind to the consuming class. Private methods and renamed operations count.
-An operation with additional behavior or transformed arguments ends a transparent chain.
-Transparent cycles are rejected even when their finite member count is below the limit.
-The diagnostic includes the observed chain. Unknown targets end the resolved path.
+Limits consecutive transparent forwarding methods, rather than the size of each individual method. Read [examples, options, and analysis boundaries](rules/max_delegation_depth.md).
 
 ### no_mode_parameters
 
-`new NoModeParameters()` rejects a parameter that selects distinct operation sequences
-through literal `switch`, `match`, or equality-based `if` branches. Default arms count;
-direct aliases and conservative branch merges preserve input identity. Shared preparation
-before different operations does not hide the dispatch. Selecting scalar data, or calling
-the same operation with different data, does not match this pattern. Nested callable scopes
-are analyzed independently. The rule reports one finding per parameter with dispatch lines.
+Reports parameters whose value selects between distinct operations inside a callable. Read [examples, options, and analysis boundaries](rules/no_mode_parameters.md).
 
 ### no_repeated_type_dispatch
 
-`new NoRepeatedTypeDispatch(minMethods: 2)` reports the same set of at least two types or
-literal discriminators in multiple methods of one class. It recognizes `instanceof`,
-`get_class` and object `::class` selectors, class-name arms, and scalar or enum discriminator
-arms and equality branches. Direct receiver aliases are recognized. Known parent and
-trait methods are composed; aliases of one implementation do not multiply its vote.
-Ordering does not change a set; each method contributes one vote. Separate classes
-remain separate. The threshold in a diagnostic is the maximum tolerated count, one below
-`minMethods`. This is structural repetition, not proof that two business policies are equal.
+Centralize repeated dispatch on the same type or discriminator family behind one operation boundary. Read [examples, options, and analysis boundaries](rules/no_repeated_type_dispatch.md).
 
 ### no_untyped_parameters
 
-`new NoUntypedParameters()` requires native parameter types in functions, methods,
-interfaces, closures and arrow functions, including reference and variadic parameters.
-An explicit `mixed` type is accepted. `NoBooleanParameters` independently checks
-boolean declarations and defaults; it does not infer a flag from truthiness.
-Omitting a type remains a violation of this check.
-For an inherited untyped parameter, explicit `mixed` preserves the accepted inputs.
-Do not narrow it to a type from PHPDoc merely to satisfy this check: that can violate
-the native parent contract.
+Declare a native type on every parameter, using `mixed` to preserve an untyped inherited contract. Read [examples, options, and analysis boundaries](rules/no_untyped_parameters.md).
 
 ### no_unused_parameters
 
-`new NoUnusedParameters()` reports unused callable inputs with their declaration locations.
-Promoted state and abstract declarations are excluded. Closure captures count as uses;
-a same-named variable in an independent nested scope does not. Installed Composer PSR-4 dependencies can supply missing ancestor signatures via
-`vendor/composer/installed.json`, without executing their autoloader or source.
-Source declarations in PHAR archives shipped by those packages are also inspected;
-the qualified declaration name must match the requested ancestor.
-Known parent methods and interfaces preserve their declared input positions across
-analyzed files, including implementations imported from traits and trait aliases.
-An input read by a known override also remains part of the base
-method contract. Extra implementation parameters remain checked; the necessity of
-the interface itself is evaluated by a separate architecture rule. `contracts: ['App\\Callback::handle']` lists exact
-externally fixed signatures. A read after a definite overwrite does not use the incoming
-value. Conditional overwrites, short-circuit operators and early exits retain possible
-input reads; by-reference output writes are useful. This is bounded incoming-value flow,
-not whole-program liveness or evaluation of arbitrary PHP code.
-`get_defined_vars()` reads surviving inputs in its own callable scope; a snapshot
-inside a nested closure or arrow does not read the enclosing function's inputs.
-Unused positions before the last used input of a closure or arrow function are
-preserved; trailing unused inputs remain checked.
-Do not mechanically delete them or parameters required by a parent contract.
+Reports function and method parameters that are never used. Read [examples, options, and analysis boundaries](rules/no_unused_parameters.md).
 
 ### no_unused_private_state
 
-`new NoUnusedPrivateState()` reports private properties and constants without reads in
-the owner and its known traits. Assignment targets alone are not reads. A private field
-introduced in a trait is reported at its declaration with the consuming class as owner.
-Known trait precedence, aliases and class overrides select which method bodies can read
-state; discarded readers grant no exemption. Parent private fields remain owned by the
-parent. Direct `$this` aliases, same-class typed parameters and same-class construction
-establish receivers; an unrelated object's same-named field does not. Array-element writes
-alone do not establish reads of the stored field. Public transport state is outside the rule.
-Dynamic member reads conservatively retain
-members of that kind; dynamic access is covered by separate prohibitions.
+Removes private properties and constants that are never read, including composed trait state. Read [examples, options, and analysis boundaries](rules/no_unused_private_state.md).
 
 ### no_empty_local_interfaces
 
-`new NoEmptyLocalInterfaces()` rejects local interfaces with neither declared methods nor
-known inherited method contracts. Constants and attributes do not establish such a contract.
-Parents are resolved across analyzed files. An unknown parent alone does not prove a contract;
-`protocols: ['External\\Marker']` can identify an actual external protocol explicitly.
+Reports local interfaces whose complete declared and inherited contract has no methods or properties. Read [examples, options, and analysis boundaries](rules/no_empty_local_interfaces.md).
 
 ### no_redundant_local_interfaces
 
-Explicitly qualified PHPDoc types in property `@var`, callable `@param`/`@return`,
-and `@template … of/as` bounds also count as type references. Prose mentions do
-not count. References owned by an interface remain dependency edges: a self-reference
-or an unused cycle of interfaces cannot create its own consumer. This is bounded
-PHPDoc support, not a complete PHPDoc type parser or alias resolver.
-
-`new NoRedundantLocalInterfaces()` rejects local interfaces without explicit type consumers
-in analyzed code. Implementing or importing an interface alone is not a consumer. Parameter
-and return types and explicit class-name registrations can establish use. References in
-an interface signature or its parent list become useful only when that interface has a
-consumer. Self-references and unused interface cycles do not establish use.
-`contracts: ['App\\PublicApi']` lists contracts consumed outside the analyzed source.
-String-based framework conventions require an explicit contract entry.
+Require a type consumer for local interfaces, or declare their external consumers explicitly in contracts. Read [examples, options, and analysis boundaries](rules/no_redundant_local_interfaces.md).
 
 ### no_dependency_cycles
 
-Standard architecture policy. Configure actual module prefixes; namespace folders need not be independent modules.
-
-`new NoDependencyCycles()` rejects strongly connected groups of namespace modules using
-resolved type-dependency edges. By default each exact namespace is a module. Configure
-`modules: ['App\\Sales', 'App\\Billing']` to establish broader boundaries; the longest
-matching prefix wins. Ordinary type dependencies inside one module are allowed. Only analyzed types
-participate; external code does not create speculative edges. Each diagnostic names the
-mutually dependent modules and a contributing source location.
-
-The rule also checks required constructor dependencies inside each module. A
-cycle among local final classes with direct public constructors has no first
-ordinary construction step. Each edge names the required parameter and its source
-location. Defaults, nullable/union inputs, reference inputs, inheritance, traits
-and unresolved types do not create speculative construction edges. Grouping
-namespaces does not hide a constructor cycle; cross-module cycles keep a single
-module diagnostic. See [construction examples and limitations](rules/no_dependency_cycles.md).
-
+Detects module dependency cycles and required constructor cycles, with concrete paths and file evidence. Read [examples, options, and analysis boundaries](rules/no_dependency_cycles.md).
 
 ### Laravel audit corrections
 
@@ -1724,106 +396,11 @@ inputs and unrelated registrations remain checked.
 
 ### no_temporary_return_variable
 
-📝 Forbids a local variable created only to return its value immediately.
-
-💼 This rule is enabled in the ✅ `standard` config.
-
-Why:
-
-A variable assigned on one line and returned on the next — `$result = load(); return $result;` — duplicates the expression without adding a name that carries meaning. It lengthens the method and forces the reader to track a binding that exists for a single statement. The rule reports the assignment and advises returning the expression directly. Variables with any other use (logged, transformed, captured by a closure, or part of a larger expression) are not reported, nor are reference returns, `global`/`static` bindings, or assignments where the right-hand side already uses the same variable.
-
-A relevant `@var` on the assignment is a type assertion, not a disposable alias.
-Both a named annotation for the returned variable and an unambiguous nameless type
-are accepted. An unrelated comment or annotation for another variable does not
-suppress a finding. Try/finally bodies are excluded conservatively: the finalizer
-can observe the local symbol table through `compact()` or other dynamic reads.
-
-```php
-// ✅ preserve the asserted type and the exception boundary
-try {
-    /** @var array<string, mixed> $config */
-    $config = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
-
-    return $config;
-} catch (JsonException $exception) {
-    throw new ConfigurationException('Invalid configuration', previous: $exception);
-}
-```
-
-Examples:
-
-```php
-// ❌
-function version(): int
-{
-    $result = $this->invoke('GetVersion');
-
-    return $result;
-}
-
-// ✅
-function version(): int
-{
-    return $this->invoke('GetVersion');
-}
-```
-
-```php
-// ✅ Accepted: the variable is also used elsewhere
-function status(): int
-{
-    $result = load();
-    logValue($result);
-
-    return $result;
-}
-```
-
-```php
-// ✅ Accepted: the returned expression is not the variable itself
-function total(): int
-{
-    $result = load();
-
-    return $result + 1;
-}
-```
-
-
-Configure with `new NoTemporaryReturnVariable()`.
+Forbids a local variable created only to return its value immediately. Read [examples, options, and analysis boundaries](rules/no_temporary_return_variable.md).
 
 ### no_consecutive_block_comments
 
-Enabled by default. `new NoConsecutiveBlockComments()` from
-`Cosmira\Soda\Rules\Documentation` reports adjacent `/* ... */` or `/** ... */`
-comments separated only by whitespace, including blank lines. Merge descriptions
-and PHPDoc tags into one block. Each additional block is reported at its opening
-line. Code, attributes, PHP tags and line comments break the sequence. Comment-like
-text inside strings, heredocs and inline HTML is ignored.
-
-Bad:
-
-```php
-/**
- * Pending changes to the audited model.
- */
-
-/**
- * @var array<string, array{from: mixed, to: mixed}>
- */
-private array $pendingAuditChanges = [];
-```
-
-Good:
-
-```php
-/**
- * Pending changes to the audited model.
- *
- * @var array<string, array{from: mixed, to: mixed}>
- */
-private array $pendingAuditChanges = [];
-```
+Reports adjacent block comments that should be merged into a single comment with the description and PHPDoc tags together. Read [examples, options, and analysis boundaries](rules/no_consecutive_block_comments.md).
 
 ## Owner behavior recommendations (standard)
 
@@ -1832,239 +409,83 @@ concrete structural evidence. See [definitions, examples, and boundaries](OWNER_
 
 ### fragmented_owner_behavior
 
-`new FragmentedOwnerBehavior(minClasses: 3)` finds used stateless operation classes
-implementing substantive behavior over one local owner. Suggest owner methods and
-a concern, preserving independent policy contracts and context.
+Finds several stateless operation classes that all interpret or change the same local owner, and suggests moving that behavior onto the owner. Read [examples, options, and analysis boundaries](rules/fragmented_owner_behavior.md).
 
 ### repeated_owner_concern
 
-`new RepeatedOwnerConcern(minMethods: 3, minOwners: 2)` finds a copied group of
-state-changing behavior and decisions across owners. Suggest a shared concern if
-the copies express one contract; list the required owner fields.
+Finds an identical group of stateful methods copied across independent owners and suggests sharing it as a concern (trait). Read [examples, options, and analysis boundaries](rules/repeated_owner_concern.md).
 
 ### scattered_owner_concern
 
-`new ScatteredOwnerConcern(minMethods: 3)` finds a substantive owner group
-interleaved with unrelated methods. Suggest grouping locally, then a concern if it
-improves navigation. Multiple groups alone are not a violation.
+Reports a cohesive stateful method group that is interleaved with unrelated methods in one owner and suggests grouping it together, possibly as a concern. Read [examples, options, and analysis boundaries](rules/scattered_owner_concern.md).
 
 ### repeated_configuration_sequence
 
-`new RepeatedConfigurationSequence(minOccurrences: 3, minConfigurationCalls: 2)`
-finds repeated fresh-object setup followed by execution or returning the configured
-object. This also identifies repeated setup hidden in separate factory classes.
-Suggest a fluent API or named construction on the owner, preserving argument order
-and an explicit execution boundary, rather than introducing another builder class.
+Finds the same fresh-object setup sequence repeated across consumers and suggests a fluent object or named construction that expresses the scenario. Read [examples, options, and analysis boundaries](rules/repeated_configuration_sequence.md).
 
 ### repeated_foreign_state_decision
 
-`new RepeatedForeignStateDecision(minConsumers: 3)` finds the same compound question
-about one local owner's state in independent consumers. Suggest a named owner
-predicate if the occurrences express one domain decision.
+Finds the same compound question about another object's state repeated in several consumers and suggests naming it as a predicate on the owner. Read [examples, options, and analysis boundaries](rules/repeated_foreign_state_decision.md).
 
 ### repeated_foreign_state_update
 
-`new RepeatedForeignStateUpdate(minConsumers: 3)` finds repeated arithmetic passed
-from a direct numeric getter to a direct setter of the same owner field in distinct
-consumers. The owner or both accessors must be final. Diagnostics show the field,
-expression, and locations; suggest a named owner operation when the repetitions
-express one domain rule. Deliberate record APIs remain a valid counterexample;
-no atomicity is inferred. See the detailed boundaries in [Owner behavior rules](OWNER_BEHAVIOR_RULES.md#repeatedforeignstateupdate).
-
-All six classes live in `Cosmira\Soda\Rules\Design`, are discoverable through
-`list:rules`, and run by default. No automatic transformations or
-corpus accuracy claims are made.
-
+Finds the same arithmetic update of another object's numeric state repeated in several consumers and suggests naming it as an operation on the owner. Read [examples, options, and analysis boundaries](rules/repeated_foreign_state_update.md).
 
 ### forbidden_dependencies (opt-in)
 
-`ForbiddenDependencies` enforces directed namespace boundaries, even when the
-dependency graph has no cycle. Configure source namespace prefixes mapped to
-lists of forbidden target namespace prefixes:
-
-```php
-use Cosmira\Soda\Rules\Architecture\ForbiddenDependencies;
-
-new ForbiddenDependencies([
-    'App\Analysis' => ['App\Commands', 'App\Reporting'],
-    'App\Domain' => ['App\Infrastructure'],
-]);
-```
-
-Prefixes match case-insensitively at namespace boundaries, including descendant
-namespaces. `App\Domain` does not match `App\DomainExtra`. Leading/trailing
-namespace separators are accepted; empty prefixes are rejected. All matching
-restrictions apply, and overlapping restrictions do not duplicate a finding.
-An empty mapping imposes no restrictions. Reverse dependencies remain allowed
-unless separately configured.
-
-The rule reuses resolved class/trait type dependencies collected by the coupling
-analysis, including aliases and references to types outside the analyzed paths.
-Unused imports are not dependencies. It does not check top-level functions,
-interface declarations, function/constant imports, dynamically constructed class
-names or string-based container identifiers. It follows direct recorded references,
-not transitive dependencies. A forbidden edge is reported once for its owner and
-target, at the owning class/trait declaration line, with both type names in the
-message. It complements `NoDependencyCycles`, which detects mutually dependent
-modules rather than configured forbidden directions.
+Enforce directed namespace boundaries: namespaces declared as source may not depend on the target namespaces you forbid. Read [examples, options, and analysis boundaries](rules/forbidden_dependencies.md).
 
 ### no_reassigned_parameters
 
-Standard `new NoReassignedParameters()` reports direct rebinding of by-value
-parameters. Intentional output references, object property writes and array-offset
-writes are accepted. Explicit reference captures preserve their parameter owner;
-independent callable parameters are checked in their own scope. Use
-`new NoReassignedParameters(ignoredParameters: ['cursor'])` for exact exceptions.
-See [parameter binding rules](EXPRESSION_AND_LOCAL_STATE_RULES.md#noreassignedparameters)
-for supported write forms and the alias-analysis boundary.
-
+Rejects direct rebinding of by-value input parameters. Read [examples, options, and analysis boundaries](rules/no_reassigned_parameters.md).
 
 ### representation_churn
 
-Research of connected data paths that change representation, included in the standard bundle. This check
-produces candidates, partial paths, exclusions, coverage and resource limits for
-manual review. It emits no quality violations and never changes the quality gate.
-It is included in `RuleCatalog::standard()` and configs generated by `soda init`.
-Existing explicit configs run only their listed checks; add the instance below
-to enable this research in those configs.
-
-```php
-use Cosmira\Soda\Config\Soda;
-use Cosmira\Soda\Rules\Design\RepresentationChurn;
-
-return Soda::configure()
-    ->withPaths(['src/'])
-    ->with([new RepresentationChurn()]);
-```
-
-```bash
-php soda quality --research-json=build/soda-research.json
-```
-
-Inspect the actual path and its source locations, contract guarantees, boundary
-purpose and distributed interpretation before deciding whether to change it.
-`unknown` and `truncated` evidence is retained; no candidates does not prove that
-all paths were covered. A candidate alone does not justify a wrapper, fluent API,
-or any other refactoring. This research mode has not been admitted as a quality
-rule on an independently reviewed application corpus. See the
-[representation consistency guide](REPRESENTATION_CONSISTENCY.md).
-
-The initial interpreter follows straight-line local callable bodies with proven
-receivers and a separate argument environment for each invocation. It recognizes
-transparent local constructors/getters and a small, versioned PHP core profile.
-It does not infer architectural boundaries or that two values mean the same thing.
-For example, a connected `Str → string → string → Str` path may have confirmed
-data dependency and compatibility while `concept_preservation` remains `unknown`.
-
-Branches, references, unresolved effects, ambiguous dispatch, unsupported generic
-contracts and unknown array element guarantees stop that proof and produce partial
-evidence. Namespaced unqualified core calls require proven resolution; use an
-explicit import or fully qualified call for the current profile. Declared local
-functions are analyzed from their bodies. Profiles require known input types. Argument and return contracts must both be
-proved. Unknown effects or an invalid return discard provisional witnesses from
-that invocation. Direct field extraction outside the declaring class currently
-remains unresolved; integer arithmetic without range proofs is also unresolved.
-
-Default limits are `maxDepth: 12`, `maxSteps: 2000`, `maxCandidates: 100`:
-
-```php
-new RepresentationChurn(maxDepth: 12, maxSteps: 2000, maxCandidates: 100)
-```
-
-`maxSteps` bounds interpretation across all roots, including symbolic seeding;
-collection separately caps each callable at 512 facts. `coverage.incomplete` and
-`coverage.truncated` disclose stopped work, including when no witness is retained.
-`raw_signals` counts observations before deduplication, `retained_signals` the
-stored distinct candidates. These are coverage counters, not a defect rate.
-
-An executable cross-file text example and its full source path are retained in
-[example research JSON](research/representation-consistency/implementation-example.json).
+Flags value paths where a primitive is extracted from a representation object, processed, and reconstructed into the same representation, for inspection before changing its representation. Read [examples, options, and analysis boundaries](rules/representation_churn.md).
 
 ### no_static_only_class
 
-Optional `new NoStaticOnlyClass()` reports named classes that declare at least one
-method, keep every method static, and declare no instance properties. Constant
-holders stay accepted; classes that extend a parent or consume traits, abstract
-classes, anonymous classes, interfaces and enums stay outside the comparison,
-because their full surface is unknown without project facts.
-
-```php
-// soda.php
-new NoStaticOnlyClass()
-```
-
-```php
-// ❌ Bad
-final class InvoiceRates
-{
-    public static function usd(): int
-    {
-        return 1;
-    }
-}
-
-// ✅ Good
-final class InvoiceRates
-{
-    public function __construct(private readonly Currency $base) {}
-
-    public function usd(): int
-    {
-        return $this->base->scale();
-    }
-}
-```
+Reports classes whose declared surface is entirely static. Read [examples, options, and analysis boundaries](rules/no_static_only_class.md).
 
 ### prefer_includes
 
-Standard `new PreferIncludes()` reports `strpos()` and `mb_strpos()` compared with
-`false` using `===`, `!==`, `==` or `!=`, on either side of the comparison. The
-substring question reads directly with `str_contains()` and `mb_str_contains()`.
-
-```php
-// soda.php
-new PreferIncludes()
-```
-
-```php
-// ❌ Bad
-if (strpos($template, '{{total}}') !== false) {
-    $template = $this->fill($template);
-}
-
-// ✅ Good
-if (str_contains($template, '{{total}}')) {
-    $template = $this->fill($template);
-}
-```
-
-Position checks with other meanings — extracting an offset, comparing positions,
-requiring a match at offset zero — stay outside the policy.
+Reports strpos comparisons that ask the substring question. Read [examples, options, and analysis boundaries](rules/prefer_includes.md).
 
 ### prefer_string_starts_ends_with
 
-Standard `new PreferStringStartsEndsWith()` reports `substr()` and `mb_substr()`
-compared with a string literal using `===`, `!==`, `==` or `!=` when the offsets
-match the literal: offset zero with a length equal to the literal length asks the
-prefix question, a negative offset with no length or a matching length asks the
-suffix question.
+Reports substr comparisons that ask the prefix or suffix question. Read [examples, options, and analysis boundaries](rules/prefer_string_starts_ends_with.md).
+
+## Example selected policy
+
+This example checks a selected set of policies. It does not add them to the
+standard bundle. Use `soda init` when you want an expanded standard configuration
+and edit individual rule arguments there.
 
 ```php
-// soda.php
-new PreferStringStartsEndsWith()
+<?php
+
+use Cosmira\Soda\Config\Soda;
+use Cosmira\Soda\Rules\Complexity\NoAssignmentInCondition;
+use Cosmira\Soda\Rules\Complexity\NoComplexControlConditions;
+use Cosmira\Soda\Rules\Complexity\NoElseBranches;
+use Cosmira\Soda\Rules\Documentation\MultilineConstantPhpDoc;
+use Cosmira\Soda\Rules\Structure\NoTrivialDelegatingClasses;
+use Cosmira\Soda\Rules\Usage\NoNumericArrayIndex;
+use Cosmira\Soda\Rules\Usage\NoUnusedMethods;
+use Cosmira\Soda\Rules\Usage\OnlyListArraysAllowed;
+use Cosmira\Soda\Rules\Usage\UselessVariableRule;
+
+return Soda::configure()
+    ->withPaths([__DIR__.'/src'])
+    ->with([
+        new NoAssignmentInCondition(),
+        new NoComplexControlConditions(),
+        new NoElseBranches(),
+        new MultilineConstantPhpDoc(['public']),
+        new NoTrivialDelegatingClasses(),
+        new OnlyListArraysAllowed(),
+        new NoNumericArrayIndex(),
+        new NoUnusedMethods(ignore: ['seedDatabase']),
+        new UselessVariableRule(),
+    ]);
 ```
-
-```php
-// ❌ Bad
-if (substr($reference, 0, 4) === 'INV-') {
-    $this->routeInvoice($reference);
-}
-
-// ✅ Good
-if (str_starts_with($reference, 'INV-')) {
-    $this->routeInvoice($reference);
-}
-```
-
-Middle substrings, comparisons with variables or other calls, and calls whose
-length does not match the literal stay outside the policy.

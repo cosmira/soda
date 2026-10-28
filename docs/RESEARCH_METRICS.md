@@ -77,11 +77,16 @@ Cohesion expression values refer to the project-resolved class stage.
 
 Literal trait selections, aliases, visibility changes, nested uses and ordinary
 known inheritance are composed. PHP type/method names are case insensitive;
-property names retain case. Missing/cyclic types, ambiguous trait methods,
-property redeclarations/compatibility, inherited private-member identity,
-property hooks, dynamic/parent/late-static calls, missing local targets or fields,
-nested callables that might capture this, iteration/clone of this, and passing/aliasing this are explicit
-unknown reasons. Such graphs still show observed groups but the research threshold check
+property names retain case. These cases produce explicit unknown reasons:
+
+- Missing or cyclic types, or ambiguous trait methods.
+- Property redeclarations or compatibility, inherited private-member identity,
+  and property hooks.
+- Dynamic, parent, or late-static calls, or missing local targets or fields.
+- Nested callables that might capture `$this`, iteration or cloning of `$this`,
+  and passing or aliasing `$this`.
+
+Such graphs still show observed groups but the research threshold check
 **does not emit a violation**. This conservatism can miss opportunities; an
 unknown relation must never become evidence of an absent relation.
 

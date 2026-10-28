@@ -1,0 +1,19 @@
+extends: occurrence
+message: 'Keep each paragraph to 120 words or fewer; split the ideas.'
+level: error
+scope: paragraph
+max: 120
+token: "\\b[\\p{L}\\p{N}]+(?:['’_-][\\p{L}\\p{N}]+)*\\b"
+tests:
+  - name: over the word budget
+    input: 'word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word.'
+    contains: Laravel.ParagraphLength
+  - name: at the word budget
+    input: 'word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word.'
+    want: ''
+  - name: code does not consume the prose budget
+    input: |
+      ```text
+      word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word
+      ```
+    want: ''

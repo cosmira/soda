@@ -1,0 +1,19 @@
+- name: project configuration activates the profile
+  input: Simply utilize SODA in order to commence.
+  contains:
+    - Laravel.Filler
+    - Laravel.PlainWords
+    - Laravel.Terms
+- name: clear project prose
+  input: Run Soda to check your source files.
+  want: ''
+- name: inline identifiers are literal
+  input: 'Call `utilize()` and set `json`.'
+  want: ''
+- name: fenced examples are literal
+  input: |
+    ```php
+    simply();
+    utilize();
+    ```
+  want: ''

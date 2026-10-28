@@ -6,7 +6,7 @@
 
 ## Why
 
-`register_shutdown_function` and `set_error_handler` create non-local behavior: any method can silently change how the whole process handles shutdown or errors, and later registrations are invisible at every call site that assumed the previous behavior. The rule reports calls to both functions (case-insensitive, including fully qualified calls) wherever they appear in analyzed code — there is no bootstrap exemption — and advises registering lifecycle and error handling once in infrastructure outside the analyzed paths (a front controller or framework bootstrap), or replacing global hooks with injected collaborators.
+`register_shutdown_function` and `set_error_handler` change process-wide behavior. Any method can alter shutdown or error handling, while later registrations remain invisible at earlier call sites. The rule reports calls to both functions, including case-insensitive and fully qualified calls, with no bootstrap exemption. Register lifecycle and error handling once in infrastructure outside the analyzed paths, such as a front controller or framework bootstrap. Alternatively, replace global hooks with injected collaborators.
 
 ## Examples
 

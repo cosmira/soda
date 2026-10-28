@@ -6,7 +6,9 @@
 
 ## Why
 
-A method returning `bool` answers a yes/no question, so its name should read as one: `isRunning()` instead of `running()`. Without a predicate prefix, call sites lose that reading and `if ($app->running())` must be mentally translated. The rule inspects methods whose declared return type is `bool` or includes `bool` (such as `bool|null`) and reports those without an allowed prefix. It skips methods inherited from a parent class or interface and methods marked `#[\Override]`, since their names are fixed by an external contract, and it ignores a small set of common operation verbs (`create`, `update`, `delete`, `check`, …) that may legitimately return a success flag.
+A method returning `bool` answers a yes/no question, so its name should read as one: `isRunning()` instead of `running()`. Without a predicate prefix, call sites lose that reading and `if ($app->running())` must be mentally translated.
+
+The rule inspects methods whose declared return type is `bool` or includes `bool`, such as `bool|null`. It reports those without an allowed prefix. Methods inherited from a parent class or interface, and methods marked `#[\Override]`, are exempt because their names are fixed by an external contract. Common operation verbs such as `create`, `update`, `delete`, and `check` are also ignored because they may return a success flag.
 
 ## Examples
 

@@ -1,0 +1,61 @@
+extends: capitalization
+message: 'Use sentence case for prose headings.'
+level: error
+scope: heading
+match: $sentence
+threshold: 1.0
+exceptions:
+  - '(?:[A-Z][a-z0-9]+){2,}'
+  - '[a-z][a-z0-9_]*_[a-z0-9_]+'
+  - PHP
+  - PHPDoc
+  - JSON
+  - CI
+  - AST
+  - API
+  - Laravel
+  - Soda
+  - Vale
+  - PHPStan
+  - Psalm
+  - Yii
+  - UTF
+  - PSR
+  - JSONSchema
+  - MIT
+  - Reek
+  - RuboCop
+  - Actions
+  - JUnit
+  - XML
+  - Taylor Otwell
+  - DHH
+  - Ce
+tests:
+  - name: title case prose
+    input: '## Configure Your Project'
+    contains: Laravel.Headings
+  - name: sentence case prose
+    input: '## Configure your project'
+    want: ''
+  - name: technical heading
+    input: '## MaxCognitiveComplexity'
+    want: ''
+  - name: rule identifier
+    input: '## no_useless_return'
+    want: ''
+  - name: GitHub Actions is a product name
+    input: '## Use GitHub Actions'
+    want: ''
+  - name: JUnit XML is a report format
+    input: '## Import a JUnit XML report'
+    want: ''
+  - name: people retain their names
+    input: '## Taylor Otwell and DHH as the selection lens'
+    want: ''
+  - name: metric symbols retain their case
+    input: '## max_efferent_coupling (Ce)'
+    want: ''
+  - name: product vocabulary does not allow other title words
+    input: '## Use Custom Actions'
+    contains: Laravel.Headings

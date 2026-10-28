@@ -6,7 +6,7 @@
 
 ## Why
 
-Dynamic properties let code attach arbitrary fields to an object at runtime, so the class declaration no longer describes the object shape: readers, static analysis, and serialization all depend on which code paths happened to run first. The rule reports each `#[AllowDynamicProperties]` attribute and advises declaring typed properties or hydrating a named value object with a stable shape instead.
+Dynamic properties let code attach arbitrary fields to an object at runtime. The class declaration no longer describes the object's shape. Readers, static analysis, and serialization must then depend on which code paths ran first. The rule reports each `#[AllowDynamicProperties]` attribute. Declare typed properties or hydrate a named value object with a stable shape instead.
 
 ## Examples
 

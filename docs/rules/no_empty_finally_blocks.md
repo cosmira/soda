@@ -6,7 +6,7 @@
 
 ## Why
 
-A `finally` block exists to guarantee cleanup; an empty one (including comment-only bodies) adds syntax without behavior and suggests cleanup that never happens. The rule reports empty finally blocks and explains the two removal cases: when a `catch` is present the block can simply be removed, but when the `try` has no catch, removing only the `finally` is invalid PHP and the try body must be unwrapped as well. Remove the empty block if it has no useful explanation to preserve.
+A `finally` block guarantees cleanup. An empty block, including a comment-only body, adds syntax without behavior and suggests cleanup that never happens. The rule reports empty finally blocks. If a `catch` is present, remove the empty block. Without a catch, removing only the `finally` is invalid PHP; unwrap the try body as well. Preserve any useful explanation when removing the block.
 
 ## Examples
 

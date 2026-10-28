@@ -6,7 +6,9 @@
 
 ## Why
 
-An unused input is either dead weight — a leftover from a changed implementation — or an undocumented contract. Both hurt: readers must reason about a value that never matters, and callers pay for arguments that do nothing. The rule reports unused parameters and advises removing them when the signature is owned locally. It is deliberately conservative: positions required by an implemented interface or parent method, callback positions before the last used slot (e.g. stream and array-callback signatures), promoted constructor properties, and explicitly configured external contracts are preserved. A parameter that is only overwritten before being read counts as unused because the incoming value never survives to a read.
+An unused input is dead weight left by a changed implementation, or an undocumented contract. Readers must reason about a value that never matters, and callers provide arguments that do nothing. The rule reports unused parameters and advises removing them when the signature is owned locally.
+
+Positions required by an implemented interface or parent method are preserved. Callback positions before the last used slot, promoted constructor properties, and explicitly configured external contracts are also preserved. This includes stream and array-callback signatures. A parameter overwritten before its first read counts as unused because the incoming value never reaches a read.
 
 PHP's fixed magic-method positions are also preserved; `__invoke` and ordinary
 constructors retain their own signatures. Reads through `func_get_args()`,
@@ -153,4 +155,14 @@ return Soda::configure()
 - [unused_methods](unused_methods.md) — the method-level counterpart: private and protected methods that are never called.
 - [no_reassigned_parameters](no_reassigned_parameters.md) — flags inputs that are read but rebound instead of being kept stable.
 
-A separate finite protocol is recognized when a lexical by-value `foreach` over an inline string list, or an unmodified non-public instance property default, is a direct method statement after a supported continuing prefix and contains exactly one positional `$this->{$task}(...)` invocation. The selected caller, property slot and every listed method must resolve to source declarations. Only positions before that target’s last incoming-value read are preserved, bounded by the supplied arguments; every position in that prefix must also be read by some selected task. Trailing unused parameters and ordinary fixed-method calls remain eligible. Sparse read sets, keyed lists, keys as selectors, references, duplicated or locally aliased argument variables, receiver escapes, mutable or redeclared lists, ambiguous declarations, unavailable bodies, eager terminal operands or indirect invocations in the prefix, variable-table receiver exposure, unsupported preceding control flow and nested callable receivers do not establish this protocol. A parent’s private target stays bound to its lexical scope when a child reuses its name.
+A separate finite protocol recognizes a lexical by-value `foreach` over an inline string list or an unmodified non-public instance property default. The loop must be a direct method statement after a supported continuing prefix. It must contain exactly one positional `$this->{$task}(...)` invocation. The selected caller, property slot, and every listed method must resolve to source declarations.
+
+Only positions before the target's last incoming-value read are preserved, bounded by the supplied arguments. Every position in that prefix must also be read by some selected task. Trailing unused parameters and ordinary fixed-method calls remain eligible. A parent's private target stays bound to its lexical scope when a child reuses its name.
+
+The following conditions do not establish this protocol:
+
+- Sparse read sets, keyed lists, keys as selectors, or references.
+- Duplicated or locally aliased argument variables, or receiver escapes.
+- Mutable or redeclared lists, ambiguous declarations, or unavailable bodies.
+- Eager terminal operands or indirect invocations in the prefix.
+- Variable-table receiver exposure, unsupported preceding control flow, or nested callable receivers.

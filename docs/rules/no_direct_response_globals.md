@@ -6,7 +6,7 @@
 
 ## Why
 
-Sending headers, cookies, and opening sessions directly from domain code hides output effects: the method signature claims to return a value while also mutating process-global response state, and the behavior becomes impossible to test or reuse outside a web request. The rule reports each call at its source position and advises returning an explicit response object and isolating headers, cookies, and sessions in adapters.
+Sending headers, cookies, or opening sessions from domain code hides output effects. A method may claim to return a value while also mutating process-global response state. That behavior is difficult to test or reuse outside a web request. The rule reports each call at its source position. Return an explicit response object and isolate headers, cookies, and sessions in adapters.
 
 ## Examples
 

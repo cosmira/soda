@@ -8,7 +8,7 @@
 
 Several small classes that each take an owner object as their single parameter can look clean in isolation, but understanding one owner's behavior requires navigating all of them. The rule reports this fragmentation as a review signal and advises keeping operations with the state they act on, optionally organizing a theme with a concern (trait). Classes with their own contract, context, or lifetime — policies, services with dependencies — should stay separate.
 
-The detector only reports when it can prove each participant: an eligible local owner, stateless operation classes with exactly one typed owner parameter, bodies that write to or decide over public members of that owner, and at least `minClasses` distinct operation classes actually invoked with that owner at direct, fully typed call sites. Mere forwarding and any extra context are excluded.
+The detector requires an eligible local owner and stateless operation classes with exactly one typed owner parameter. Their bodies must write to or decide over the owner's public members. At least `minClasses` distinct operation classes must be invoked with that owner at direct, fully typed call sites. Mere forwarding and any extra context are excluded.
 
 ## Examples
 
@@ -72,7 +72,7 @@ final class Post
 }
 ```
 
-Operation classes with state, constructor effects, extra parameters, or unknown member accesses are never reported. The rule also requires the owner type itself to be declared in the analyzed paths, and it fires only from `minClasses` (default `3`) distinct operation classes that are actually invoked with that owner — the operation classes alone, without the declaration and the call sites, produce no report.
+Operation classes with state, constructor effects, extra parameters, or unknown member accesses are never reported. The owner type must be declared in the analyzed paths. At least `minClasses` distinct operation classes must be invoked with that owner; the default is `3`. Operation declarations without the owner declaration and call sites produce no report.
 
 ## Options
 

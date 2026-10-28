@@ -6,7 +6,7 @@
 
 ## Why
 
-A class whose complete surface forwards unchanged arguments to a single collaborator adds a name to the call path without adding a concept: every new operation must be mirrored, and the indirection hides where the work happens. The rule reports concrete composed classes (extending a parent or using traits) whose every operation delegates to one property and whose constructor only wires that dependency. Call the collaborator directly when the wrapper adds no concept; keep genuine adapters and boundaries, and remember that adding an interface alone does not simplify the call path.
+A class that forwards unchanged arguments to one collaborator adds a name to the call path without adding a concept. Every operation must be mirrored, hiding where the work happens. The rule reports concrete composed classes that extend a parent or use traits. Every operation must delegate to one property, and the constructor must only wire that dependency. Call the collaborator directly when the wrapper adds no concept. Preserve genuine adapters and boundaries; adding an interface alone does not simplify the call path.
 
 ## Examples
 

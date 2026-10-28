@@ -6,9 +6,11 @@
 
 ## Why
 
-When the same archive/restore/inspect behavior is re-implemented in several owners, a fix in one copy silently diverges from the others. The rule reports copied stateful method groups as a review signal and advises extracting one shared concern when the copies express a single behavior contract, while documenting the fields an owner must declare to use it.
+When archive/restore/inspect behavior is copied across owners, a fix in one copy can diverge from the others. The rule reports copied stateful method groups for review. Extract a shared concern when the copies express one behavior contract, and document the fields each owner must declare.
 
-The rule groups methods inside each owner by shared fields and resolved local calls, then fingerprints the group: method names, visibility, parameter and return contracts, bodies (local variable names normalized), field contracts and defaults, and declaration order must match exactly. A group only qualifies with at least `minMethods` methods, at least two public methods, at least one state write, and at least one decision or calculation — a set of plain getters and setters is not a concern. Owners with inheritance, contracts, traits, or unresolved members are excluded, and already-shared traits are not reported.
+The rule groups methods within each owner by shared fields and resolved local calls. Its fingerprint requires matching method names, visibility, parameter and return contracts, bodies, field contracts and defaults, and declaration order. Local variable names are normalized.
+
+A group needs at least `minMethods` methods, at least two public methods, at least one state write, and at least one decision or calculation. Plain getters and setters are not a concern. Owners with inheritance, contracts, traits, or unresolved members are excluded. Already-shared traits are not reported.
 
 ## Examples
 

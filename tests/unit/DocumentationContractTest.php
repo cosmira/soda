@@ -5,10 +5,41 @@ declare(strict_types=1);
 namespace Cosmira\Soda;
 
 use Cosmira\Soda\Config\RuleCatalog;
+use Cosmira\Soda\Contracts\ResearchCheck;
 use PHPUnit\Framework\TestCase;
 
 final class DocumentationContractTest extends TestCase
 {
+    public function testRuleIndexCoversCatalogOnceWithAccurateSelectionAndResultStatuses(): void
+    {
+        $index = $this->readProjectFile('docs/rules/README.md');
+        preg_match_all(
+            '/^\| \[([a-z_]+)\]\(([^)]+)\) \| [^|\n]+ \| (yes|no) \| (yes|no) \|$/m',
+            $index,
+            $rows,
+            PREG_SET_ORDER,
+        );
+
+        $definitions = RuleCatalog::definitions();
+        $expectedIds = array_keys($definitions);
+        $actualIds = array_column($rows, 1);
+        sort($expectedIds);
+        sort($actualIds);
+        $this->assertSame($expectedIds, $actualIds);
+
+        foreach ($rows as [, $id, $page, $enabled, $affectsResult]) {
+            $definition = $definitions[$id];
+            $this->assertSame($id.'.md', $page);
+            $this->assertFileExists(dirname(__DIR__, 2).'/docs/rules/'.$page);
+            $this->assertSame(($definition['standard'] ?? true) ? 'yes' : 'no', $enabled, $id);
+            $this->assertSame(
+                is_a($definition['class'], ResearchCheck::class, true) ? 'no' : 'yes',
+                $affectsResult,
+                $id,
+            );
+        }
+    }
+
     public function testReportDocsDescribeViolationOnlyJsonOutput(): void
     {
         $reportDocs = $this->readProjectFile('docs/QUALITY_REPORT_JSON.md');

@@ -6,7 +6,7 @@
 
 ## Why
 
-Functions that read their arguments through the runtime argument list hide their contract: the declared signature no longer says which inputs the callable accepts, callers cannot see the requirements, and static analysis is blind to the data flow. The rule reports each implicit argument access and advises declaring every input as a named parameter, a variadic, or a typed command object.
+Functions that read the runtime argument list hide their input contract. Their declared signatures do not identify the inputs they accept, callers cannot see the requirements, and static analysis cannot follow the data flow. The rule reports each implicit argument access. Declare every input as a named parameter, a variadic, or a typed command object.
 
 ## Examples
 
