@@ -99,7 +99,7 @@ final class ResearchReportingTest extends TestCase
     public function testCliSeparatesResearchAndPreservesQualityGate(bool $violation): void
     {
         $result = new QualityResult(
-            $violation ? [new Violation(rule: 'actual_rule', file: '/project/Example.php', value: 1, threshold: 0)] : [],
+            $violation ? [new Violation(rule: 'actual_rule', file: '/project/Example.php', value: 1, threshold: 0, message: 'Actual quality violation.')] : [],
             ['representation_churn' => $this->report()],
         );
         $stub = new class($result) extends Runner
@@ -144,10 +144,15 @@ final class ResearchReportingTest extends TestCase
             $this->assertCount($violation ? 1 : 0, $qualityData['violations']);
             $this->assertSame(1, $researchData['schema_version']);
             $this->assertSame($result->research, $researchData['research']);
-            $this->assertStringContainsString('nongating', $text);
-            $this->assertStringContainsString('unknown', $text);
-            $this->assertStringContainsString('truncated', $text);
-            $this->assertStringContainsString('Example.php:7', $text);
+            $this->assertStringNotContainsString('Research', $text);
+            $this->assertStringNotContainsString('unknown', $text);
+            $this->assertStringNotContainsString('truncated', $text);
+            $this->assertStringNotContainsString('Example.php:7', $text);
+            $this->assertStringContainsString($violation ? '[FAIL] 1 issue' : '[OK] No issues', $text);
+            if ($violation) {
+                $this->assertStringContainsString('Actual quality violation.', $text);
+                $this->assertStringContainsString('Example.php', $text);
+            }
         } finally {
             foreach (glob($dir.'/*') as $file) {
                 unlink($file);
@@ -156,7 +161,7 @@ final class ResearchReportingTest extends TestCase
         }
     }
 
-    public function testConsoleShowsResearchCoverageWithoutCandidates(): void
+    public function testConsoleOmitsResearchCoverageWithoutCandidates(): void
     {
         $report = $this->report();
         $report['candidates'] = [];
@@ -168,9 +173,10 @@ final class ResearchReportingTest extends TestCase
             '/project',
         );
         $text = $buffer->fetch();
-        $this->assertStringContainsString('0 candidates', $text);
-        $this->assertStringContainsString('unknown', $text);
-        $this->assertStringContainsString('truncated', $text);
+        $this->assertStringNotContainsString('Research', $text);
+        $this->assertStringNotContainsString('0 candidates', $text);
+        $this->assertStringNotContainsString('unknown', $text);
+        $this->assertStringNotContainsString('truncated', $text);
         $this->assertStringContainsString('[OK]', $text);
     }
 
@@ -204,9 +210,9 @@ final class ResearchReportingTest extends TestCase
             $this->assertSame('unknown', $report['candidates'][0]['concept_preservation']);
             $this->assertNotEmpty($report['candidates'][0]['path']);
             $text = $buffer->fetch();
-            $this->assertStringContainsString('nongating', $text);
-            $this->assertStringContainsString('Concept preservation: unknown', $text);
-            $this->assertStringContainsString('Normalizer.php:', $text);
+            $this->assertStringNotContainsString('Research', $text);
+            $this->assertStringNotContainsString('unknown', $text);
+            $this->assertStringNotContainsString('Normalizer.php:', $text);
             $this->assertStringContainsString('[OK]', $text);
         } finally {
             foreach (glob($dir.'/*') as $file) {
