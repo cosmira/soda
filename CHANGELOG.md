@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.1 - 2026-10-30
+
+- Keep research candidates, unknown paths, and coverage out of console output.
+  Export the full research report with the existing `--research-json` option.
+- Preserve quality violations, exit status, and JSON report schemas.
+
 ## 1.2.0 - 2026-10-29
 
 - Support `phpunit/php-file-iterator` 5, 6, and 7, and `sebastian/complexity`

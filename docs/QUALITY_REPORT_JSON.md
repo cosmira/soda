@@ -66,7 +66,8 @@ This separate report has schema **1**:
 `research` is an object keyed by configured research check id (an empty object
 when none are configured). Each report retains candidates, partial paths,
 exclusions, coverage, limits and profiles. Unknown and truncated evidence is
-research uncertainty, not a violation or proof of absence. Console output also
-shows research summaries when there are no candidates. Research evidence does
-not affect `passed` or the exit status; `--report-type=json` remains schema 4 with the
-same three top-level fields and only ordinary violations.
+research uncertainty, not a violation or proof of absence. Console output shows
+quality violations and the final status. Research evidence is available only
+through `--research-json` and does not affect `passed` or the exit status.
+`--report-type=json` remains schema 4 with the same three top-level fields and
+only ordinary violations.

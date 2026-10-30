@@ -3,7 +3,8 @@
 📝 Flags value paths where a primitive is extracted from a representation object, processed, and reconstructed into the same representation, for inspection before changing its representation.
 
 This research check is enabled in the `standard` configuration. It never creates
-quality violations and cannot fail CI. Export its evidence with `--research-json`.
+quality violations and cannot fail CI. Console output omits research evidence.
+Export candidates, partial paths, and coverage with `--research-json`.
 
 ## Why
 

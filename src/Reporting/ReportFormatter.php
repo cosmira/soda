@@ -31,11 +31,6 @@ final readonly class ReportFormatter
     private const TAG_CLOSE = '</>';
 
     /**
-     * Defines the research status assigned to paths whose contract could not be resolved.
-     */
-    private const UNKNOWN_STATUS = 'unknown';
-
-    /**
      * Bind the metadata used to resolve rule labels, advice and severity.
      *
      * @param RuleMetadata $ruleMetadata Supplies labels and policy metadata for reported rule identifiers.
@@ -68,8 +63,6 @@ final readonly class ReportFormatter
             $output->newLine();
         }
 
-        $this->writeResearch($output, $result, $projectRoot);
-
         $passed = $result->isPassing();
         if ($passed) {
             $output->writeln('<fg=green;options=bold>[OK]</> No issues');
@@ -81,99 +74,6 @@ final readonly class ReportFormatter
             '<fg=red;options=bold>[FAIL]</> %s',
             $n === 1 ? '1 issue' : $n.' issues',
         ));
-    }
-
-    /**
-     * Show research paths and incomplete coverage independently of the quality gate.
-     */
-    private function writeResearch(OutputStyle $output, QualityResult $result, string $projectRoot): void
-    {
-        foreach ($result->research as $id => $report) {
-            $this->writeResearchReport($output, $id, $report, $projectRoot);
-            $output->newLine();
-        }
-    }
-
-    /**
-     * Render one research report with its summary line, coverage and collected evidence.
-     *
-     * @param array<string, mixed> $report
-     */
-    private function writeResearchReport(OutputStyle $output, string $id, array $report, string $projectRoot): void
-    {
-        $candidates = $report['candidates'] ?? [];
-        $partial = $report['partial'] ?? [];
-        $coverage = $report['coverage'] ?? [];
-        $unknown = count(array_filter($partial, fn (array $path): bool => ($path['status'] ?? null) === self::UNKNOWN_STATUS));
-        $truncated = count(array_filter($partial, fn (array $path): bool => ($path['status'] ?? null) === 'truncated'));
-
-        $output->writeln('<fg=yellow;options=bold>Research (nongating): '.OutputFormatter::escape($id).self::TAG_CLOSE);
-        $output->writeln(sprintf(
-            '  %d candidates; %d partial paths (unknown: %d; truncated: %d)',
-            count($candidates), count($partial), $unknown, $truncated,
-        ));
-        $this->writeResearchCoverage($output, $coverage);
-        $this->writeResearchCandidates($output, $candidates, $projectRoot);
-        $this->writeResearchPaths($output, $partial, $projectRoot);
-    }
-
-    /**
-     * Report coverage limitations that qualify how the research conclusions may be read.
-     *
-     * @param array<string, mixed> $coverage
-     */
-    private function writeResearchCoverage(OutputStyle $output, array $coverage): void
-    {
-        if (($coverage['incomplete'] ?? false) === true) {
-            $output->writeln('  Coverage incomplete; absence of candidates does not establish absence of churn.');
-        }
-
-        foreach ($coverage['limitations'] ?? [] as $limitation) {
-            $output->writeln('  Coverage: '.OutputFormatter::escape($limitation));
-        }
-    }
-
-    /**
-     * List resolved churn candidates with their concept preservation and path points.
-     *
-     * @param list<array<string, mixed>> $candidates
-     */
-    private function writeResearchCandidates(OutputStyle $output, array $candidates, string $projectRoot): void
-    {
-        foreach ($candidates as $candidate) {
-            $output->writeln('  Candidate: '.OutputFormatter::escape($candidate['message'] ?? 'Inspect the connected data path and its contracts.'));
-            $output->writeln('    Concept preservation: '.OutputFormatter::escape($candidate['concept_preservation'] ?? self::UNKNOWN_STATUS).'; manual review required.');
-            foreach ($candidate['path'] ?? [] as $point) {
-                $this->writeResearchLocation($output, $point, $projectRoot);
-            }
-        }
-    }
-
-    /**
-     * List partial evidence paths that could not be resolved into full candidates.
-     *
-     * @param list<array<string, mixed>> $partial
-     */
-    private function writeResearchPaths(OutputStyle $output, array $partial, string $projectRoot): void
-    {
-        foreach ($partial as $path) {
-            $output->writeln('  '.OutputFormatter::escape(($path['status'] ?? self::UNKNOWN_STATUS).': '.($path['reason'] ?? 'Incomplete path evidence.')));
-            if (isset($path['file'])) {
-                $this->writeResearchLocation($output, $path, $projectRoot);
-            }
-        }
-    }
-
-    /**
-     * Render one source point from a research path without prescribing a change.
-     *
-     * @param array<string, mixed> $point
-     */
-    private function writeResearchLocation(OutputStyle $output, array $point, string $projectRoot): void
-    {
-        $location = $this->shortenPath($point['file'], $projectRoot).':'.($point['line'] ?? '?');
-        $detail = trim(($point['callable'] ?? '').' '.($point['operation'] ?? ''));
-        $output->writeln('    '.OutputFormatter::escape($location.($detail !== '' ? ' '.$detail : '')));
     }
 
     /**
