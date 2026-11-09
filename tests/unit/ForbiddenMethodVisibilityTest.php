@@ -69,7 +69,7 @@ final class ForbiddenMethodVisibilityTest extends TestCase
         yield 'empty class' => [['classes' => ['']]];
         yield 'blank class' => [['classes' => ['  ']]];
         yield 'non-string class' => [['classes' => [42]]];
-        yield 'unknown visibility' => [['visibilities' => ['privte']]];
+        yield 'unknown visibility' => [['visibilities' => ['internal']]];
     }
 
     public function testCatalogKeepsThePolicyOptional(): void
