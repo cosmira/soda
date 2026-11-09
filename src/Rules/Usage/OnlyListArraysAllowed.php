@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Cosmira\Soda\Rules\Usage;
 
 use Cosmira\Soda\Analysis\FileFacts;
-use Cosmira\Soda\Analysis\SingleVisitorTraversal;
 use Cosmira\Soda\Contracts\Check;
 use Cosmira\Soda\Reporting\Violation;
 use Cosmira\Soda\Support\FnmatchPathExclusion;
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor\ParentConnectingVisitor;
 
 /**
  * Discourages “structured array” usage. Default {@see ListOnlyArrayStrictness::Pragmatic}: chained `[$a][$b]` only.
@@ -105,7 +106,7 @@ final class OnlyListArraysAllowed extends Check
         }
 
         $visitor = new ListOnlyArrayCollectingVisitor($this->strictness);
-        SingleVisitorTraversal::traverse($facts->nodes, $visitor);
+        (new NodeTraverser(new ParentConnectingVisitor(), $visitor))->traverse($facts->nodes);
         $message = $this->strictness === ListOnlyArrayStrictness::Strict
             ? self::MESSAGE_STRICT
             : self::MESSAGE_PRAGMATIC;

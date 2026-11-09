@@ -9,6 +9,12 @@ use PHPUnit\Framework\TestCase;
 
 final class FnmatchPathExclusionTest extends TestCase
 {
+    public function testFilesystemRootIncludesAbsolutePathsButAnEmptyPrefixDoesNot(): void
+    {
+        self::assertTrue((new FnmatchPathExclusion([], ['/']))->isExcludedPath(__FILE__));
+        self::assertFalse((new FnmatchPathExclusion([], ['']))->isExcludedPath(__FILE__));
+    }
+
     public function testExcludesWhenPathIsUnderPrefix(): void
     {
         $dir = sys_get_temp_dir().'/soda-fnmatch-prefix-'.uniqid();

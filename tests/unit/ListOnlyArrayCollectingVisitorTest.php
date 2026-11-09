@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Cosmira\Soda;
 
-use Cosmira\Soda\Analysis\SingleVisitorTraversal;
 use Cosmira\Soda\Rules\Usage\ListOnlyArrayCollectingVisitor;
 use Cosmira\Soda\Rules\Usage\ListOnlyArrayStrictness;
 use Cosmira\Soda\Tests\ParsesPhpSnippets;
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use PHPUnit\Framework\TestCase;
 
 final class ListOnlyArrayCollectingVisitorTest extends TestCase
@@ -17,7 +18,7 @@ final class ListOnlyArrayCollectingVisitorTest extends TestCase
     private function lines(array $nodes, ListOnlyArrayStrictness $strictness = ListOnlyArrayStrictness::Pragmatic): array
     {
         $visitor = new ListOnlyArrayCollectingVisitor($strictness);
-        SingleVisitorTraversal::traverse($nodes, $visitor);
+        (new NodeTraverser(new ParentConnectingVisitor(), $visitor))->traverse($nodes);
 
         return $visitor->lines();
     }

@@ -78,11 +78,11 @@ final readonly class FnmatchPathExclusion
      */
     private function isResolvedPathUnderPrefix(string $resolvedFile, string $prefix): bool
     {
-        $root = rtrim(str_replace('\\', '/', $this->resolvedPath($prefix)), '/');
-        if ($root === '') {
+        if ($prefix === '') {
             return false;
         }
 
+        $root = rtrim(str_replace('\\', '/', $this->resolvedPath($prefix)), '/');
         $path = rtrim($resolvedFile, '/');
 
         $boundary = $root.'/';

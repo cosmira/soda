@@ -3,6 +3,17 @@
 declare(strict_types=1);
 
 return [
+    'forbidden_method_visibility' => [
+        'class'      => 'Cosmira\\Soda\\Rules\\Structure\\ForbiddenMethodVisibility',
+        'arguments'  => [],
+        'standard'   => false,
+        'section'    => 'structural',
+        'severity'   => 'warning',
+        'default'    => 0,
+        'label'      => 'Forbidden method visibility:',
+        'advice'     => 'Change the method visibility or move the behavior outside the selected classes.',
+        'comparison' => null,
+    ],
     'representation_churn' => [
         'class'      => 'Cosmira\\Soda\\Rules\\Design\\RepresentationChurn',
         'arguments'  => [],
