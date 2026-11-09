@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Cosmira\Soda\Tests;
 
-use Cosmira\Soda\Analysis\SingleVisitorTraversal;
 use PhpParser\Node;
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use PhpParser\NodeVisitorAbstract;
 use PHPUnit\Framework\TestCase;
 
-final class SingleVisitorTraversalTest extends TestCase
+final class AstTraversalTest extends TestCase
 {
     use ParsesPhpSnippets;
 
@@ -17,7 +18,7 @@ final class SingleVisitorTraversalTest extends TestCase
     {
         $visitor = new CountingVariableVisitor();
 
-        SingleVisitorTraversal::traverse($this->parseSnippet('$a = $b;'), $visitor);
+        (new NodeTraverser(new ParentConnectingVisitor(), $visitor))->traverse($this->parseSnippet('$a = $b;'));
 
         $this->assertSame(2, $visitor->variables);
     }
@@ -26,7 +27,7 @@ final class SingleVisitorTraversalTest extends TestCase
     {
         $visitor = new DynamicVariableParentVisitor();
 
-        SingleVisitorTraversal::traverse($this->parseSnippet('$name = "value"; $$name = 1;'), $visitor);
+        (new NodeTraverser(new ParentConnectingVisitor(), $visitor))->traverse($this->parseSnippet('$name = "value"; $$name = 1;'));
 
         $this->assertTrue($visitor->sawDynamicVariableNameWithParent);
     }
@@ -52,13 +53,12 @@ PHP,
         $this->assertTrue($visitor->methodHadClassParent);
     }
 
-    public function testSingleVisitorTraversalOnlyConnectsParentsWithoutResolvingNames(): void
+    public function testParentConnectionsDoNotResolveNames(): void
     {
         $visitor = new ClassNameAndMethodParentVisitor();
 
-        SingleVisitorTraversal::traverse(
+        (new NodeTraverser(new ParentConnectingVisitor(), $visitor))->traverse(
             $this->parseSnippet('namespace App\Services; class ReportService { public function render(): void {} }'),
-            $visitor,
         );
 
         $this->assertNull($visitor->className);

@@ -153,6 +153,7 @@ for `RuleCatalog::checks()`. Its sections are `structural`, `complexity`, and
 
 | Rule | Description | Enabled by default | Affects quality result when enabled |
 | --- | --- | --- | --- |
+| [forbidden_method_visibility](forbidden_method_visibility.md) | Reports methods with forbidden visibility in selected files or classes | no | yes |
 | [max_arguments](max_arguments.md) | Arguments | no | yes |
 | [max_ask_then_tell_patterns](max_ask_then_tell_patterns.md) | Ask-then-tell patterns | yes | yes |
 | [max_class_length](max_class_length.md) | Class length | yes | yes |

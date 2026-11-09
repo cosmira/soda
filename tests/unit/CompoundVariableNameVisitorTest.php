@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Cosmira\Soda;
 
 use Cosmira\Soda\Analysis\Naming\CompoundVariableNameVisitor;
-use Cosmira\Soda\Analysis\SingleVisitorTraversal;
 use Cosmira\Soda\Tests\ParsesPhpSnippets;
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use PHPUnit\Framework\TestCase;
 
 final class CompoundVariableNameVisitorTest extends TestCase
@@ -16,7 +17,7 @@ final class CompoundVariableNameVisitorTest extends TestCase
     public function testCollectsEachCompoundLocalAndParameterOnce(): void
     {
         $visitor = new CompoundVariableNameVisitor;
-        SingleVisitorTraversal::traverse($this->parsePhpFile(<<<'PHP'
+        (new NodeTraverser(new ParentConnectingVisitor(), $visitor))->traverse($this->parsePhpFile(<<<'PHP'
 <?php
 final class Thermometer
 {
@@ -32,7 +33,7 @@ final class Thermometer
         echo $this->valueInCelsius, $_SERVER['APP_ENV'];
     }
 }
-PHP), $visitor);
+PHP));
 
         $occurrences = $visitor->occurrences();
 
@@ -48,11 +49,11 @@ PHP), $visitor);
     public function testUsesSeparateLexicalScopesForSameVariableName(): void
     {
         $visitor = new CompoundVariableNameVisitor;
-        SingleVisitorTraversal::traverse($this->parsePhpFile(<<<'PHP'
+        (new NodeTraverser(new ParentConnectingVisitor(), $visitor))->traverse($this->parsePhpFile(<<<'PHP'
 <?php
 function first(): void { $fileName = 'first'; }
 function second(): void { $fileName = 'second'; }
-PHP), $visitor);
+PHP));
 
         $this->assertCount(2, $visitor->occurrences());
         $this->assertSame(['first', 'second'], array_map(

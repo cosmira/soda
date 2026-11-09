@@ -42,6 +42,10 @@ Limits the length of physical source lines. Read [examples, options, and analysi
 
 ## Structural smells
 
+### forbidden_method_visibility
+
+Reports methods with forbidden visibility in selected files or classes. This rule is not enabled by default. Read [examples, options, and analysis boundaries](rules/forbidden_method_visibility.md).
+
 ### max_todo_fixme_comments
 
 Reports TODO and FIXME comments left in source code. Read [examples, options, and analysis boundaries](rules/max_todo_fixme_comments.md).

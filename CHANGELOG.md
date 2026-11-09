@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.3.0 - 2026-11-09
+
+- Add the optional `forbidden_method_visibility` rule. Select files or classes
+  and forbid any combination of public, protected, and private method declarations.
+- Keep the standard rule set unchanged. Existing configurations retain their
+  selected checks.
+- Remove the single-caller AST traversal wrapper and use PHP-Parser directly,
+  keeping the project within its existing class budget.
+- Fix directory matching for the filesystem root and prevent empty prefixes
+  from matching the current directory.
+
 ## 1.2.1 - 2026-10-30
 
 - Keep research candidates, unknown paths, and coverage out of console output.
