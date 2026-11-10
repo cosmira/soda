@@ -100,10 +100,13 @@ final class ForbiddenDependencies extends Check
     }
 
     /**
-     * Match types inside a namespace and its descendants, excluding similarly named siblings.
+     * Match exact types and namespace descendants, excluding similarly named siblings.
      */
     private function isInNamespace(string $type, string $prefix): bool
     {
-        return str_starts_with(strtolower(ltrim($type, '\\')), strtolower(trim($prefix, '\\')).'\\');
+        $type = strtolower(ltrim($type, '\\'));
+        $prefix = strtolower(trim($prefix, '\\'));
+
+        return $type === $prefix || str_starts_with($type, $prefix.'\\');
     }
 }

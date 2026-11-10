@@ -48,6 +48,16 @@ PHP;
         self::assertSame([], $this->findings($rule, '<?php namespace App\Analysis; use App\Commands\Run; class Worker {}'));
     }
 
+    public function testExactTypesAndGlobalYiiClassesRespectDependencyBoundaries(): void
+    {
+        $rule = new ForbiddenDependencies(['App\Schema' => ['CActiveRecord', 'Yii', 'App\Runtime\Gateway']]);
+        $source = '<?php namespace App\Schema; class Record extends \CActiveRecord { function run(\App\Runtime\Gateway $gateway) { \Yii::app(); } }';
+
+        self::assertCount(3, $this->findings($rule, $source));
+        self::assertCount(1, $this->findings(new ForbiddenDependencies(['App\Schema\Record' => ['Yii']]), $source));
+        self::assertSame([], $this->findings($rule, '<?php namespace App\Schema; class Record extends \CActiveRecordExtra {}'));
+    }
+
     public function testOverlappingRestrictionsReportEachTargetOnce(): void
     {
         $rule = new ForbiddenDependencies(['App' => ['App\Commands'], 'App\Analysis' => ['App\Commands', 'App\Commands\Nested']]);
