@@ -8,7 +8,7 @@
 
 Layering conventions such as "domain must not depend on HTTP" or "analysis must not depend on commands" only help when they are checked. Without an automated boundary, a single `use` statement quietly couples two modules and the layering erodes one exception at a time. The rule reports each prohibited source-to-target dependency edge once, at the owning class or trait declaration, and advises moving the dependency across the configured module boundary.
 
-Matching is case-insensitive and happens at namespace boundaries: `App\Analysis` matches `App\Analysis\Nested` but not `App\AnalysisExtra`.
+Prefixes may name a namespace or an exact class, including global classes such as `CActiveRecord`. Matching is case-insensitive and happens at namespace boundaries: `App\Analysis` matches `App\Analysis\Nested` but not `App\AnalysisExtra`.
 
 ## Examples
 
