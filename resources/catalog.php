@@ -27,7 +27,7 @@ return [
     ],
     'module_boundaries' => [
         'class'      => 'Cosmira\\Soda\\Rules\\Architecture\\ModuleBoundaries',
-        'arguments'  => ['namespace' => 'Cosmira\\Soda\\Rules'],
+        'arguments'  => ['namespace' => 'Cosmira\\Soda\\Rules', 'exports' => []],
         'standard'   => false,
         'section'    => 'structural',
         'severity'   => 'error',

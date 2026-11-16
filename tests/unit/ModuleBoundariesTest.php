@@ -10,23 +10,32 @@ use Cosmira\Soda\Analysis\Runner;
 use Cosmira\Soda\Config\RuleCatalog;
 use Cosmira\Soda\Config\Soda;
 use Cosmira\Soda\Rules\Architecture\ModuleBoundaries;
+use Cosmira\Soda\Rules\Architecture\NoEnvironmentReads;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class ModuleBoundariesTest extends TestCase
 {
+    private const EXPORTS = ['Events', 'Facades', 'Attributes'];
+
     public function testNamespaceIsRequired(): void
     {
         $this->expectException(ArgumentCountError::class);
-        new ModuleBoundaries;
+        new ModuleBoundaries(exports: []);
+    }
+
+    public function testExportsAreRequired(): void
+    {
+        $this->expectException(ArgumentCountError::class);
+        new ModuleBoundaries('App\\Modules');
     }
 
     public function testMultipleRootsKeepTheirOwnPolicy(): void
     {
         $config = Soda::configure()->with([
-            new ModuleBoundaries('App\\ModulesAgent', except: ['Access']),
-            new ModuleBoundaries('App\\ModulesClient'),
+            new ModuleBoundaries('App\\ModulesAgent', self::EXPORTS, except: ['Access']),
+            new ModuleBoundaries('App\\ModulesClient', self::EXPORTS),
         ]);
         $path = tempnam(sys_get_temp_dir(), 'soda-module-roots-');
         file_put_contents($path, <<<'PHP'
@@ -63,7 +72,7 @@ PHP);
     #[DataProvider('dependencies')]
     public function testModuleAccess(string $source, string $target, int $expected): void
     {
-        $rule = new ModuleBoundaries('App\\Modules', except: ['Access']);
+        $rule = new ModuleBoundaries('App\\Modules', self::EXPORTS, except: ['Access']);
         $findings = $this->findings($rule, "<?php namespace $source; class Consumer { function run(\\$target \$input) {} }");
         self::assertCount($expected, $findings);
         if ($expected === 1) {
@@ -95,7 +104,7 @@ PHP);
 
     public function testResolvesAliasesAndReportsEachDependencyOnce(): void
     {
-        $findings = $this->findings(new ModuleBoundaries('App\\Modules'), <<<'PHP'
+        $findings = $this->findings(new ModuleBoundaries('App\\Modules', self::EXPORTS), <<<'PHP'
 <?php
 namespace App\Modules\Audit;
 use App\Modules\Directory\Models\Person as Employee;
@@ -113,7 +122,7 @@ PHP);
     public function testEveryNamedTypeRespectsModuleBoundaries(string $declaration): void
     {
         $source = '<?php namespace App\\Modules\\Audit; '.$declaration;
-        $findings = $this->findings(new ModuleBoundaries('App\\Modules'), $source);
+        $findings = $this->findings(new ModuleBoundaries('App\\Modules', self::EXPORTS), $source);
         self::assertCount(1, $findings);
         self::assertSame('App\\Modules\\Audit\\Consumer', $findings[0]->class);
     }
@@ -127,7 +136,7 @@ PHP);
         yield 'enum method' => ['enum Consumer { function person() { return new \\App\\Modules\\Directory\\Models\\Person; } }'];
     }
 
-    public function testAttributesAreExportedByDefault(): void
+    public function testOnlyConfiguredNamespacesAreExported(): void
     {
         $source = <<<'PHP'
 <?php
@@ -139,7 +148,7 @@ class Person {
     #[Audit] public function save(#[Audit] string $name): void {}
 }
 PHP;
-        self::assertSame([], $this->findings(new ModuleBoundaries('App\\Modules'), $source));
+        self::assertSame([], $this->findings(new ModuleBoundaries('App\\Modules', self::EXPORTS), $source));
         self::assertCount(1, $this->findings(new ModuleBoundaries('App\\Modules', exports: ['Events', 'Facades']), $source));
     }
 
@@ -151,9 +160,46 @@ namespace App\Modules\Directory;
 #[\App\Modules\Audit\Attributes\Audited(\App\Modules\Audit\AuditOptions::class)]
 class Person {}
 PHP;
-        $findings = $this->findings(new ModuleBoundaries('App\\Modules'), $source);
+        $findings = $this->findings(new ModuleBoundaries('App\\Modules', self::EXPORTS), $source);
         self::assertCount(1, $findings);
         self::assertStringContainsString('-> App\\Modules\\Audit\\AuditOptions.', $findings[0]->message);
+    }
+
+    public function testExceptionsAreNotImplicit(): void
+    {
+        $source = '<?php namespace App\\Modules\\Audit; class Consumer extends \\App\\Modules\\Access\\Models\\User {}';
+        self::assertCount(1, $this->findings(new ModuleBoundaries('App\\Modules', self::EXPORTS), $source));
+    }
+
+    public function testFactoryExclusionPreservesProductionBoundariesAndOtherChecks(): void
+    {
+        $root = sys_get_temp_dir().'/soda-factories-'.bin2hex(random_bytes(6));
+        $directory = $root.'/app/Modules/Access/Database/Factories/Nested';
+        mkdir($directory, 0700, true);
+        $files = [
+            $directory.'/UserFactory.php',
+            $root.'/app/Modules/Access/Database/FactoriesExtra.php',
+            $root.'/app/Modules/Access/Consumer.php',
+        ];
+
+        try {
+            foreach ($files as $index => $file) {
+                file_put_contents($file, '<?php namespace App\\Modules\\Access; class Consumer'.$index.' extends \\App\\Modules\\Directory\\Models\\Person {} env("TEST");');
+            }
+            $rule = (new ModuleBoundaries('App\\Modules', exports: []))->exclude([
+                $root.'/app/Modules/*/Database/Factories/*',
+            ]);
+            $result = (new Runner)->check($files, [$rule, new NoEnvironmentReads]);
+            self::assertSame([$files[1], $files[2]], $result->violations->where('rule', 'module_boundaries')->pluck('file')->values()->all());
+            self::assertCount(3, $result->violations->where('rule', 'no_environment_reads'));
+        } finally {
+            foreach ($files as $file) {
+                unlink($file);
+            }
+            foreach (['app/Modules/Access/Database/Factories/Nested', 'app/Modules/Access/Database/Factories', 'app/Modules/Access/Database', 'app/Modules/Access', 'app/Modules', 'app', ''] as $path) {
+                rmdir($root.'/'.$path);
+            }
+        }
     }
 
     public function testCustomRootAndExports(): void
@@ -172,7 +218,7 @@ PHP;
     public function testRejectsEmptyPrefixes(array $arguments): void
     {
         $this->expectException(InvalidArgumentException::class);
-        new ModuleBoundaries(...['namespace' => 'App\\Modules', ...$arguments]);
+        new ModuleBoundaries(...['namespace' => 'App\\Modules', 'exports' => self::EXPORTS, ...$arguments]);
     }
 
     public static function invalidPrefixes(): iterable

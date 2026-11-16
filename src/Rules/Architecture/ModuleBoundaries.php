@@ -30,7 +30,7 @@ final class ModuleBoundaries extends Check
         /**
          * Namespace prefixes exposed by every module, relative to its root.
          */
-        private readonly array $exports = ['Events', 'Facades', 'Attributes'],
+        private readonly array $exports,
         /**
          * Target modules temporarily open to unrestricted sibling access.
          */
