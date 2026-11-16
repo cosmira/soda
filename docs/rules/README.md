@@ -176,6 +176,7 @@ for `RuleCatalog::checks()`. Its sections are `structural`, `complexity`, and
 | [max_methods_per_class](max_methods_per_class.md) | Methods per class | yes | yes |
 | [max_namespace_depth](max_namespace_depth.md) | Namespace depth | yes | yes |
 | [max_properties_per_class](max_properties_per_class.md) | Properties per class | no | yes |
+| [prefer_enum_for_public_constants](prefer_enum_for_public_constants.md) | Public constants | yes | yes |
 | [max_public_methods](max_public_methods.md) | Public methods | yes | yes |
 | [max_todo_fixme_comments](max_todo_fixme_comments.md) | TODO/FIXME comments | yes | yes |
 | [max_traits_per_class](max_traits_per_class.md) | Traits per class | yes | yes |

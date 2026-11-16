@@ -157,6 +157,10 @@ Limits the number of distinct external types a class references. Read [examples,
 
 Limits the number of properties declared in a single class. Read [examples, options, and analysis boundaries](rules/max_properties_per_class.md).
 
+### prefer_enum_for_public_constants
+
+Reports classes declaring more than two public constants and recommends an enum. Read [examples and analysis boundaries](rules/prefer_enum_for_public_constants.md).
+
 ### max_public_methods
 
 Limits the number of public methods a class exposes, including inherited and trait-composed ones. Read [examples, options, and analysis boundaries](rules/max_public_methods.md).

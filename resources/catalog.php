@@ -292,6 +292,16 @@ return [
         'advice'     => 'Keep state with its behavior. Group values when they share meaning or invariants; a property count alone does not justify another object.',
         'comparison' => null,
     ],
+    'prefer_enum_for_public_constants' => [
+        'class'      => 'Cosmira\\Soda\\Rules\\Structure\\PreferEnumForPublicConstants',
+        'arguments'  => [],
+        'section'    => 'structural',
+        'severity'   => 'warning',
+        'default'    => 2,
+        'label'      => 'Public constants:',
+        'advice'     => 'Use an enum instead of a class declaring more than two public constants.',
+        'comparison' => 'max',
+    ],
     'max_public_methods' => [
         'class'      => 'Cosmira\\Soda\\Rules\\Structure\\MaxPublicMethods',
         'arguments'  => [20],

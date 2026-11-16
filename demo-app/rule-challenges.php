@@ -37,6 +37,10 @@ return [
     'max_file_loc'                       => ['iteration' => 1, 'attack' => 'Inflate physical lines with comments while hiding dense logical code.'],
     'max_line_length'                    => ['iteration' => 1, 'attack' => 'Split one opaque expression across many short physical lines.'],
     'max_properties_per_class'           => ['iteration' => 2, 'attack' => 'Move state into one untyped array property.'],
+    'prefer_enum_for_public_constants'   => [
+        'iteration' => 1,
+        'attack'    => 'Group three implicitly public constants in one declaration.',
+    ],
     'max_public_methods'                 => ['iteration' => 2, 'attack' => 'Expose behavior through __call instead of declared public methods.'],
     'max_dependencies'                   => ['iteration' => 2, 'attack' => 'Pull collaborators from a container inside method bodies.'],
     'max_todo_fixme_comments'            => ['iteration' => 2, 'attack' => 'Encode debt as XXX, HACK, and deliberately vague prose.'],
