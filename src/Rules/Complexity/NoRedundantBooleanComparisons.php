@@ -59,17 +59,6 @@ final class NoRedundantBooleanComparisons extends Check
     }
 
     /**
-     * Syntax proves these result types without requesting runtime or inferred type facts.
-     *
-     * @return list<string>
-     */
-    #[\Override]
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Ordering comparisons and the integer-valued spaceship operator are outside the policy.
      */
     private function isComparison(Expr\BinaryOp $expression): bool

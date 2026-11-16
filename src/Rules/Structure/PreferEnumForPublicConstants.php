@@ -29,17 +29,6 @@ final class PreferEnumForPublicConstants extends Check
     }
 
     /**
-     * Public visibility and grouped declarations are available directly in the AST.
-     *
-     * @return list<string>
-     */
-    #[\Override]
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Count declared constants individually, including implicit public visibility.
      *
      * @return iterable<Violation>

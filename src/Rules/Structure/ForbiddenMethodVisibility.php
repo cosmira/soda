@@ -58,16 +58,6 @@ final class ForbiddenMethodVisibility extends Check
     }
 
     /**
-     * Use resolved declarations without collecting additional metrics.
-     *
-     * @return list<string>
-     */
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Inspect only directly declared methods, keeping nested classes in their own scope.
      *
      * @return iterable<Violation>

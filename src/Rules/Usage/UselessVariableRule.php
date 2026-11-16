@@ -32,17 +32,6 @@ use Cosmira\Soda\Reporting\Violation;
 final class UselessVariableRule extends Check
 {
     /**
-     * Use the parsed syntax tree directly without requesting additional metric collectors.
-     *
-     * @return list<string>
-     */
-    #[\Override]
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Return the stable rule identifier used in configuration and reports.
      */
     #[\Override]

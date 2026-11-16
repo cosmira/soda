@@ -31,16 +31,6 @@ final class NoIdenticalBranches extends Check
     }
 
     /**
-     * Inspect parsed expressions without requesting metric collectors.
-     *
-     * @return list<string>
-     */
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Compare full ternary branches and explicit match arms, preserving fallback boundaries.
      */
     public function checkFile(FileFacts $file): iterable

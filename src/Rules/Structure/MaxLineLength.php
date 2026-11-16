@@ -34,17 +34,6 @@ final class MaxLineLength extends Check
     }
 
     /**
-     * Request physical source line lengths before this rule runs.
-     *
-     * @return list<string>
-     */
-    #[\Override]
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Count bytes on physical source lines without reading the file again.
      *
      * @return iterable<Violation>

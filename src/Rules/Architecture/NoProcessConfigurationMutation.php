@@ -49,15 +49,4 @@ final class NoProcessConfigurationMutation extends Check
     {
         return 'no_process_configuration_mutation';
     }
-
-    /**
-     * This check uses the resolved AST directly and needs no extra metrics.
-     *
-     * @return list<string>
-     */
-    #[\Override]
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
 }

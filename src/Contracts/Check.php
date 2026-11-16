@@ -82,12 +82,12 @@ abstract class Check
     }
 
     /**
-     * Return required collector groups, or null when all facts may be needed.
+     * Request additional collector groups; syntax and structural facts are always available.
      *
-     * @return list<string>|null
+     * @return list<string>
      */
-    public function requiredAnalyses(): ?array
+    public function requiredAnalyses(): array
     {
-        return null;
+        return [];
     }
 }

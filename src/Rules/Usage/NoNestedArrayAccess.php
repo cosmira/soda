@@ -20,17 +20,6 @@ use PhpParser\NodeFinder;
 final class NoNestedArrayAccess extends Check
 {
     /**
-     * Use the parsed syntax tree directly without requesting additional metric collectors.
-     *
-     * @return list<string>
-     */
-    #[\Override]
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Diagnostic text reported for every access deeper than the limit.
      */
     private const MESSAGE = 'Nested array access is forbidden. Use flat structures or DTO/objects instead.';

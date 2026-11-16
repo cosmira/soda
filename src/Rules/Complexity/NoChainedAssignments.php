@@ -31,16 +31,6 @@ final class NoChainedAssignments extends Check
     }
 
     /**
-     * Inspect syntax directly without requesting additional metric collectors.
-     *
-     * @return list<string>
-     */
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Report the outermost assignment of each direct chain once.
      */
     public function checkFile(FileFacts $file): iterable

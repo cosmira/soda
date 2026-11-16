@@ -60,15 +60,4 @@ final class NoClosureRebinding extends Check
     {
         return 'no_closure_rebinding';
     }
-
-    /**
-     * This check uses the resolved AST directly and needs no extra metrics.
-     *
-     * @return list<string>
-     */
-    #[\Override]
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
 }

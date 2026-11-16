@@ -34,17 +34,6 @@ final class MaxClassesPerProject extends Check
     }
 
     /**
-     * Request structural class facts before this rule runs.
-     *
-     * @return list<string>
-     */
-    #[\Override]
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Report a project whose collected class count exceeds the configured limit.
      *
      * @return iterable<Violation>

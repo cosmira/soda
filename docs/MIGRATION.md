@@ -65,10 +65,10 @@ return Soda::configure()
 ## Custom checks and bundles
 
 Replace `Config\SodaRule` or `Quality\Rule\RuleChecker` implementations with
-`Rules\Check`. Keep `id()` and move file work to `checkFile(FileFacts)` or
+`Contracts\Check`. Keep `id()` and move file work to `checkFile(FileFacts)` or
 cross-file work to `checkProject(ProjectFacts)`. Both stages default to an empty
-result. `requiredAnalyses(): ?array` defaults to `null` (all collectors); an empty
-array requests only the shared syntax and structural facts.
+result. `requiredAnalyses(): array` defaults to `[]`, requesting only shared
+syntax and structural facts. Additional collector groups must be explicit.
 
 Read `$file->source`, `$file->nodes` and `$file->metrics` directly. Never parse
 again inside a check. Project checks use `$project->files`, containing metrics
@@ -160,3 +160,12 @@ configuration and the file copied by `soda init`.
 Discovery lists rules by identifier. Existing standard execution order and settings
 are unchanged. `max_variable_name_words` and `no_nested_array_access`, previously
 available only through direct construction, now also appear in `list:rules` as opt-in.
+
+## Explicit analysis requirements
+
+`Check::requiredAnalyses()` now returns `array` and defaults to `[]`: no additional
+collector groups are required. Empty overrides can be deleted. Keep nonempty
+requirements explicit. Custom overrides returning `?array` must change their return
+type to `array`; returning `null` to enable every collector is no longer supported.
+The low-level `FactCollector::collect($file)` API still collects all facts when
+called without a selector.

@@ -50,15 +50,4 @@ final class NoUselessConcat extends Check
     {
         return 'no_useless_concat';
     }
-
-    /**
-     * Literal operands and source lines need no metric collectors.
-     *
-     * @return list<string>
-     */
-    #[\Override]
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
 }

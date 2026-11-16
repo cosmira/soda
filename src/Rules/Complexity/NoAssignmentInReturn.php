@@ -50,16 +50,6 @@ final class NoAssignmentInReturn extends Check
     }
 
     /**
-     * Inspect parsed expressions without requesting additional metric collectors.
-     *
-     * @return list<string>
-     */
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Report each return expression once while respecting nested callable boundaries.
      */
     public function checkFile(FileFacts $file): iterable

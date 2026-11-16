@@ -30,16 +30,6 @@ final class NoEmptyFinallyBlocks extends Check
     }
 
     /**
-     * Reuse the parsed syntax tree without requesting additional measurements.
-     *
-     * @return list<string>
-     */
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Explain both syntactic cases without emitting an unsafe automatic edit.
      *
      * @return iterable<Violation>

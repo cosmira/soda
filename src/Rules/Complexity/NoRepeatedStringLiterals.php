@@ -61,16 +61,6 @@ final class NoRepeatedStringLiterals extends Check
     }
 
     /**
-     * Collect literal ownership from syntax without requesting project metrics.
-     *
-     * @return list<string>
-     */
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Report one group per owner and value at the occurrence that crosses the permitted count.
      */
     public function checkFile(FileFacts $file): iterable

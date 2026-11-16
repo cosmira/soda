@@ -1,5 +1,24 @@
 # Changelog
 
+## 2.0.0 - 2026-11-17
+
+- Narrow `Check::requiredAnalyses()` to `array` and default it to `[]`: no
+  additional collectors. Remove empty built-in overrides and the runner's implicit
+  `null`-means-all behavior. Custom nullable overrides must be updated.
+- Add `no_nullable_collections` to the standard configuration, generated configs
+  and Soda's own quality check. Report nullable collection return types only when
+  closed callable bodies prove non-null collection results.
+- Recognize native arrays/iterables and known Laravel Collection, Eloquent
+  Collection and LazyCollection constructors. Preserve genuine nullable outcomes,
+  unknown calls, generators and overridable extension points. No automatic rewrite
+  or project-code execution is performed.
+- Keep the source class budget unchanged by folding a single-consumer lexical
+  scope record into its owner.
+
+PHP 8.2 remains supported and no dependencies are added. See
+[migration](docs/MIGRATION.md#explicit-analysis-requirements) for the extension
+contract change. Existing explicit rule lists can add `NoNullableCollections`.
+
 ## 1.6.0 - 2026-11-16
 
 - Add `no_redundant_array_keys` to the standard configuration. Report literal

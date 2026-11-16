@@ -80,3 +80,7 @@ configuration behavior. No numeric violation allowance is introduced.
 See [migration](MIGRATION.md) for namespace and extension changes. Existing
 metric formulas and diagnostic evidence are the compatibility boundary. Internal
 containers and execution adapters are deliberately not preserved.
+
+Rules inherit an empty `requiredAnalyses(): array` list when they need only shared
+syntax and structural facts. The runner merges explicit additional requirements;
+a rule cannot implicitly request every collector through `null`.

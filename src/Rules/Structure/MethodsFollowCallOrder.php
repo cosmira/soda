@@ -24,16 +24,6 @@ final class MethodsFollowCallOrder extends Check
     }
 
     /**
-     * Use the already parsed syntax tree.
-     *
-     * @return list<string>
-     */
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Check declaration order using the parsed file.
      *
      * @return iterable<Violation>

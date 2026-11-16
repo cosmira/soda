@@ -27,17 +27,6 @@ use PhpToken;
 final class NoTemporaryReturnVariable extends Check
 {
     /**
-     * Declare an AST-only check.
-     *
-     * @return list<string>
-     */
-    #[\Override]
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Return the stable rule identifier.
      */
     #[\Override]

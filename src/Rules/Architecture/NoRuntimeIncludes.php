@@ -47,15 +47,4 @@ final class NoRuntimeIncludes extends Check
     {
         return 'no_runtime_includes';
     }
-
-    /**
-     * This check uses the resolved AST directly and needs no extra metrics.
-     *
-     * @return list<string>
-     */
-    #[\Override]
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
 }

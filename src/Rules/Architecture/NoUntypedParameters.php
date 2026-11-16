@@ -47,12 +47,4 @@ final class NoUntypedParameters extends Check
     {
         return 'no_untyped_parameters';
     }
-
-    /**
-     * Declare the fact collectors required by this check.
-     */
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
 }

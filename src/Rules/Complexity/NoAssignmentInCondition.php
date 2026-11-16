@@ -22,17 +22,6 @@ use Cosmira\Soda\Reporting\Violation;
 final class NoAssignmentInCondition extends Check
 {
     /**
-     * Request assignment-in-condition facts before this rule runs.
-     *
-     * @return list<string>
-     */
-    #[\Override]
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Diagnostic text reported for every assignment found inside a condition.
      */
     private const MESSAGE = 'Assignment inside condition is forbidden. Assign first, then test the value.';

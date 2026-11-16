@@ -60,15 +60,4 @@ final class NoBehaviorMagicMethods extends Check
     {
         return 'no_behavior_magic_methods';
     }
-
-    /**
-     * This check uses the resolved AST directly and needs no extra metrics.
-     *
-     * @return list<string>
-     */
-    #[\Override]
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
 }

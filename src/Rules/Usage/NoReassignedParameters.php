@@ -51,16 +51,6 @@ final class NoReassignedParameters extends Check
     }
 
     /**
-     * Analyze lexical bindings directly without requesting additional facts.
-     *
-     * @return list<string>
-     */
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Report direct writes with parameter names and original source locations.
      */
     public function checkFile(FileFacts $file): iterable

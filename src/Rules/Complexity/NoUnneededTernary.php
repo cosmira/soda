@@ -29,16 +29,6 @@ final class NoUnneededTernary extends Check
     }
 
     /**
-     * Inspect parsed expressions without requesting type or metric collectors.
-     *
-     * @return list<string>
-     */
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Preserve boolean conversion, condition evaluation and the selected branch's effects.
      */
     public function checkFile(FileFacts $file): iterable

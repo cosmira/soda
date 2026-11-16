@@ -34,16 +34,6 @@ final class MultilinePropertyPhpDoc extends Check
     public function __construct(private readonly array $visibilities = ['public']) {}
 
     /**
-     * Inspect declarations in the already parsed syntax tree.
-     *
-     * @return list<string>
-     */
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Produce diagnostics directly from the declaration that needs documentation.
      *
      * @return iterable<Violation>

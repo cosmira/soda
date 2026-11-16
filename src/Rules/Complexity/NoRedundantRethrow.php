@@ -24,16 +24,6 @@ use PhpParser\NodeFinder;
 final class NoRedundantRethrow extends Check
 {
     /**
-     * Inspect the shared AST without collecting additional metrics.
-     *
-     * @return list<string>
-     */
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Earlier catches can shield a later broad handler and are deliberately excluded.
      *
      * @return iterable<Violation>

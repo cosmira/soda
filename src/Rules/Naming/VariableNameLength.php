@@ -35,16 +35,6 @@ final class VariableNameLength extends Check
     public function __construct(private readonly int $min = 2, private readonly int $max = 16) {}
 
     /**
-     * Use the already parsed syntax tree.
-     *
-     * @return list<string>
-     */
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Check the selected category of names from the parsed syntax tree.
      *
      * @return iterable<Violation>

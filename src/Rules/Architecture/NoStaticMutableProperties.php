@@ -47,15 +47,4 @@ final class NoStaticMutableProperties extends Check
     {
         return 'no_static_mutable_properties';
     }
-
-    /**
-     * This check uses the resolved AST directly and needs no extra metrics.
-     *
-     * @return list<string>
-     */
-    #[\Override]
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
 }

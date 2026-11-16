@@ -30,16 +30,6 @@ final class NoNestedTernary extends Check
     }
 
     /**
-     * Inspect parsed expressions without requesting metric collectors.
-     *
-     * @return list<string>
-     */
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Report each outer decision once without crossing callable or argument boundaries.
      */
     public function checkFile(FileFacts $file): iterable

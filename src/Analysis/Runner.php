@@ -42,11 +42,11 @@ class Runner
      *
      * @param list<non-empty-string> $files
      * @param list<Check>            $checks
-     * @param list<string>|null      $required
+     * @param list<string>           $required
      *
      * @return list<Violation>
      */
-    private function analyseFiles(array $files, array $checks, ?array $required, ProjectFacts $project): array
+    private function analyseFiles(array $files, array $checks, array $required, ProjectFacts $project): array
     {
         $violations = [];
         foreach (array_unique($files) as $path) {
@@ -59,12 +59,12 @@ class Runner
     /**
      * Analyze one file and record its facts, or report an unparseable source instead.
      *
-     * @param list<Check>       $checks
-     * @param list<string>|null $required
+     * @param list<Check>  $checks
+     * @param list<string> $required
      *
      * @return list<Violation>
      */
-    private function analyseFile(string $path, array $checks, ?array $required, ProjectFacts $project): array
+    private function analyseFile(string $path, array $checks, array $required, ProjectFacts $project): array
     {
         try {
             $file = $this->collector->collect($path, $required);
@@ -141,21 +141,17 @@ class Runner
     }
 
     /**
-     * Null requirements request every collector for a custom PHP check.
+     * Combine the explicitly requested collector groups without running unrelated analyses.
      *
      * @param list<Check> $checks
      *
-     * @return list<string>|null
+     * @return list<string>
      */
-    private function requiredAnalyses(array $checks): ?array
+    private function requiredAnalyses(array $checks): array
     {
         $required = [];
         foreach ($checks as $check) {
             $analyses = $check->requiredAnalyses();
-            if ($analyses === null) {
-                return null;
-            }
-
             array_push($required, ...$analyses);
         }
 

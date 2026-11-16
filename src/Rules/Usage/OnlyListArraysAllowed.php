@@ -29,17 +29,6 @@ use PhpParser\NodeVisitor\ParentConnectingVisitor;
 final class OnlyListArraysAllowed extends Check
 {
     /**
-     * Use the parsed syntax tree directly without requesting additional metric collectors.
-     *
-     * @return list<string>
-     */
-    #[\Override]
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Diagnostic text asking the author to review the shape of the data.
      */
     private const MESSAGE_PRAGMATIC = 'This policy forbids nested array indexing. Review the data shape: repeated domain meaning or invariants can justify a value object; introducing a temporary alone does not improve the model.';

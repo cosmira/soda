@@ -56,17 +56,6 @@ final class NoRedundantBooleanReturns extends Check
     }
 
     /**
-     * Resolved AST parents provide lexical adjacency without extra metric collectors.
-     *
-     * @return list<string>
-     */
-    #[\Override]
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * PHP boolean literals are case insensitive; qualified application constants are distinct.
      */
     private function tryBooleanReturn(?Stmt\Return_ $return): ?bool

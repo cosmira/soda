@@ -190,6 +190,7 @@ for `RuleCatalog::checks()`. Its sections are `structural`, `complexity`, and
 | Rule | Description | Enabled by default | Affects quality result when enabled |
 | --- | --- | --- | --- |
 | [no_numeric_array_index](no_numeric_array_index.md) | Numeric array index | yes | yes |
+| [no_nullable_collections](no_nullable_collections.md) | Nullable collection types with proven non-null returns | yes | yes |
 | [no_redundant_array_keys](no_redundant_array_keys.md) | Explicit keys repeating implicit list positions | yes | yes |
 | [max_variable_name_words](max_variable_name_words.md) | Limits words in local variable names | no | yes |
 | [no_nested_array_access](no_nested_array_access.md) | Reports array access deeper than the selected limit | no | yes |

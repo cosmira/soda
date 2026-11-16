@@ -74,17 +74,6 @@ final class NoVacuousDocblocks extends Check
     }
 
     /**
-     * Inspect declarations in the already parsed syntax tree.
-     *
-     * @return list<string>
-     */
-    #[\Override]
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Report every documented member whose description carries no content words.
      *
      * @return iterable<Violation>

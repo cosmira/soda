@@ -29,17 +29,6 @@ final class NoConsecutiveBlockComments extends Check
     }
 
     /**
-     * Inspect comment tokens in the source without requesting metric collectors.
-     *
-     * @return list<string>
-     */
-    #[\Override]
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Report every additional block in a sequence separated only by whitespace.
      *
      * @return iterable<Violation>

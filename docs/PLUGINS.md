@@ -10,9 +10,9 @@ return \Cosmira\Soda\Config\Soda::configure()
 
 Every rule extends `Cosmira\Soda\Contracts\Check`. Implement `id()` and the stages
 you need: `checkFile(FileFacts)` or `checkProject(ProjectFacts)`. Both stages
-otherwise return an empty iterable. `requiredAnalyses()` returns `null` by
-default, requesting all collectors; `[]` requests only the shared PHP syntax
-and structural facts. It is safe to omit this optimization in a custom rule.
+otherwise return an empty iterable. `requiredAnalyses(): array` returns `[]` by
+default: shared PHP syntax and structural facts are always available. Override it
+only to request additional collector groups. Returning `null` is not supported.
 
 A PHP rule can inspect the ready AST without reopening or parsing the file:
 
@@ -29,8 +29,6 @@ use PhpParser\NodeFinder;
 final class NoVarDump extends Check
 {
     public function id(): string { return 'no_var_dump'; }
-
-    public function requiredAnalyses(): ?array { return []; }
 
     public function checkFile(FileFacts $file): iterable
     {

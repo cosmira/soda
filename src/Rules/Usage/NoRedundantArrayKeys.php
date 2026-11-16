@@ -28,17 +28,6 @@ final class NoRedundantArrayKeys extends Check
     }
 
     /**
-     * Inspect array literals without requesting metric collectors.
-     *
-     * @return list<string>
-     */
-    #[\Override]
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Report one finding per array whose explicit keys can all be omitted.
      *
      * @return iterable<Violation>

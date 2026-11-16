@@ -62,17 +62,6 @@ final class PreferCombinedConditions extends Check
     }
 
     /**
-     * Parsed conditions and attached comments require no additional fact collectors.
-     *
-     * @return list<string>
-     */
-    #[\Override]
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Alternatives have their own path and cannot be absorbed into a conjunction.
      */
     private function isUnbranched(Stmt\If_ $branch): bool

@@ -7,7 +7,6 @@ namespace Cosmira\Soda\Tests;
 use Cosmira\Soda\Analysis\Runner;
 use Cosmira\Soda\Config\RuleCatalog;
 use Cosmira\Soda\Config\Soda;
-use Cosmira\Soda\Contracts\Check;
 use Cosmira\Soda\Reporting\QualityJsonReportFormatter;
 use Cosmira\Soda\Reporting\RuleMetadata;
 use PHPUnit\Framework\TestCase;
@@ -19,15 +18,8 @@ final class NamedRulesCompatibilityTest extends TestCase
     {
         $files = (new Facade)->getFilesAsArray([dirname(__DIR__, 2).'/demo-app'], ['.php']);
         $selective = (new Runner)->check($files, Soda::configure()->with(RuleCatalog::standard())->checks());
-        $allFacts = new class extends Check
-        {
-            public function id(): string
-            {
-                return 'request_all_facts';
-            }
-        };
-        $full = (new Runner)->check($files, Soda::configure()->with([...RuleCatalog::standard(), $allFacts])->checks());
-        self::assertEquals($selective->violations->all(), $full->violations->all());
+        $full = CheckFixture::run(RuleCatalog::standard(), array_fill_keys($files, []));
+        self::assertEquals($selective->violations->all(), $full->all());
     }
 
     public function testEveryDemoDiagnosticMatchesTheReviewedCatalogResult(): void

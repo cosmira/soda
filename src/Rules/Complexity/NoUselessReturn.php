@@ -58,15 +58,4 @@ final class NoUselessReturn extends Check
     {
         return 'no_useless_return';
     }
-
-    /**
-     * Callable bodies are available in the AST without metric collection.
-     *
-     * @return list<string>
-     */
-    #[\Override]
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
 }

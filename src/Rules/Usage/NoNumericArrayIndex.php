@@ -22,14 +22,6 @@ use PhpParser\NodeFinder;
 final class NoNumericArrayIndex extends Check
 {
     /**
-     * Read the existing AST without requesting other analyses.
-     */
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Preserve the published rule identifier.
      */
     public function id(): string

@@ -119,7 +119,7 @@ PHP);
 
         try {
             $config = require $path;
-            self::assertCount(110, $config->checks());
+            self::assertCount(111, $config->checks());
             self::assertSame([dirname($path).'/src'], $config->paths());
         } finally {
             unlink($path);

@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 
 final class SodaRuleTest extends TestCase
 {
-    public function testDefaultStagesAreEmptyAndCustomRulesRequestAllFacts(): void
+    public function testDefaultStagesAndAdditionalAnalysesAreEmpty(): void
     {
         $rule = new class extends Check
         {
@@ -26,7 +26,7 @@ final class SodaRuleTest extends TestCase
         };
         self::assertSame([], $rule->checkFile(new FileFacts('/file.php', '', [], [])));
         self::assertSame([], $rule->checkProject(new ProjectFacts));
-        self::assertNull($rule->requiredAnalyses());
+        self::assertSame([], $rule->requiredAnalyses());
     }
 
     public function testFileChecksShareSourceAndAstAndProjectChecksRunLast(): void
@@ -80,11 +80,6 @@ final class SodaRuleTest extends TestCase
             public function id(): string
             {
                 return 'debug_calls';
-            }
-
-            public function requiredAnalyses(): ?array
-            {
-                return [];
             }
 
             public function checkFile(FileFacts $file): iterable

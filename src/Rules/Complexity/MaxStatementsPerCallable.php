@@ -45,16 +45,6 @@ final class MaxStatementsPerCallable extends Check
     }
 
     /**
-     * Count syntax directly without requesting additional metric collectors.
-     *
-     * @return list<string>
-     */
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Evaluate methods, named functions, closures and arrow functions separately.
      */
     public function checkFile(FileFacts $file): iterable

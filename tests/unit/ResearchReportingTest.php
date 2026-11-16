@@ -37,11 +37,6 @@ final class ResearchReportingTest extends TestCase
                 return 'representation_churn';
             }
 
-            public function requiredAnalyses(): ?array
-            {
-                return [];
-            }
-
             public function researchProject(ProjectFacts $project): array
             {
                 return $this->report;

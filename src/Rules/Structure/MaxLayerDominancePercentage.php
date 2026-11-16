@@ -36,16 +36,6 @@ final class MaxLayerDominancePercentage extends Check
     ];
 
     /**
-     * Use the already parsed syntax tree.
-     *
-     * @return list<string>
-     */
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Configure the dominance percentage and minimum directory size.
      *
      * @param int $threshold Threshold used to decide whether to report the measured value.

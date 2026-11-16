@@ -31,16 +31,6 @@ final class NoReturnInFinally extends Check
     }
 
     /**
-     * Inspect the resolved AST and its lexical parent connections.
-     *
-     * @return list<string>
-     */
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Report explicit returns belonging to a finally in the same lexical callable.
      */
     public function checkFile(FileFacts $file): iterable

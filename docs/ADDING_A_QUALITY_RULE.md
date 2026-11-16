@@ -34,8 +34,8 @@ and [the execution flow](PROJECT_FLOW.md).
 Every built-in check is `final` and directly extends one of two bases:
 
 - `Check`: implement `checkFile()` or `checkProject()`, decide what violates the
-  rule, and construct `Violation` in that class. `requiredAnalyses()` returns `[]`
-  for an AST-only check; `null` requests all metric collectors.
+  rule, and construct `Violation` in that class. `requiredAnalyses()` defaults to `[]`
+  for an AST-only check; override it only to list additional collector groups.
 - `ExpressionCheck`: declare `expression()` and construct `Violation` in
   `violation()`. The base only compiles the expression, selects fact rows and
   runs the appropriate file/project stage. It also extends `Check`.

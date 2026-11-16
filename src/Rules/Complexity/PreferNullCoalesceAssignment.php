@@ -32,17 +32,6 @@ final class PreferNullCoalesceAssignment extends Check
     private const PARENT = 'parent';
 
     /**
-     * Declare an AST-only check.
-     *
-     * @return list<string>
-     */
-    #[\Override]
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Return the stable rule identifier.
      */
     #[\Override]

@@ -55,6 +55,10 @@ return [
         'iteration' => 100,
         'attack'    => 'Mix implicit and explicit keys; nest the list or use array() syntax.',
     ],
+    'no_nullable_collections' => [
+        'iteration' => 100,
+        'attack'    => 'Preserve real null results, unknown calls and overridable hooks.',
+    ],
     'unused_methods'                     => ['iteration' => 4, 'attack' => 'Invoke dead-looking methods dynamically or only through framework convention.'],
     'no_temporary_return_variable'       => ['iteration' => 4, 'attack' => 'Annotate a temporary call result with @var before immediately returning it.'],
     'useless_variable'                   => ['iteration' => 4, 'attack' => 'Pass an alias through closure capture before returning it unchanged.'],

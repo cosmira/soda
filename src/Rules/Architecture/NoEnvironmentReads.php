@@ -69,15 +69,4 @@ final class NoEnvironmentReads extends Check
     {
         return 'no_environment_reads';
     }
-
-    /**
-     * This check uses the resolved AST directly and needs no extra metrics.
-     *
-     * @return list<string>
-     */
-    #[\Override]
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
 }

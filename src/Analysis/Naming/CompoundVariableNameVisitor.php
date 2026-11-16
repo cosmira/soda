@@ -20,6 +20,8 @@ use PhpParser\Node\Stmt\Function_;
  * Object properties are intentionally excluded: their owning type supplies
  * context that a free scalar does not have.
  *
+ * @phpstan-type Scope array{key: string, class: ?string, method: ?string}
+ *
  * @internal
  */
 final class CompoundVariableNameVisitor extends FactVisitor
@@ -56,7 +58,7 @@ final class CompoundVariableNameVisitor extends FactVisitor
     /**
      * Saved callable context restored after traversing nested scopes.
      *
-     * @var list<CompoundVariableScope>
+     * @var list<Scope>
      */
     private array $scopeStack = [];
 
@@ -69,8 +71,10 @@ final class CompoundVariableNameVisitor extends FactVisitor
 
     /**
      * Callable context currently being traversed.
+     *
+     * @var Scope
      */
-    private CompoundVariableScope $scope;
+    private array $scope = ['key' => 'file', 'class' => null, 'method' => null];
 
     /**
      * Class owning the declarations currently being traversed.
@@ -81,14 +85,6 @@ final class CompoundVariableNameVisitor extends FactVisitor
      * Monotonic counter giving every visited scope a stable occurrence key.
      */
     private int $scopeSequence = 0;
-
-    /**
-     * Starts collection in the file-level lexical scope.
-     */
-    public function __construct()
-    {
-        $this->scope = new CompoundVariableScope('file');
-    }
 
     /**
      * Collect facts before traversing the children of this syntax node.
@@ -146,7 +142,7 @@ final class CompoundVariableNameVisitor extends FactVisitor
     {
         $previous = array_pop($this->scopeStack);
 
-        if ($previous instanceof CompoundVariableScope) {
+        if ($previous !== null) {
             $this->scope = $previous;
         }
     }
@@ -192,11 +188,11 @@ final class CompoundVariableNameVisitor extends FactVisitor
     {
         $this->scopeStack[] = $this->scope;
         $this->scopeSequence++;
-        $this->scope = new CompoundVariableScope(
-            'callable@'.$node->getStartLine().'#'.$this->scopeSequence,
-            $this->class,
-            $this->methodName($node),
-        );
+        $this->scope = [
+            'key'    => 'callable@'.$node->getStartLine().'#'.$this->scopeSequence,
+            'class'  => $this->class,
+            'method' => $this->methodName($node),
+        ];
     }
 
     /**
@@ -236,7 +232,7 @@ final class CompoundVariableNameVisitor extends FactVisitor
             return;
         }
 
-        $key = $this->scope->key.'$'.$variable->name;
+        $key = $this->scope['key'].'$'.$variable->name;
         if (isset($this->seen[$key])) {
             return;
         }
@@ -246,8 +242,8 @@ final class CompoundVariableNameVisitor extends FactVisitor
             $variable->name,
             $words,
             $variable->getStartLine(),
-            $this->scope->class,
-            $this->scope->method,
+            $this->scope['class'],
+            $this->scope['method'],
         );
     }
 

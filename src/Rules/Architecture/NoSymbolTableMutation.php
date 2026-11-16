@@ -49,15 +49,4 @@ final class NoSymbolTableMutation extends Check
     {
         return 'no_symbol_table_mutation';
     }
-
-    /**
-     * This check uses the resolved AST directly and needs no extra metrics.
-     *
-     * @return list<string>
-     */
-    #[\Override]
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
 }

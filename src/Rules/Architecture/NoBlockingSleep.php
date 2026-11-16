@@ -49,15 +49,4 @@ final class NoBlockingSleep extends Check
     {
         return 'no_blocking_sleep';
     }
-
-    /**
-     * This check uses the resolved AST directly and needs no extra metrics.
-     *
-     * @return list<string>
-     */
-    #[\Override]
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
 }

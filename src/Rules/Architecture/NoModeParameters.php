@@ -50,12 +50,4 @@ final class NoModeParameters extends Check
     {
         return 'no_mode_parameters';
     }
-
-    /**
-     * Reuse resolved syntax without extra metric collectors.
-     */
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
 }

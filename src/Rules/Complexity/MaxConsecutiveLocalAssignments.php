@@ -43,16 +43,6 @@ final class MaxConsecutiveLocalAssignments extends Check
     }
 
     /**
-     * Measure direct callable bodies without requesting other metric collectors.
-     *
-     * @return list<string>
-     */
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Report each maximal excessive run once at its first assignment.
      */
     public function checkFile(FileFacts $file): iterable

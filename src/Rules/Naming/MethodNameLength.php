@@ -36,16 +36,6 @@ final class MethodNameLength extends Check
     public function __construct(private readonly int $min = 1, private readonly int $max = 32) {}
 
     /**
-     * Use the already parsed syntax tree.
-     *
-     * @return list<string>
-     */
-    public function requiredAnalyses(): array
-    {
-        return [];
-    }
-
-    /**
      * Check the selected category of names from the parsed syntax tree.
      *
      * @return iterable<Violation>

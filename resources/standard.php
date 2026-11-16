@@ -102,6 +102,7 @@ use Cosmira\Soda\Rules\Structure\NoTodoFixmeComments;
 use Cosmira\Soda\Rules\Structure\NoTrivialDelegatingClasses;
 use Cosmira\Soda\Rules\Structure\NoTrivialFactories;
 use Cosmira\Soda\Rules\Structure\PreferEnumForPublicConstants;
+use Cosmira\Soda\Rules\Usage\NoNullableCollections;
 use Cosmira\Soda\Rules\Usage\NoNumericArrayIndex;
 use Cosmira\Soda\Rules\Usage\NoReassignedParameters;
 use Cosmira\Soda\Rules\Usage\NoRedundantArrayKeys;
@@ -149,6 +150,7 @@ return Soda::configure()
         new OnlyListArraysAllowed(),
         new NoNumericArrayIndex(),
         new NoRedundantArrayKeys(),
+        new NoNullableCollections(),
         new NoUnusedMethods(),
         new NoTemporaryReturnVariable(),
         new UselessVariableRule(),

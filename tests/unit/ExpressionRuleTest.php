@@ -72,7 +72,7 @@ PHP);
         $this->assertSame(0, $file->metrics['classes']['App\\Domain\\Order']['efferent_coupling']);
     }
 
-    public function testLegacyRulesKeepAllAnalyses(): void
+    public function testCustomRulesDefaultToNoAdditionalAnalyses(): void
     {
         $legacy = new class extends SodaRule
         {
@@ -86,7 +86,7 @@ PHP);
                 return [];
             }
         };
-        $this->assertNull($legacy->requiredAnalyses());
+        $this->assertSame([], $legacy->requiredAnalyses());
     }
 
     public function testConfigurationRunsRulesAndReportsBrokenSources(): void

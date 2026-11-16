@@ -509,3 +509,9 @@ Reports explicit integer keys that repeat implicit list positions. See [examples
 ### no_nested_array_access
 
 Optional limit on chained array access. See [examples](rules/no_nested_array_access.md).
+
+### no_nullable_collections
+
+Reports nullable collection return types only when the closed callable body proves
+non-null collection returns. Supports native arrays/iterables and known Laravel
+collection classes. See [proof boundaries and examples](rules/no_nullable_collections.md).
