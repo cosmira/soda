@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.4.2 - 2026-11-16
+
+- Require both `namespace` and `exports` in `ModuleBoundaries`. There are no
+  implicit public namespaces; `except` still defaults to an empty list.
+- Verify that per-rule factory exclusions preserve checks on production files
+  and leave other rules active for factory files.
+
+This changes the constructor introduced in 1.4.0: callers that omitted `exports`
+must now supply it explicitly. Pass `[]` to keep all sibling module types private.
+Project-specific public namespaces and factory exclusions belong in `soda.php`.
+
 ## 1.4.1 - 2026-11-16
 
 - Export `Attributes` alongside `Events` and `Facades` by default in

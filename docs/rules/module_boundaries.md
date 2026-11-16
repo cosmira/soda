@@ -2,10 +2,10 @@
 
 Keep module internals private. Sibling modules communicate through exported namespaces.
 
-This rule is **opt-in**. Its root namespace is required. Modules are the immediate
-children of that root. `Events`, `Facades`, and `Attributes` are public; everything else belongs
-to its module.
-New modules follow the same policy without another configuration entry.
+This rule is **opt-in**. Both the root namespace and the exported namespaces are
+required. Modules are the immediate children of that root. Each project selects
+its public API; Soda does not assume any namespace names or module exceptions.
+New modules follow the configured policy without another configuration entry.
 
 ## Configuration
 
@@ -13,10 +13,10 @@ New modules follow the same policy without another configuration entry.
 use Cosmira\Soda\Config\Soda;
 use Cosmira\Soda\Rules\Architecture\ModuleBoundaries;
 
-new ModuleBoundaries('App\\Modules');
+new ModuleBoundaries('App\\Modules', exports: ['Events', 'Facades', 'Attributes']);
 
 // Temporary access to all types in Access; Access must still respect other modules.
-new ModuleBoundaries('App\\Modules', except: ['Access']);
+new ModuleBoundaries('App\\Modules', exports: ['Events', 'Facades', 'Attributes'], except: ['Access']);
 
 // A different module layout and public API convention.
 new ModuleBoundaries(namespace: 'Domain', exports: ['Contracts']);
@@ -25,7 +25,7 @@ new ModuleBoundaries(namespace: 'Domain', exports: ['Contracts']);
 | Argument | Default | Meaning |
 | --- | --- | --- |
 | `namespace` | Required | Namespace whose immediate children are modules. |
-| `exports` | `['Events', 'Facades', 'Attributes']` | Public namespace prefixes relative to each module. An empty list exports nothing. |
+| `exports` | Required | Public namespace prefixes relative to each module. An empty list exports nothing. |
 | `except` | `[]` | Module names whose types remain accessible from every sibling module. |
 
 Names match case-insensitively at namespace boundaries. Leading and trailing
@@ -33,14 +33,15 @@ backslashes are accepted; empty prefixes throw `InvalidArgumentException`.
 Exceptions apply to the **target**, not the caller. They do not exempt a module
 from respecting its neighbors.
 
-Attribute arguments still obey module boundaries. Exporting `Attributes` does not
-expose other types passed to an attribute constructor.
+If a project exports `Attributes`, attribute arguments still obey module
+boundaries. Exporting that namespace does not expose other types passed to an
+attribute constructor.
 
 Exclude test-data factories from this rule when they need models from several
 modules. Other checks still analyze these files:
 
 ```php
-(new ModuleBoundaries('App\\Modules'))->exclude([
+(new ModuleBoundaries('App\\Modules', exports: ['Events', 'Facades', 'Attributes']))->exclude([
     __DIR__.'/app/Modules/*/Database/Factories/*',
 ]);
 ```
@@ -55,8 +56,8 @@ Use PHP namespace separators, even when the directories use forward slashes.
 return Soda::configure()
     ->withPaths(['app/'])
     ->with([
-        new ModuleBoundaries('App\\ModulesAgent', except: ['Access']),
-        new ModuleBoundaries('App\\ModulesClient'),
+        new ModuleBoundaries('App\\ModulesAgent', exports: ['Events', 'Facades'], except: ['Access']),
+        new ModuleBoundaries('App\\ModulesClient', exports: ['Contracts']),
     ]);
 ```
 
