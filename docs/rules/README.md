@@ -44,6 +44,7 @@ for `RuleCatalog::checks()`. Its sections are `structural`, `complexity`, and
 
 | Rule | Description | Enabled by default | Affects quality result when enabled |
 | --- | --- | --- | --- |
+| [module_boundaries](module_boundaries.md) | Private cross-module dependencies | no | yes |
 | [forbidden_dependencies](forbidden_dependencies.md) | Forbidden module dependencies | no | yes |
 | [no_anonymous_classes](no_anonymous_classes.md) | Anonymous classes | yes | yes |
 | [no_behavior_magic_methods](no_behavior_magic_methods.md) | Behavior magic methods | yes | yes |

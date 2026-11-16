@@ -8,10 +8,12 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\Trait_;
+use PhpParser\Node\Stmt\ClassLike;
+use PhpParser\Node\Stmt\Enum_;
+use PhpParser\Node\Stmt\Interface_;
 
 /**
- * Enters/leaves class and trait declarations for Ce tracking.
+ * Enters/leaves named type declarations for Ce tracking.
  *
  * @internal
  */
@@ -31,7 +33,7 @@ final readonly class EfferentCouplingClassScanner
     /**
      * Enter using the current analysis state.
      */
-    public function enter(Class_|Trait_ $node): void
+    public function enter(ClassLike $node): void
     {
         $isAnonymousClass = $node->getAttribute('parent') instanceof New_;
         if ($isAnonymousClass) {
@@ -54,10 +56,22 @@ final readonly class EfferentCouplingClassScanner
     /**
      * Capture declared supertypes while visiting the syntax tree.
      */
-    private function captureDeclaredSupertypes(Class_|Trait_ $node): void
+    private function captureDeclaredSupertypes(ClassLike $node): void
     {
         if ($node instanceof Class_) {
             $this->captureClassExtendsAndInterfaces($node);
+        }
+
+        if ($node instanceof Interface_) {
+            foreach ($node->extends as $parent) {
+                $this->types->recordName($parent);
+            }
+        }
+
+        if ($node instanceof Enum_) {
+            foreach ($node->implements as $interface) {
+                $this->types->recordName($interface);
+            }
         }
 
         $this->captureTraitAdoptions($node);
@@ -78,7 +92,7 @@ final readonly class EfferentCouplingClassScanner
     /**
      * Capture trait adoptions while visiting the syntax tree.
      */
-    private function captureTraitAdoptions(Class_|Trait_ $node): void
+    private function captureTraitAdoptions(ClassLike $node): void
     {
         foreach ($node->getTraitUses() as $use) {
             foreach ($use->traits as $traitName) {
@@ -92,7 +106,7 @@ final readonly class EfferentCouplingClassScanner
      *
      * @psalm-return non-empty-string|null
      */
-    private function resolveExtends(Class_|Trait_ $node): ?string
+    private function resolveExtends(ClassLike $node): ?string
     {
         $hasNoParent = ! $node instanceof Class_ || ! $node->extends instanceof Name;
         if ($hasNoParent) {
@@ -107,7 +121,7 @@ final readonly class EfferentCouplingClassScanner
      */
     public function leave(Node $node): void
     {
-        $isUnsupportedType = ! ($node instanceof Class_) && ! ($node instanceof Trait_);
+        $isUnsupportedType = ! $node instanceof ClassLike;
         if ($isUnsupportedType) {
             return;
         }

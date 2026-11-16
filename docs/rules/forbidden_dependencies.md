@@ -64,5 +64,6 @@ return Soda::configure()
 
 ## Related rules
 
+- [module_boundaries](module_boundaries.md) — keeps sibling modules private except for exported namespaces.
 - [no_dependency_cycles](no_dependency_cycles.md) — detects mutual dependencies between modules in both directions.
 - [max_dependencies](max_dependencies.md) — caps how many collaborators a single class may depend on.

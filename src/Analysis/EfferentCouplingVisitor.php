@@ -5,18 +5,17 @@ declare(strict_types=1);
 namespace Cosmira\Soda\Analysis;
 
 use PhpParser\Node;
-use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\Trait_;
+use PhpParser\Node\Stmt\ClassLike;
 
 /**
- * Efferent coupling (Ce): distinct external types referenced by a class or trait.
+ * Efferent coupling (Ce): distinct external types referenced by a named type.
  *
  * @internal
  */
 final class EfferentCouplingVisitor extends FactVisitor
 {
     /**
-     * Dependency edges accumulated while the traversal owns a class or trait.
+     * Dependency edges accumulated while the traversal owns a named type.
      */
     private readonly EfferentCouplingGraph $graph;
 
@@ -26,7 +25,7 @@ final class EfferentCouplingVisitor extends FactVisitor
     private readonly EfferentCouplingReferences $types;
 
     /**
-     * Opens and closes class frames so references attach to their owning declaration.
+     * Opens and closes type frames so references attach to their owning declaration.
      */
     private readonly EfferentCouplingClassScanner $classScanner;
 
@@ -52,7 +51,7 @@ final class EfferentCouplingVisitor extends FactVisitor
     #[\Override]
     protected function doEnterNode(Node $node): void
     {
-        $isType = $node instanceof Class_ || $node instanceof Trait_;
+        $isType = $node instanceof ClassLike;
         if ($isType) {
             $this->classScanner->enter($node);
 

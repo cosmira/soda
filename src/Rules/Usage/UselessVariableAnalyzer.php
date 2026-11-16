@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Cosmira\Soda\Rules\Usage;
 
+use Cosmira\Soda\Analysis\Usage\VariableMutation;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -141,7 +142,7 @@ final readonly class UselessVariableAnalyzer
      */
     private function isMutated(string $var, array $nodes): bool
     {
-        return $this->walkScope($nodes, fn (Node $n): bool => UselessVariableMutation::isMutationOf($n, $var)) !== [];
+        return $this->walkScope($nodes, fn (Node $n): bool => VariableMutation::isMutationOf($n, $var)) !== [];
     }
 
     /**

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Cosmira\Soda\Rules\Usage;
 
+use Cosmira\Soda\Analysis\Usage\VariableMutation;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\FunctionLike;
@@ -28,7 +29,7 @@ final readonly class UselessVariableReassignment
             return false;
         }
 
-        $mutations = $finder->find($after, static fn (Node $node): bool => UselessVariableMutation::isMutationOf($node, $alias->variable));
+        $mutations = $finder->find($after, static fn (Node $node): bool => VariableMutation::isMutationOf($node, $alias->variable));
         if (count($mutations) !== 1) {
             return false;
         }
