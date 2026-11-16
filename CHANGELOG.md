@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.4.0 - 2026-11-16
+
+- Add the optional `module_boundaries` rule. Require an explicit root namespace
+  and expose only `Events` and `Facades` between sibling modules by default.
+- Support separate rule instances for multiple module roots, custom exports,
+  and temporary access to selected modules with `except`.
+- Check dependencies declared by classes, traits, interfaces, and enums.
+- Enforce rule category boundaries in Soda itself and move shared variable
+  mutation analysis into `Analysis\Usage`.
+
+The standard rule set is unchanged. Existing configurations keep their selected
+checks. PHP 8.2 remains the minimum supported version.
+
 ## 1.3.0 - 2026-11-09
 
 - Add the optional `forbidden_method_visibility` rule. Select files or classes
