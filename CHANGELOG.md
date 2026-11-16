@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.1 - 2026-11-16
+
+- Export `Attributes` alongside `Events` and `Facades` by default in
+  `ModuleBoundaries`. Explicit export lists still select exactly those namespaces.
+- Keep private type references inside attribute arguments subject to module
+  boundaries, and document per-rule exclusions for test-data factories.
+
 ## 1.4.0 - 2026-11-16
 
 - Add the optional `module_boundaries` rule. Require an explicit root namespace

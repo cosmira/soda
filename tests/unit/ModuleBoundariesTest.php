@@ -127,6 +127,35 @@ PHP);
         yield 'enum method' => ['enum Consumer { function person() { return new \\App\\Modules\\Directory\\Models\\Person; } }'];
     }
 
+    public function testAttributesAreExportedByDefault(): void
+    {
+        $source = <<<'PHP'
+<?php
+namespace App\Modules\Directory;
+use App\Modules\Audit\Attributes\Audited as Audit;
+#[Audit]
+class Person {
+    #[Audit] public string $name;
+    #[Audit] public function save(#[Audit] string $name): void {}
+}
+PHP;
+        self::assertSame([], $this->findings(new ModuleBoundaries('App\\Modules'), $source));
+        self::assertCount(1, $this->findings(new ModuleBoundaries('App\\Modules', exports: ['Events', 'Facades']), $source));
+    }
+
+    public function testAttributeArgumentsStillRespectPrivateBoundaries(): void
+    {
+        $source = <<<'PHP'
+<?php
+namespace App\Modules\Directory;
+#[\App\Modules\Audit\Attributes\Audited(\App\Modules\Audit\AuditOptions::class)]
+class Person {}
+PHP;
+        $findings = $this->findings(new ModuleBoundaries('App\\Modules'), $source);
+        self::assertCount(1, $findings);
+        self::assertStringContainsString('-> App\\Modules\\Audit\\AuditOptions.', $findings[0]->message);
+    }
+
     public function testCustomRootAndExports(): void
     {
         $rule = new ModuleBoundaries(namespace: '\\Domain\\', exports: ['\\Contracts\\']);
