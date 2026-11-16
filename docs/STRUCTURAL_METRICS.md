@@ -435,6 +435,10 @@ Finds the same compound question about another object's state repeated in severa
 
 Finds the same arithmetic update of another object's numeric state repeated in several consumers and suggests naming it as an operation on the owner. Read [examples, options, and analysis boundaries](rules/repeated_foreign_state_update.md).
 
+### module_boundaries (opt-in)
+
+Keep sibling modules private except for their exported namespaces. The root namespace is required. Read [examples, options, and analysis boundaries](rules/module_boundaries.md).
+
 ### forbidden_dependencies (opt-in)
 
 Enforce directed namespace boundaries: namespaces declared as source may not depend on the target namespaces you forbid. Read [examples, options, and analysis boundaries](rules/forbidden_dependencies.md).

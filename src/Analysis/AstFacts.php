@@ -95,6 +95,7 @@ final class AstFacts
         $metrics = $scans['structure']->metrics();
 
         $metrics['classes'] = self::classMetrics($metrics['classes'], $scans['coupling']);
+        $metrics['typeDependencies'] = $scans['coupling']?->dependenciesByClass() ?? [];
 
         $metrics['naming'] = ($scans['naming']?->facts() ?? []);
         $metrics['compoundVariableNames'] = ($scans['compoundNames']?->occurrences() ?? []);

@@ -25,6 +25,17 @@ return [
         'advice'     => 'Inspect the actual data path, contracts and boundary purpose before changing its representation.',
         'comparison' => null,
     ],
+    'module_boundaries' => [
+        'class'      => 'Cosmira\\Soda\\Rules\\Architecture\\ModuleBoundaries',
+        'arguments'  => ['namespace' => 'Cosmira\\Soda\\Rules'],
+        'standard'   => false,
+        'section'    => 'structural',
+        'severity'   => 'error',
+        'default'    => 0,
+        'label'      => 'Private module dependencies:',
+        'advice'     => 'Use the target module\'s exported namespaces instead of its internals.',
+        'comparison' => null,
+    ],
     'forbidden_dependencies' => [
         'class'      => 'Cosmira\\Soda\\Rules\\Architecture\\ForbiddenDependencies',
         'arguments'  => [],

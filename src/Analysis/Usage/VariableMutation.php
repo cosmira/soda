@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Cosmira\Soda\Rules\Usage;
+namespace Cosmira\Soda\Analysis\Usage;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
@@ -21,9 +21,9 @@ use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Unset_;
 
 /**
- * Mutation policy for a candidate useless-variable alias.
+ * Detect writes to a local variable or its array elements.
  */
-final readonly class UselessVariableMutation
+final readonly class VariableMutation
 {
     /**
      * Reassigning a copy or any of its array elements changes the value independently of its source.

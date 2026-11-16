@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Cosmira\Soda\Analyzer;
 use Cosmira\Soda\Config\Soda;
+use Cosmira\Soda\Rules\Architecture\ModuleBoundaries;
 use Cosmira\Soda\Rules\Architecture\NoDependencyCycles;
 use Cosmira\Soda\Rules\Complexity\MaxBooleanConditions;
 use Cosmira\Soda\Rules\Complexity\MaxCognitiveComplexity;
@@ -111,6 +112,7 @@ return Soda::configure()
         new NoNestedTernary(),
         new NoUnusedMethods(),
         new NoEmptyCatchBlocks(),
+        new ModuleBoundaries('Cosmira\\Soda\\Rules', exports: []),
         new NoDependencyCycles([
             'Cosmira\Soda\Analysis',
             'Cosmira\Soda\Commands',
@@ -137,7 +139,7 @@ return Soda::configure()
         new MaxLayerDominancePercentage(50, 4),
         new MaxNamespaceDepth(5),
         new MaxClassesPerNamespace(40),
-        new MaxClassesPerProject(291),
+        new MaxClassesPerProject(292),
 
         // Owner behavior
         new FragmentedOwnerBehavior(),

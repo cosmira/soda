@@ -6,9 +6,9 @@ namespace Cosmira\Soda\Rules\Complexity;
 
 use Cosmira\Soda\Analysis\Complexity\StatementLists;
 use Cosmira\Soda\Analysis\FileFacts;
+use Cosmira\Soda\Analysis\Usage\VariableMutation;
 use Cosmira\Soda\Contracts\Check;
 use Cosmira\Soda\Reporting\Violation;
-use Cosmira\Soda\Rules\Usage\UselessVariableMutation;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
@@ -123,7 +123,7 @@ final class NoDeclarationsBeforeEarlyExit extends Check
     {
         foreach ($finder->findInstanceOf([$declaration], Variable::class) as $input) {
             $name = $input->name;
-            if (is_string($name) && $finder->findFirst($between, static fn (Node $node): bool => UselessVariableMutation::isMutationOf($node, $name)) instanceof Node) {
+            if (is_string($name) && $finder->findFirst($between, static fn (Node $node): bool => VariableMutation::isMutationOf($node, $name)) instanceof Node) {
                 return true;
             }
         }
