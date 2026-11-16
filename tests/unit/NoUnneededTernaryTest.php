@@ -151,7 +151,7 @@ final class NoUnneededTernaryTest extends TestCase
             [static fn ($c, $p) => $c() ? true : $p(), static fn ($c, $p) => $c() || $p()],
             [static fn ($c, $p) => $c() ? false : $p(), static fn ($c, $p) => ! $c() && $p()],
             [static fn ($c, $p) => $c() ? $p() : false, static fn ($c, $p) => $c() && $p()],
-            [static fn ($c, $p) => $c() ? $p() : true, static fn ($c, $p)  => ! $c() || $p()],
+            [static fn ($c, $p) => $c() ? $p() : true, static fn ($c, $p) => ! $c() || $p()],
         ];
     }
 }
