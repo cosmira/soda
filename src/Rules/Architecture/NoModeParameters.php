@@ -7,6 +7,7 @@ namespace Cosmira\Soda\Rules\Architecture;
 use Cosmira\Soda\Analysis\Control\ParameterControlAnalysis;
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node;
 use PhpParser\NodeFinder;
@@ -14,6 +15,11 @@ use PhpParser\NodeFinder;
 /**
  * Rejects input selectors that dispatch multiple distinct operations.
  */
+#[Rule(
+    label: 'Mode parameters:',
+    advice: 'Expose separate operations instead of selecting distinct operations with an input mode.',
+    severity: 'error',
+)]
 final class NoModeParameters extends Check
 {
     /**

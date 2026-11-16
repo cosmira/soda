@@ -6,6 +6,7 @@ namespace Cosmira\Soda\Rules\Complexity;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use InvalidArgumentException;
 use PhpParser\Node\Stmt\ClassLike;
@@ -14,6 +15,11 @@ use PhpParser\NodeFinder;
 /**
  * Optionally reports repeated expression strings within one class-like declaration.
  */
+#[Rule(
+    label: 'Repeated expression string literals:',
+    advice: 'Name a repeated protocol value when it has one meaning; literal array keys are excluded by default.',
+    default: 3,
+)]
 final class NoRepeatedStringLiterals extends Check
 {
     /**

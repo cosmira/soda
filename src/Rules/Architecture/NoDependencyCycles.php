@@ -8,11 +8,17 @@ use Cosmira\Soda\Analysis\Design\DesignEvidence;
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Analysis\StronglyConnectedComponents;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 
 /**
  * Prohibits cycles between namespace modules, using actual resolved type dependencies.
  */
+#[Rule(
+    label: 'Module dependency cycles:',
+    advice: 'Remove mutual module dependencies and mandatory constructor cycles; simplify collaboration rather than hiding a cycle with another layer.',
+    severity: 'error',
+)]
 final class NoDependencyCycles extends Check
 {
     /**

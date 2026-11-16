@@ -7,12 +7,17 @@ namespace Cosmira\Soda\Rules\Architecture;
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Analysis\LaravelMigrationConvention;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeFinder;
 
+#[Rule(
+    label: 'Anonymous classes:',
+    advice: 'Promote the hidden responsibility to a named, independently testable type.',
+)]
 final class NoAnonymousClasses extends Check
 {
     /**

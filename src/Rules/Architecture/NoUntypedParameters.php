@@ -6,6 +6,7 @@ namespace Cosmira\Soda\Rules\Architecture;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node;
 use PhpParser\NodeFinder;
@@ -13,6 +14,11 @@ use PhpParser\NodeFinder;
 /**
  * Removing a parameter type must not bypass type-based restrictions.
  */
+#[Rule(
+    label: 'Untyped parameters:',
+    advice: 'Declare accepted parameter types. Use mixed to preserve an untyped inherited contract; do not narrow its accepted inputs.',
+    severity: 'error',
+)]
 final class NoUntypedParameters extends Check
 {
     /**

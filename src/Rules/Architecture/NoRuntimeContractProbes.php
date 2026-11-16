@@ -6,12 +6,17 @@ namespace Cosmira\Soda\Rules\Architecture;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Name;
 use PhpParser\NodeFinder;
 
+#[Rule(
+    label: 'Runtime contract probes:',
+    advice: 'Require an interface or typed value instead of discovering capabilities at runtime.',
+)]
 final class NoRuntimeContractProbes extends Check
 {
     /**

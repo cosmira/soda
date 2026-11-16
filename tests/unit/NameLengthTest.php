@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Cosmira\Soda\Tests;
 
-use Cosmira\Soda\Config\RuleCatalog;
 use Cosmira\Soda\Rules\Naming\ClassNameLength;
 use Cosmira\Soda\Rules\Naming\MethodNameLength;
 use Cosmira\Soda\Rules\Naming\NamespaceNameLength;
@@ -18,7 +17,7 @@ final class NameLengthTest extends TestCase
         $file = $this->writeFixture('<?php class User { public function me() {} public function id() {} public function to() {} public function x() {} }');
 
         try {
-            $entry = RuleCatalog::standardDefinitions()['method_name_length'];
+            $entry = CheckFixture::standardDefinitions()['method_name_length'];
             foreach ([new MethodNameLength, new MethodNameLength(...$entry['arguments'])] as $rule) {
                 self::assertCount(0, CheckFixture::forRule($rule, $this->context($file)));
             }
@@ -33,7 +32,7 @@ final class NameLengthTest extends TestCase
         $file = $this->writeFixture('<?php class User { public int $id; public function run(int $db): void { $id = $this->id; $io = $db; $x = 1; } }');
 
         try {
-            $entry = RuleCatalog::standardDefinitions()['variable_name_length'];
+            $entry = CheckFixture::standardDefinitions()['variable_name_length'];
             foreach ([new VariableNameLength, new VariableNameLength(...$entry['arguments'])] as $rule) {
                 $violations = CheckFixture::forRule($rule, $this->context($file));
                 self::assertCount(1, $violations);

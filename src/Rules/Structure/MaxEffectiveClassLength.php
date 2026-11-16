@@ -7,11 +7,18 @@ namespace Cosmira\Soda\Rules\Structure;
 use Cosmira\Soda\Analysis\Composition\ComposedClassMetrics;
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 
 /**
  * Limits class composition without rewarding movement into traits.
  */
+#[Rule(
+    label: 'Source lines including traits:',
+    advice: 'Count source from all composed traits once; moving source to a trait does not remove its maintenance cost.',
+    severity: 'error',
+    default: 500,
+)]
 final class MaxEffectiveClassLength extends Check
 {
     /**

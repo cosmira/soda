@@ -4,97 +4,14 @@ declare(strict_types=1);
 
 namespace Cosmira\Soda\Config;
 
-use function implode;
-
-use LogicException;
-
-use function sprintf;
-
-/**
- * Generates soda.php using `Soda::configure()->withPaths([...])->with([...])`.
- *
- * Each rule is emitted as a standalone class instance with its threshold in the constructor.
- *
- * @internal
- */
+/** Generates editable configuration from the built-in standard configuration. */
 final class SodaInitFileEmitter
 {
     /**
-     * Expand the standard catalog into editable PHP rule instances.
+     * Copy the explicit rule instances and their constructor arguments.
      */
     public static function emit(): string
     {
-        $uses = ['use Cosmira\Soda\Config\Soda;'];
-        $items = [];
-        $shortNames = [];
-
-        foreach (RuleCatalog::standardDefinitions() as $definition) {
-            $shortName = self::shortName($definition['class']);
-            self::assertUniqueShortName($shortNames, $shortName, $definition['class']);
-            $shortNames[$shortName] = $definition['class'];
-            $uses[] = 'use '.$definition['class'].';';
-            $items[] = self::instantiate($shortName, $definition['arguments']);
-        }
-
-        sort($uses);
-        $usesBlock = implode("\n", array_unique($uses));
-        $itemsBlock = implode("\n", array_map(fn (string $line) => '        '.$line, $items));
-
-        return <<<PHP
-<?php
-
-declare(strict_types=1);
-
-{$usesBlock}
-
-return Soda::configure()
-    ->withPaths([
-        'src/',
-    ])
-    ->with([
-{$itemsBlock}
-    ]);
-PHP;
-    }
-
-    /**
-     * Return the unqualified name used in generated PHP configuration.
-     */
-    private static function shortName(string $fqcn): string
-    {
-        return substr($fqcn, strrpos($fqcn, '\\') + 1);
-    }
-
-    /**
-     * Reject ambiguous rule imports before generating an editable configuration file.
-     *
-     * @param array<string, string> $shortNames
-     */
-    private static function assertUniqueShortName(array $shortNames, string $shortName, string $fqcn): void
-    {
-        $isPresent = isset($shortNames[$shortName]);
-        if (! $isPresent) {
-            return;
-        }
-
-        throw new LogicException(sprintf(
-            'Cannot emit soda.php because rule classes share short name %s: %s.',
-            $shortName,
-            implode(', ', [$shortNames[$shortName], $fqcn]),
-        ));
-    }
-
-    /**
-     * Render constructor arguments.
-     */
-    private static function instantiate(string $class, array $arguments): string
-    {
-        $rendered = [];
-        foreach ($arguments as $key => $argument) {
-            $prefix = is_string($key) ? $key.': ' : '';
-            $rendered[] = $prefix.var_export($argument, true);
-        }
-
-        return sprintf('new %s(%s),', $class, implode(', ', $rendered));
+        return file_get_contents(__DIR__.'/../../resources/standard.php');
     }
 }

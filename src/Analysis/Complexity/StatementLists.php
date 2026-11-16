@@ -26,7 +26,7 @@ final class StatementLists
                 continue;
             }
 
-            $statements = ControlBodies::statements($node);
+            $statements = self::statements($node);
             if ($statements !== []) {
                 $bodies[] = $statements;
             }
@@ -35,6 +35,21 @@ final class StatementLists
         }
 
         return $bodies;
+    }
+
+    /**
+     * Return the statement list held by a known control body.
+     *
+     * @return list<Stmt>
+     */
+    private static function statements(Node $node): array
+    {
+        $hasBody = in_array($node->getType(), [
+            'Stmt_If', 'Stmt_ElseIf', 'Stmt_Else', 'Stmt_For', 'Stmt_Foreach',
+            'Stmt_While', 'Stmt_Do', 'Stmt_TryCatch', 'Stmt_Catch', 'Stmt_Case',
+        ], true);
+
+        return $hasBody ? get_object_vars($node)['stmts'] : [];
     }
 
     /**

@@ -12,9 +12,7 @@ use Cosmira\Soda\Config\SodaInitFileEmitter;
 use Illuminate\Console\Application as ConsoleApplication;
 use Illuminate\Console\OutputStyle;
 use Illuminate\Events\Dispatcher;
-use LogicException;
 use PHPUnit\Framework\TestCase;
-use ReflectionMethod;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
@@ -101,18 +99,20 @@ final class InitCommandTest extends TestCase
         return substr($fqcn, strrpos($fqcn, '\\') + 1);
     }
 
-    public function testInitEmitterRejectsDuplicateRuleClassShortNames(): void
+    public function testInitCopiesTheStandardConfiguration(): void
     {
-        $validator = new ReflectionMethod(SodaInitFileEmitter::class, 'assertUniqueShortName');
+        $this->assertSame(
+            file_get_contents(dirname(__DIR__, 2).'/resources/standard.php'),
+            SodaInitFileEmitter::emit(),
+        );
+        $configuration = tempnam(sys_get_temp_dir(), 'soda-standard-');
+        file_put_contents($configuration, SodaInitFileEmitter::emit());
 
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('MaxLength');
-        $this->expectExceptionMessage('Vendor\Structural\MaxLength');
-        $this->expectExceptionMessage('Vendor\Complexity\MaxLength');
-
-        $validator->invoke(null, [
-            'MaxLength' => 'Vendor\Structural\MaxLength',
-        ], 'MaxLength', 'Vendor\Complexity\MaxLength');
+        try {
+            $this->assertEquals(RuleCatalog::standard(), (require $configuration)->checks());
+        } finally {
+            unlink($configuration);
+        }
     }
 
     public function testInitFailsWhenSodaPhpAlreadyExists(): void

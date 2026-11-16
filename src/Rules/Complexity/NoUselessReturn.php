@@ -6,6 +6,7 @@ namespace Cosmira\Soda\Rules\Complexity;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
@@ -14,6 +15,10 @@ use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeFinder;
 
+#[Rule(
+    label: 'Trailing bare returns:',
+    advice: 'Remove a bare return at the end of a callable; preserve guards, explicit values and reference contracts.',
+)]
 final class NoUselessReturn extends Check
 {
     /**

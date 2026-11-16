@@ -501,3 +501,11 @@ return Soda::configure()
         new UselessVariableRule(),
     ]);
 ```
+
+### no_redundant_array_keys
+
+Reports explicit integer keys that repeat implicit list positions. See [examples](rules/no_redundant_array_keys.md).
+
+### no_nested_array_access
+
+Optional limit on chained array access. See [examples](rules/no_nested_array_access.md).

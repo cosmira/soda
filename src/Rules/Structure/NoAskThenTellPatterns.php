@@ -6,8 +6,13 @@ namespace Cosmira\Soda\Rules\Structure;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 
+#[Rule(
+    label: 'Ask-then-tell patterns:',
+    advice: 'Tell the object what outcome you want instead of querying its state and deciding for it.',
+)]
 final class NoAskThenTellPatterns extends Check
 {
     /**

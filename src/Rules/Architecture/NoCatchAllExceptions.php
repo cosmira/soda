@@ -9,10 +9,15 @@ use Cosmira\Soda\Analysis\Complexity\StatementLists;
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 
+#[Rule(
+    label: 'Catch-all exceptions:',
+    advice: 'Return an explicit fallback value, propagate or translate the failure; avoid silently continuing after a broad catch.',
+)]
 final class NoCatchAllExceptions extends Check
 {
     /**

@@ -6,12 +6,17 @@ namespace Cosmira\Soda\Rules\Documentation;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpToken;
 
 /**
  * Adjacent block comments should be one comment, with prose and tags together.
  */
+#[Rule(
+    label: 'Consecutive block comments:',
+    advice: 'Merge adjacent block comments, keeping the description and PHPDoc tags together.',
+)]
 final class NoConsecutiveBlockComments extends Check
 {
     /**

@@ -6,9 +6,16 @@ namespace Cosmira\Soda\Rules\Complexity;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use Cosmira\Soda\Rules\ExpressionCheck;
 
+#[Rule(
+    label: 'Control structure nesting:',
+    advice: 'Return early for exceptional paths and extract the nested happy-path behavior into a named method.',
+    severity: 'error',
+    default: 3,
+)]
 final class MaxControlNesting extends ExpressionCheck
 {
     /**

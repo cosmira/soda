@@ -7,7 +7,6 @@ namespace Cosmira\Soda\Tests;
 use Cosmira\Soda\Analysis\FactCollector;
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Analysis\Runner;
-use Cosmira\Soda\Config\RuleCatalog;
 use Cosmira\Soda\Rules\Structure\ForbiddenMethodVisibility;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -74,10 +73,10 @@ final class ForbiddenMethodVisibilityTest extends TestCase
 
     public function testCatalogKeepsThePolicyOptional(): void
     {
-        $entry = RuleCatalog::definitions()['forbidden_method_visibility'];
+        $entry = CheckFixture::definitions()['forbidden_method_visibility'];
         self::assertSame(ForbiddenMethodVisibility::class, $entry['class']);
         self::assertSame('forbidden_method_visibility', (new $entry['class'](...$entry['arguments']))->id());
-        self::assertArrayNotHasKey('forbidden_method_visibility', RuleCatalog::standardDefinitions());
+        self::assertArrayNotHasKey('forbidden_method_visibility', CheckFixture::standardDefinitions());
         self::assertSame([], (new ForbiddenMethodVisibility)->requiredAnalyses());
     }
 

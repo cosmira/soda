@@ -6,9 +6,15 @@ namespace Cosmira\Soda\Rules\Complexity;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 
 /** Requires explicit grouping when a condition mixes logical families. */
+#[Rule(
+    label: 'Complex control conditions:',
+    advice: 'Group mixed logical families with parentheses that preserve evaluation order; keep fluent predicates inline.',
+    section: 'structural',
+)]
 final class NoComplexControlConditions extends Check
 {
     /**

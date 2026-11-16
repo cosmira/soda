@@ -6,12 +6,17 @@ namespace Cosmira\Soda\Rules\Architecture;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Name;
 use PhpParser\NodeFinder;
 
+#[Rule(
+    label: 'Runtime type aliases:',
+    advice: 'Migrate callers explicitly or introduce a visible adapter type.',
+)]
 final class NoRuntimeTypeAliases extends Check
 {
     /**

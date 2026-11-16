@@ -6,8 +6,14 @@ namespace Cosmira\Soda\Rules\Structure;
 
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 
+#[Rule(
+    label: 'Classes per namespace:',
+    advice: 'Split the namespace into cohesive domain capabilities with names that explain their responsibility.',
+    default: 15,
+)]
 final class MaxClassesPerNamespace extends Check
 {
     /**

@@ -6,6 +6,7 @@ namespace Cosmira\Soda\Rules\Usage;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\NodeFinder;
@@ -15,6 +16,7 @@ use PhpParser\NodeFinder;
  *
  * @example soda.php: `new NoNestedArrayAccess()` or `new NoNestedArrayAccess(maxDepth: 1)`
  */
+#[Rule(label: 'Nested array accesses:', advice: 'Use flat structures or named objects instead of nested array access.', default: 0)]
 final class NoNestedArrayAccess extends Check
 {
     /**

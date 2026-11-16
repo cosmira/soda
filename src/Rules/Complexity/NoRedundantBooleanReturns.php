@@ -6,12 +6,17 @@ namespace Cosmira\Soda\Rules\Complexity;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeFinder;
 
+#[Rule(
+    label: 'Redundant boolean return branches:',
+    advice: 'Return the condition as bool or its negation once; preserve branch effects and lexical boundaries.',
+)]
 final class NoRedundantBooleanReturns extends Check
 {
     /**

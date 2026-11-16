@@ -6,6 +6,7 @@ namespace Cosmira\Soda\Rules\Complexity;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use InvalidArgumentException;
 use PhpParser\Node\FunctionLike;
@@ -14,6 +15,11 @@ use PhpParser\NodeFinder;
 /**
  * Optionally limits consecutive first local assignments in direct callable bodies.
  */
+#[Rule(
+    label: 'Consecutive initial local assignments:',
+    advice: 'Review long local preparation sequences and name a meaningful calculation when it clarifies the scenario.',
+    default: 8,
+)]
 final class MaxConsecutiveLocalAssignments extends Check
 {
     /**

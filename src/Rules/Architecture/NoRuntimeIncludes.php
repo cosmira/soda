@@ -6,11 +6,16 @@ namespace Cosmira\Soda\Rules\Architecture;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\NodeFinder;
 
+#[Rule(
+    label: 'Runtime includes:',
+    advice: 'Use autoloaded collaborators or validated data configuration instead of runtime includes.',
+)]
 final class NoRuntimeIncludes extends Check
 {
     /**

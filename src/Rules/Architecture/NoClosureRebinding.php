@@ -6,6 +6,7 @@ namespace Cosmira\Soda\Rules\Architecture;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
@@ -13,6 +14,10 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\NodeFinder;
 
+#[Rule(
+    label: 'Closure rebinding:',
+    advice: 'Pass an explicit collaborator instead of changing a closure scope at runtime.',
+)]
 final class NoClosureRebinding extends Check
 {
     /**

@@ -13,6 +13,7 @@ use Cosmira\Soda\Analysis\InheritedParameterContracts;
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Analysis\Usage\ParameterInputFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeFinder;
@@ -20,6 +21,11 @@ use PhpParser\NodeFinder;
 /**
  * Reports unused inputs while preserving positions required by known parent contracts.
  */
+#[Rule(
+    label: 'Unused parameters:',
+    advice: 'Remove unused inputs only when the signature permits it. Known inherited positions and callback slots are preserved; list exact external method contracts.',
+    severity: 'error',
+)]
 final class NoUnusedParameters extends Check
 {
     /**

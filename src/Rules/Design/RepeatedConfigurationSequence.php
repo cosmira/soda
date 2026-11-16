@@ -7,12 +7,17 @@ namespace Cosmira\Soda\Rules\Design;
 use Cosmira\Soda\Analysis\Design\DesignEvidence;
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use InvalidArgumentException;
 
 /**
  * Finds repeated fresh-object setup and suggests a scenario-oriented fluent API.
  */
+#[Rule(
+    label: 'Repeated object configuration:',
+    advice: 'Consider a fluent object or named construction for repeated setup; keep execution and evaluation order explicit.',
+)]
 final class RepeatedConfigurationSequence extends Check
 {
     /**

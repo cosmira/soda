@@ -11,9 +11,15 @@ use Cosmira\Soda\Analysis\InheritedParameterContracts;
 use Cosmira\Soda\Analysis\NativeStreamContract;
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use Cosmira\Soda\Rules\ExpressionCheck;
 
+#[Rule(
+    label: 'Arguments:',
+    advice: 'Move behavior to the owner of its data. Use a value object when related arguments share meaning, operations or an invariant; avoid a wrapper solely to reduce this count.',
+    default: 3,
+)]
 final class MaxArguments extends ExpressionCheck
 {
     /**

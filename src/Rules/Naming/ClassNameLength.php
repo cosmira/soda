@@ -6,11 +6,17 @@ namespace Cosmira\Soda\Rules\Naming;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\NodeFinder;
 
+#[Rule(
+    label: 'Class name length:',
+    advice: 'Name one domain role; a compound sentence usually signals that the class owns multiple responsibilities.',
+    default: 32,
+)]
 final class ClassNameLength extends Check
 {
     /**

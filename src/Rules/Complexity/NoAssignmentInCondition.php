@@ -6,6 +6,7 @@ namespace Cosmira\Soda\Rules\Complexity;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 
 /**
@@ -13,6 +14,11 @@ use Cosmira\Soda\Reporting\Violation;
  *
  * @example soda.php: `new NoAssignmentInCondition()`
  */
+#[Rule(
+    label: 'Assignments inside conditions:',
+    advice: 'Assign first, then make the condition a pure question with no hidden state change.',
+    section: 'structural',
+)]
 final class NoAssignmentInCondition extends Check
 {
     /**

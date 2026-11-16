@@ -7,6 +7,7 @@ namespace Cosmira\Soda\Rules\Naming;
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Analysis\Naming\CompoundVariableNameOccurrence;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use InvalidArgumentException;
 
@@ -15,6 +16,7 @@ use InvalidArgumentException;
  *
  * @example soda.php: `new MaxVariableNameWords(maxWords: 1, ignore: ['openAI'])`
  */
+#[Rule(label: 'Variable name words:', advice: 'Use concise domain terms for local variable names.', default: 1)]
 final class MaxVariableNameWords extends Check
 {
     /**

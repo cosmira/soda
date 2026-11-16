@@ -9,11 +9,16 @@ use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Analysis\InheritedParameterContracts;
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 
 /**
  * Reports methods that only forward construction arguments, regardless of decorative metadata.
  */
+#[Rule(
+    label: 'Trivial factories:',
+    advice: 'Consider direct construction. Preserve parameter and return type contracts, named arguments and useful creation boundaries.',
+)]
 final class NoTrivialFactories extends Check
 {
     /**

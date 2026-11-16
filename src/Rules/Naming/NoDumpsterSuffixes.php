@@ -6,6 +6,7 @@ namespace Cosmira\Soda\Rules\Naming;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 
 /**
@@ -19,6 +20,10 @@ use Cosmira\Soda\Reporting\Violation;
  *
  *   new NoDumpsterSuffixes(extraSuffixes: ['Evidence', 'Probe']);
  */
+#[Rule(
+    label: 'Generic type suffixes:',
+    advice: 'Name what the type does instead of a job category such as Manager, Helper, Util or Service.',
+)]
 final class NoDumpsterSuffixes extends Check
 {
     /**

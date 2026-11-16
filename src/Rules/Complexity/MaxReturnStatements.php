@@ -6,9 +6,15 @@ namespace Cosmira\Soda\Rules\Complexity;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use Cosmira\Soda\Rules\ExpressionCheck;
 
+#[Rule(
+    label: 'Return statements:',
+    advice: 'This counts all returns, including guards. Review the whole scenario alongside nesting; do not add intermediary classes solely to move exits elsewhere.',
+    default: 4,
+)]
 final class MaxReturnStatements extends ExpressionCheck
 {
     /**

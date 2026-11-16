@@ -6,10 +6,15 @@ namespace Cosmira\Soda\Rules\Architecture;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node;
 use PhpParser\NodeFinder;
 
+#[Rule(
+    label: 'Dynamic properties:',
+    advice: 'Declare typed state or hydrate a named value object with a stable shape.',
+)]
 final class NoDynamicProperties extends Check
 {
     /**

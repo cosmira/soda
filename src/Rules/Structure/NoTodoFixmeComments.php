@@ -6,8 +6,13 @@ namespace Cosmira\Soda\Rules\Structure;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 
+#[Rule(
+    label: 'TODO/FIXME comments:',
+    advice: 'Resolve the debt now or track it externally with context; do not leave an anonymous promise in the code.',
+)]
 final class NoTodoFixmeComments extends Check
 {
     /**

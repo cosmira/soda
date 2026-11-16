@@ -8,6 +8,7 @@ use Cosmira\Soda\Analysis\Complexity\StatementLists;
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Analysis\Usage\VariableMutation;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
@@ -15,12 +16,15 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Else_;
-use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\NodeFinder;
 
 /**
  * Reports declarations that only feed code placed behind an early-exit guard.
  */
+#[Rule(
+    label: 'Declarations before early exits:',
+    advice: 'Declare the variable below the guard clause so the early-exit path skips the work; keep evaluation order when moving it.',
+)]
 final class NoDeclarationsBeforeEarlyExit extends Check
 {
     /**
@@ -232,18 +236,13 @@ final class NoDeclarationsBeforeEarlyExit extends Check
             return false;
         }
 
-        $branches = [...array_map(static fn (ElseIf_ $elseif): array => $elseif->stmts, $if->elseifs)];
-        if ($if->else instanceof Else_) {
-            $branches[] = $if->else->stmts;
-        }
-
-        foreach ($branches as $branch) {
-            if (! StatementLists::doesEndWithExit($branch)) {
+        foreach ($if->elseifs as $elseif) {
+            if (! StatementLists::doesEndWithExit($elseif->stmts)) {
                 return false;
             }
         }
 
-        return true;
+        return ! $if->else instanceof Else_ || StatementLists::doesEndWithExit($if->else->stmts);
     }
 
     /**

@@ -6,8 +6,13 @@ namespace Cosmira\Soda\Rules\Structure;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 
+#[Rule(
+    label: 'Methods out of call order:',
+    advice: 'Review the declaration order of private helpers used exclusively by one direct local sequence. Preserve public API grouping, shared helpers and extension points.',
+)]
 final class MethodsFollowCallOrder extends Check
 {
     /**

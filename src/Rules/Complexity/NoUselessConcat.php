@@ -6,11 +6,16 @@ namespace Cosmira\Soda\Rules\Complexity;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\NodeFinder;
 
+#[Rule(
+    label: 'Unneeded literal concatenations:',
+    advice: 'Combine same-line string literals while preserving bytes and escaping; keep multiline text layout.',
+)]
 final class NoUselessConcat extends Check
 {
     /**

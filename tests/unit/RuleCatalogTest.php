@@ -7,16 +7,51 @@ namespace Cosmira\Soda;
 use Cosmira\Soda\Config\RuleCatalog;
 use Cosmira\Soda\Config\SodaInitFileEmitter;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\RuleMetadata;
+use Cosmira\Soda\Rules\ExpressionCheck;
+use Cosmira\Soda\Rules\Naming\MaxVariableNameWords;
+use Cosmira\Soda\Rules\Structure\MaxPropertiesPerClass;
+use Cosmira\Soda\Rules\Usage\NoNestedArrayAccess;
+use Cosmira\Soda\Tests\CheckFixture;
 use PHPUnit\Framework\TestCase;
 
 final class RuleCatalogTest extends TestCase
 {
+    public function testDiscoveryIncludesPreviouslyUnregisteredChecksWithoutEnablingThem(): void
+    {
+        $definitions = RuleCatalog::definitions();
+        foreach ([
+            'max_variable_name_words' => MaxVariableNameWords::class,
+            'no_nested_array_access'  => NoNestedArrayAccess::class,
+        ] as $id => $class) {
+            $this->assertSame($class, $definitions[$id]['class']);
+            $this->assertFalse($definitions[$id]['standard']);
+            $this->assertArrayNotHasKey($id, RuleCatalog::standardDefinitions());
+        }
+    }
+
+    public function testDiscoveryReadsAttributesWithoutConstructingOptionalChecks(): void
+    {
+        $definitions = RuleCatalog::definitions();
+        $class = MaxPropertiesPerClass::class;
+        $reflection = new \ReflectionClass($class);
+        $this->assertSame(1, $reflection->getConstructor()->getNumberOfRequiredParameters());
+        $metadata = $reflection->getAttributes(Rule::class)[0]->newInstance();
+        $definition = $definitions['max_properties_per_class'];
+        $this->assertSame($metadata->label, $definition['label']);
+        $this->assertSame($metadata->advice, $definition['advice']);
+        $this->assertSame($metadata->severity, $definition['severity']);
+        $this->assertSame($metadata->comparison, $definition['comparison']);
+        $this->assertArrayNotHasKey('arguments', $definition);
+        $this->assertNotContains(ExpressionCheck::class, array_column($definitions, 'class'));
+    }
+
     public function testArchitecturalQuotasRequireExplicitSelection(): void
     {
         foreach (['max_properties_per_class', 'max_arguments', 'no_boolean_parameters', 'no_service_locator_calls', 'no_runtime_contract_probes', 'no_static_mutable_properties', 'boolean_methods_without_prefix'] as $id) {
-            $definition = RuleCatalog::definitions()[$id];
-            self::assertArrayNotHasKey($id, RuleCatalog::standardDefinitions());
+            $definition = CheckFixture::definitions()[$id];
+            self::assertArrayNotHasKey($id, CheckFixture::standardDefinitions());
             $class = $definition['class'];
             self::assertSame($id, (new $class(...$definition['arguments']))->id());
         }
@@ -27,7 +62,7 @@ final class RuleCatalogTest extends TestCase
         $ids = ['no_empty_finally_blocks', 'max_cognitive_complexity', 'fragmented_owner_behavior', 'repeated_owner_concern', 'scattered_owner_concern', 'repeated_configuration_sequence', 'repeated_foreign_state_decision', 'repeated_foreign_state_update', 'max_efferent_coupling', 'no_dependency_cycles'];
         $init = SodaInitFileEmitter::emit();
         foreach ($ids as $id) {
-            $entry = RuleCatalog::standardDefinitions()[$id];
+            $entry = CheckFixture::standardDefinitions()[$id];
             $rule = new $entry['class'](...$entry['arguments']);
             self::assertSame($id, $rule->id());
             self::assertStringContainsString('new '.(new \ReflectionClass($rule))->getShortName().'(', $init);
@@ -38,7 +73,7 @@ final class RuleCatalogTest extends TestCase
 
     public function testMetadataMatchesRuleMetadataDefault(): void
     {
-        $fromCatalog = RuleCatalog::definitions();
+        $fromCatalog = CheckFixture::definitions();
         $fromFacade = new RuleMetadata($fromCatalog);
 
         foreach ($fromCatalog as $id => $row) {
@@ -67,7 +102,7 @@ final class RuleCatalogTest extends TestCase
     {
         $knownSections = ['structural', 'complexity', 'naming'];
 
-        foreach (RuleCatalog::definitions() as $id => $definition) {
+        foreach (CheckFixture::definitions() as $id => $definition) {
             $identity = $definition;
             $presentation = $definition;
 
@@ -75,7 +110,7 @@ final class RuleCatalogTest extends TestCase
             $this->assertMatchesRegularExpression('/^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$/', $id, $id);
             $this->assertContains($identity['section'], $knownSections, $id);
             $this->assertNotSame('', trim($presentation['label']), $id);
-            $this->assertNotSame('', trim(RuleCatalog::definitions()[$id]['advice']), $id);
+            $this->assertNotSame('', trim(CheckFixture::definitions()[$id]['advice']), $id);
             $this->assertContains($presentation['severity'], ['error', 'warning'], $id);
 
             if ($presentation['comparison'] !== null) {
@@ -86,7 +121,7 @@ final class RuleCatalogTest extends TestCase
 
     public function testDefinitionsExposeListRulesRows(): void
     {
-        foreach (RuleCatalog::definitions() as $id => $definition) {
+        foreach (CheckFixture::definitions() as $id => $definition) {
             $row = ['id' => $id, ...$definition];
 
             $this->assertSame($id, $row['id']);
@@ -94,7 +129,7 @@ final class RuleCatalogTest extends TestCase
             $this->assertSame($definition['severity'], $row['severity'], $id);
             $this->assertSame($definition['default'], $row['default'], $id);
             $this->assertSame($definition['label'], $row['label'], $id);
-            $this->assertSame(RuleCatalog::definitions()[$id]['advice'], $row['advice'], $id);
+            $this->assertSame(CheckFixture::definitions()[$id]['advice'], $row['advice'], $id);
 
             $this->assertIsString($row['section'], $id);
             $this->assertContains($row['severity'], ['error', 'warning'], $id);
@@ -108,7 +143,7 @@ final class RuleCatalogTest extends TestCase
     {
         $idsByLabel = [];
 
-        foreach (RuleCatalog::definitions() as $id => $definition) {
+        foreach (CheckFixture::definitions() as $id => $definition) {
             $label = $definition['label'];
             $idsByLabel[$label] ??= [];
             $idsByLabel[$label][] = $id;
@@ -125,7 +160,7 @@ final class RuleCatalogTest extends TestCase
 
     public function testInitDefinitionsPointToExistingRuleCheckers(): void
     {
-        foreach (RuleCatalog::definitions() as $id => $entry) {
+        foreach (CheckFixture::definitions() as $id => $entry) {
             $class = $entry['class'];
             $rule = new $class(...$entry['arguments']);
             $this->assertInstanceOf(Check::class, $rule);
@@ -135,10 +170,10 @@ final class RuleCatalogTest extends TestCase
 
     public function testCatalogAndBundleContainTheSameRuleClasses(): void
     {
-        $expected = array_column(RuleCatalog::standardDefinitions(), 'class');
+        $expected = array_column(CheckFixture::standardDefinitions(), 'class');
         $actual = array_map(fn ($check) => $check::class, RuleCatalog::standard());
         $this->assertSame($expected, $actual);
-        $this->assertCount(109, $actual);
+        $this->assertCount(110, $actual);
         $ids = array_map(fn ($check) => $check->id(), RuleCatalog::standard());
         $this->assertContains('max_cognitive_complexity', $ids);
         $this->assertNotContains('no_redundant_rethrow', $ids);
@@ -148,6 +183,6 @@ final class RuleCatalogTest extends TestCase
         $this->assertContains('no_redundant_boolean_returns', $ids);
         $this->assertContains('prefer_combined_conditions', $ids);
         $this->assertContains('no_redundant_boolean_comparisons', $ids);
-        $this->assertArrayNotHasKey('max_disconnected_method_groups', RuleCatalog::definitions());
+        $this->assertArrayNotHasKey('max_disconnected_method_groups', CheckFixture::definitions());
     }
 }

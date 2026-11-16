@@ -6,6 +6,7 @@ namespace Cosmira\Soda\Rules\Complexity;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Ternary;
@@ -14,6 +15,10 @@ use PhpParser\NodeFinder;
 /**
  * Reports a full ternary used directly as a branch of another full ternary.
  */
+#[Rule(
+    label: 'Nested full ternaries:',
+    advice: 'Name the inner decision or use explicit control flow; keep shorthand fallbacks and evaluation order intact.',
+)]
 final class NoNestedTernary extends Check
 {
     /**

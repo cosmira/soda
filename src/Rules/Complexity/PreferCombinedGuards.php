@@ -7,6 +7,7 @@ namespace Cosmira\Soda\Rules\Complexity;
 use Cosmira\Soda\Analysis\Complexity\StatementLists;
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt;
@@ -16,6 +17,10 @@ use PhpParser\PrettyPrinter\Standard;
 /**
  * Reports consecutive guard clauses that exit with the same statement.
  */
+#[Rule(
+    label: 'Split identical guards:',
+    advice: 'Combine consecutive guards with || while preserving condition evaluation order; exits are compared by printed expression.',
+)]
 final class PreferCombinedGuards extends Check
 {
     /**

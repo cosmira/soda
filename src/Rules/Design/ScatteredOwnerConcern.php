@@ -7,12 +7,17 @@ namespace Cosmira\Soda\Rules\Design;
 use Cosmira\Soda\Analysis\Design\DesignEvidence;
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use InvalidArgumentException;
 
 /**
  * Reports interleaved substantive owner behavior, not a quota of responsibilities.
  */
+#[Rule(
+    label: 'Scattered owner concerns:',
+    advice: 'Group related methods beside their state; consider a concern when a separate file improves navigation.',
+)]
 final class ScatteredOwnerConcern extends Check
 {
     use OwnerGroups;

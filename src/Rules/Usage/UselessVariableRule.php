@@ -6,6 +6,7 @@ namespace Cosmira\Soda\Rules\Usage;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 
 /**
@@ -24,6 +25,10 @@ use Cosmira\Soda\Reporting\Violation;
  *
  *   $config->rule(\Cosmira\Soda\Rules\Usage\UselessVariableRule::class);
  */
+#[Rule(
+    label: 'Useless variable:',
+    advice: 'Inline the value when the name adds nothing, or use the variable where its name clarifies intent.',
+)]
 final class UselessVariableRule extends Check
 {
     /**

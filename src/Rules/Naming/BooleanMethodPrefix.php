@@ -6,8 +6,13 @@ namespace Cosmira\Soda\Rules\Naming;
 
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 
+#[Rule(
+    label: 'Boolean method prefixes:',
+    advice: 'Name the method as a question with is, has, can, should, or another explicit predicate prefix.',
+)]
 final class BooleanMethodPrefix extends Check
 {
     /**

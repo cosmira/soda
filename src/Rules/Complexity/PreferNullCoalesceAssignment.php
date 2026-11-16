@@ -6,6 +6,7 @@ namespace Cosmira\Soda\Rules\Complexity;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
@@ -19,6 +20,10 @@ use PhpParser\PrettyPrinter\Standard;
 /**
  * Reports fallback assignments that repeat the target on both sides.
  */
+#[Rule(
+    label: 'Repeated null-coalesce targets:',
+    advice: 'Assign the fallback with the ??= operator; targets evaluated through calls stay outside the comparison.',
+)]
 final class PreferNullCoalesceAssignment extends Check
 {
     /**
@@ -101,8 +106,12 @@ final class PreferNullCoalesceAssignment extends Check
     private function hasArrayBinding(Assign $assignment, string $name): bool
     {
         $statement = $assignment->getAttribute(self::PARENT);
-        $scope = $statement instanceof Node ? $statement->getAttribute(self::PARENT) : null;
-        if (! $statement instanceof Node\Stmt\Expression || ! $scope instanceof FunctionLike) {
+        if (! $statement instanceof Node\Stmt\Expression) {
+            return false;
+        }
+
+        $scope = $statement->getAttribute(self::PARENT);
+        if (! $scope instanceof FunctionLike) {
             return false;
         }
 

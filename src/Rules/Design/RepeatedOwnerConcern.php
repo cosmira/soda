@@ -7,12 +7,17 @@ namespace Cosmira\Soda\Rules\Design;
 use Cosmira\Soda\Analysis\Design\DesignEvidence;
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use InvalidArgumentException;
 
 /**
  * Finds copied groups of stateful owner behavior and suggests a shared concern.
  */
+#[Rule(
+    label: 'Copied owner concerns:',
+    advice: 'Share a concern when the copied stateful methods express one behavior contract; document the owner requirements.',
+)]
 final class RepeatedOwnerConcern extends Check
 {
     use OwnerGroups;

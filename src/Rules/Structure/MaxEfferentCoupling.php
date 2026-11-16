@@ -6,9 +6,15 @@ namespace Cosmira\Soda\Rules\Structure;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use Cosmira\Soda\Rules\ExpressionCheck;
 
+#[Rule(
+    label: 'Efferent coupling (Ce):',
+    advice: 'Review which dependencies belong to this operation. Remove unnecessary indirection; introduce a boundary only when it represents a meaningful collaboration, not merely to lower the count.',
+    default: 15,
+)]
 final class MaxEfferentCoupling extends ExpressionCheck
 {
     /**

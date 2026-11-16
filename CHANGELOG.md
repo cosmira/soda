@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.6.0 - 2026-11-16
+
+- Add `no_redundant_array_keys` to the standard configuration. Report literal
+  integer keys that repeat the implicit zero-based list sequence, including
+  mixtures of implicit and explicit keys. Preserve arrays with gaps, duplicate or
+  reordered keys, computed keys, and unpacking. No automatic rewrite is performed.
+- Discover concrete built-in checks automatically and read presentation metadata
+  from `Reporting\Rule` class attributes. Remove `resources/catalog.php`.
+- Keep the standard rule instances in `resources/standard.php`, copied verbatim
+  by `soda init`. Preserve the previous rule settings and execution order; add
+  the new array-key check. Existing explicitly enumerated configurations retain
+  their selected rules.
+- List `max_variable_name_words` and `no_nested_array_access` as opt-in checks.
+
+`RuleCatalog::definitions()` no longer returns constructor `arguments`. Use
+`RuleCatalog::standard()` for configured instances or instantiate rules directly.
+Discovery output is sorted by identifier. PHP 8.2 remains the minimum supported
+version; no dependencies are added. See [migration](docs/MIGRATION.md).
+
 ## 1.4.2 - 2026-11-16
 
 - Require both `namespace` and `exports` in `ModuleBoundaries`. There are no

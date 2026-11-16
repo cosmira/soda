@@ -6,9 +6,15 @@ namespace Cosmira\Soda\Rules\Structure;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use Cosmira\Soda\Rules\ExpressionCheck;
 
+#[Rule(
+    label: 'Traits per class:',
+    advice: 'Review the state and methods each trait expects. Keep cohesive concerns on their owner, even with one consumer; avoid extraction solely to reduce this count.',
+    default: 10,
+)]
 final class MaxTraitsPerClass extends ExpressionCheck
 {
     /**

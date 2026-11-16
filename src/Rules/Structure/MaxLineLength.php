@@ -6,8 +6,15 @@ namespace Cosmira\Soda\Rules\Structure;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 
+#[Rule(
+    label: 'Line length:',
+    advice: 'Format long lines for readability using the project style: consistent indentation, logical breakpoints, and one argument or array item '.
+        'per line in multiline lists. Do not insert arbitrary line breaks just to satisfy the limit.',
+    default: 100,
+)]
 final class MaxLineLength extends Check
 {
     /**

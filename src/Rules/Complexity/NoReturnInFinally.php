@@ -6,6 +6,7 @@ namespace Cosmira\Soda\Rules\Complexity;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
@@ -14,6 +15,11 @@ use PhpParser\NodeFinder;
 /**
  * Rejects returns executed in finally blocks because they can replace outcomes or suppress exceptions.
  */
+#[Rule(
+    label: 'Returns inside finally:',
+    advice: 'Keep cleanup in finally and return from the normal control flow without replacing pending outcomes.',
+    severity: 'error',
+)]
 final class NoReturnInFinally extends Check
 {
     /**

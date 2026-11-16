@@ -6,9 +6,16 @@ namespace Cosmira\Soda\Rules\Complexity;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use Cosmira\Soda\Rules\ExpressionCheck;
 
+#[Rule(
+    label: 'Cyclomatic complexity:',
+    advice: 'Review branches and duplicate decisions. Guards can reduce nesting but do not reduce this score; use a private method for a named step or an object for an independent responsibility.',
+    severity: 'error',
+    default: 8,
+)]
 final class MaxCyclomaticComplexity extends ExpressionCheck
 {
     /**

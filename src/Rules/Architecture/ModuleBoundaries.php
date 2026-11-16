@@ -6,6 +6,7 @@ namespace Cosmira\Soda\Rules\Architecture;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use InvalidArgumentException;
 use PhpParser\Node\Stmt\ClassLike;
@@ -14,6 +15,11 @@ use PhpParser\NodeFinder;
 /**
  * Keep sibling modules private except for their exported namespaces.
  */
+#[Rule(
+    label: 'Private module dependencies:',
+    advice: "Use the target module's exported namespaces instead of its internals.",
+    severity: 'error',
+)]
 final class ModuleBoundaries extends Check
 {
     /**

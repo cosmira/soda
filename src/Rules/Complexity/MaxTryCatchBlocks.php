@@ -6,9 +6,15 @@ namespace Cosmira\Soda\Rules\Complexity;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use Cosmira\Soda\Rules\ExpressionCheck;
 
+#[Rule(
+    label: 'Try/catch blocks:',
+    advice: 'Catch failures at one boundary and translate them once instead of mixing recovery with core behavior.',
+    default: 2,
+)]
 final class MaxTryCatchBlocks extends ExpressionCheck
 {
     /**

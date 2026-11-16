@@ -7,12 +7,17 @@ namespace Cosmira\Soda\Rules\Design;
 use Cosmira\Soda\Analysis\Design\DesignEvidence;
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use InvalidArgumentException;
 
 /**
  * Finds used stateless operation classes interpreting or changing the same local owner.
  */
+#[Rule(
+    label: 'Fragmented owner behavior:',
+    advice: 'Keep operations with the owner of their state; a concern can organize related behavior without new operation classes.',
+)]
 final class FragmentedOwnerBehavior extends Check
 {
     /**

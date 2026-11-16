@@ -44,8 +44,8 @@ All names below are relative to `Cosmira\Soda\`.
 | Shared collectors under `Quality\Ast`, `Quality\Visitor`, `Quality\Flow` | `Analysis\` |
 | Rule-specific scanners and algorithms | Beside their rule in `Rules\<category>\` |
 
-The catalogue's class column in `resources/catalog.php` is authoritative for
-individual built-in rules. For example:
+Built-in checks are discovered under `src/Rules`; their `Reporting\Rule` attributes
+supply presentation metadata. `resources/standard.php` selects standard instances. For example:
 
 ```php
 use Cosmira\Soda\Config\Soda;
@@ -147,3 +147,16 @@ expression fields from old configurations; no replacement metric is provided.
 Layer-dominance rules classify explicit directory roles rather than inferred
 business responsibilities. See [Structural Metrics](STRUCTURAL_METRICS.md) for
 current configuration and boundaries.
+
+## Rule discovery and standard configuration
+
+`resources/catalog.php` has been removed. Built-in checks carry a `Reporting\Rule`
+attribute and are discovered automatically under `src/Rules`. `RuleCatalog::definitions()`
+returns presentation metadata, class names and standard membership; it no longer
+returns an `arguments` array. Use configured instances from `RuleCatalog::standard()`
+or instantiate a rule directly. `resources/standard.php` supplies the standard
+configuration and the file copied by `soda init`.
+
+Discovery lists rules by identifier. Existing standard execution order and settings
+are unchanged. `max_variable_name_words` and `no_nested_array_access`, previously
+available only through direct construction, now also appear in `list:rules` as opt-in.

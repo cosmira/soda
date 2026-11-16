@@ -9,11 +9,47 @@ use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Config\RuleCatalog;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Rules\Architecture\ModuleBoundaries;
 use Illuminate\Support\Collection;
 
 /** Synthetic fact fixtures used to exercise named checks independently of parsing. */
 final class CheckFixture
 {
+    public static function definitions(): array
+    {
+        static $definitions;
+        if ($definitions !== null) {
+            return $definitions;
+        }
+        $definitions = RuleCatalog::definitions();
+        $instances = [];
+        foreach (RuleCatalog::standard() as $check) {
+            $instances[$check::class] = $check;
+        }
+        $instances[ModuleBoundaries::class] = new ModuleBoundaries(namespace: 'Cosmira\\Soda\\Rules', exports: []);
+        foreach ($definitions as &$entry) {
+            $reflection = new \ReflectionClass($entry['class']);
+            $instance = $instances[$entry['class']] ?? null;
+            $arguments = [];
+            foreach ($reflection->getConstructor()?->getParameters() ?? [] as $parameter) {
+                $name = $parameter->getName();
+                $arguments[$name] = $instance !== null && $reflection->hasProperty($name)
+                    ? $reflection->getProperty($name)->getValue($instance)
+                    : ($parameter->isDefaultValueAvailable() ? $parameter->getDefaultValue() : $entry['default']);
+            }
+            $entry['arguments'] = $arguments;
+        }
+
+        return $definitions;
+    }
+
+    public static function standardDefinitions(): array
+    {
+        $definitions = self::definitions();
+
+        return array_replace(RuleCatalog::standardDefinitions(), array_intersect_key($definitions, RuleCatalog::standardDefinitions()));
+    }
+
     public static function thresholds(): array
     {
         return array_map(static fn (array $entry): int|float => $entry['default'], RuleCatalog::standardDefinitions());
@@ -35,7 +71,7 @@ final class CheckFixture
 
     public static function checks(?array $limits = null, array $state = []): array
     {
-        $definitions = RuleCatalog::definitions();
+        $definitions = self::definitions();
         $limits ??= self::thresholds();
         $checks = [];
         foreach ($limits as $id => $limit) {

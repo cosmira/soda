@@ -6,12 +6,18 @@ namespace Cosmira\Soda\Rules\Architecture;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use InvalidArgumentException;
 
 /**
  * Rejects configured directions between namespace modules for class and trait dependencies.
  */
+#[Rule(
+    label: 'Forbidden module dependencies:',
+    advice: 'Respect the configured dependency direction between namespace modules.',
+    severity: 'error',
+)]
 final class ForbiddenDependencies extends Check
 {
     /**

@@ -6,6 +6,7 @@ namespace Cosmira\Soda\Rules\Usage;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp;
@@ -18,6 +19,10 @@ use PhpParser\NodeFinder;
 /**
  * Reports substr comparisons that ask the prefix or suffix question.
  */
+#[Rule(
+    label: 'Substring checks for prefixes and suffixes:',
+    advice: 'Ask str_starts_with() and str_ends_with() instead of comparing substr() with a literal of the same length.',
+)]
 final class PreferStringStartsEndsWith extends Check
 {
     /**
@@ -56,10 +61,7 @@ final class PreferStringStartsEndsWith extends Check
     #[\Override]
     public function checkFile(FileFacts $facts): iterable
     {
-        $comparisons = (new NodeFinder)->find($facts->nodes, static fn ($node): bool => $node instanceof BinaryOp\Identical
-            || $node instanceof BinaryOp\NotIdentical
-            || $node instanceof BinaryOp\Equal
-            || $node instanceof BinaryOp\NotEqual);
+        $comparisons = (new NodeFinder)->find($facts->nodes, static fn ($node): bool => $node instanceof BinaryOp && in_array($node->getOperatorSigil(), ['===', '!==', '==', '!='], true));
         foreach ($comparisons as $comparison) {
             assert($comparison instanceof BinaryOp);
             [$call, $literal] = $this->substrSide($comparison);

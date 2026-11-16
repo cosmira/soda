@@ -10,6 +10,7 @@ use Cosmira\Soda\Analysis\Composition\BehaviorComposition;
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use InvalidArgumentException;
 use PhpParser\Node\Stmt;
@@ -18,6 +19,12 @@ use PhpParser\NodeFinder;
 /**
  * Reports structural repetition without claiming shared domain meaning.
  */
+#[Rule(
+    label: 'Methods repeating a compound condition:',
+    advice: 'Extract a named predicate when the repeated conditions express the same decision. Reevaluate it at each use; do not cache mutable state.',
+    default: 2,
+    comparison: 'max',
+)]
 final class NoRepeatedCompoundConditions extends Check
 {
     /**

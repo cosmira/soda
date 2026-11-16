@@ -6,9 +6,15 @@ namespace Cosmira\Soda\Rules\Structure;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use Cosmira\Soda\Rules\ExpressionCheck;
 
+#[Rule(
+    label: 'Namespace depth:',
+    advice: 'Flatten the namespace around a clear domain capability; avoid encoding the entire directory tree.',
+    default: 4,
+)]
 final class MaxNamespaceDepth extends ExpressionCheck
 {
     /**

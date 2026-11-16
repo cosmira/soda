@@ -6,6 +6,7 @@ namespace Cosmira\Soda\Rules\Usage;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use Cosmira\Soda\Support\FnmatchPathExclusion;
 use PhpParser\NodeTraverser;
@@ -21,6 +22,10 @@ use PhpParser\NodeVisitor\ParentConnectingVisitor;
  *
  * @example soda.php: `new OnlyListArraysAllowed()`, strict: `new OnlyListArraysAllowed(strictness: ListOnlyArrayStrictness::Strict)`
  */
+#[Rule(
+    label: 'Nested array chains (list-only / strict opt-in):',
+    advice: 'This checks array-access syntax. Use a value object for repeated domain interpretation or invariants; transport payloads and one-off arrays do not automatically need wrappers.',
+)]
 final class OnlyListArraysAllowed extends Check
 {
     /**

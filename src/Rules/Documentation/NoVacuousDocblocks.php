@@ -6,6 +6,7 @@ namespace Cosmira\Soda\Rules\Documentation;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
@@ -27,6 +28,10 @@ use PhpParser\NodeFinder;
  *
  *   new NoVacuousDocblocks(extraFiller: ['metadata', 'payload']);
  */
+#[Rule(
+    label: 'Vacuous PHPDoc:',
+    advice: "Describe the member's purpose in its PHPDoc, or delete the comment when the declaration already says enough.",
+)]
 final class NoVacuousDocblocks extends Check
 {
     /**

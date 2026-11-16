@@ -6,11 +6,16 @@ namespace Cosmira\Soda\Rules\Complexity;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\NodeFinder;
 
+#[Rule(
+    label: 'Redundant boolean comparisons:',
+    advice: 'Use the proven boolean expression or its negation once; retain strict checks on values whose type is unknown.',
+)]
 final class NoRedundantBooleanComparisons extends Check
 {
     /**

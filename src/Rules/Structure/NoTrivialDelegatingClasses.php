@@ -8,6 +8,7 @@ use Cosmira\Soda\Analysis\Composition\BehaviorComposition;
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use Cosmira\Soda\Rules\Structure\Delegation\TrivialDelegatingClassAnalyzer;
 
@@ -16,6 +17,10 @@ use Cosmira\Soda\Rules\Structure\Delegation\TrivialDelegatingClassAnalyzer;
  *
  * @example soda.php: `new NoTrivialDelegatingClasses()`
  */
+#[Rule(
+    label: 'Trivial delegating classes:',
+    advice: 'Call the collaborator directly when the wrapper adds no concept. Keep genuine adapters and boundaries; adding an interface alone does not simplify the call path.',
+)]
 final class NoTrivialDelegatingClasses extends Check
 {
     /**

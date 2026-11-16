@@ -147,11 +147,11 @@ PHP;
 
     public function testCatalogEnablesStatementLimitAndKeepsDependenciesOptional(): void
     {
-        self::assertArrayHasKey('max_statements_per_callable', RuleCatalog::standardDefinitions());
-        self::assertArrayNotHasKey('forbidden_dependencies', RuleCatalog::standardDefinitions());
+        self::assertArrayHasKey('max_statements_per_callable', CheckFixture::standardDefinitions());
+        self::assertArrayNotHasKey('forbidden_dependencies', CheckFixture::standardDefinitions());
         foreach (['forbidden_dependencies', 'max_statements_per_callable'] as $id) {
-            self::assertArrayHasKey($id, RuleCatalog::definitions());
-            $definition = RuleCatalog::definitions()[$id];
+            self::assertArrayHasKey($id, CheckFixture::definitions());
+            $definition = CheckFixture::definitions()[$id];
             self::assertSame($id, (new $definition['class'](...$definition['arguments']))->id());
         }
     }

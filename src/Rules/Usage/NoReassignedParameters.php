@@ -6,6 +6,7 @@ namespace Cosmira\Soda\Rules\Usage;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use InvalidArgumentException;
 use PhpParser\Node\Stmt\Function_;
@@ -15,6 +16,10 @@ use PhpParser\NodeTraverser;
 /**
  * Optionally rejects direct rebinding of by-value parameters while preserving object mutation APIs.
  */
+#[Rule(
+    label: 'Rebound input parameters:',
+    advice: 'Keep original input bindings separate from transformed values; a narrow entry normalization is accepted.',
+)]
 final class NoReassignedParameters extends Check
 {
     /**

@@ -3,8 +3,12 @@
 1. Create a final named class extending `Contracts\Check` or `Rules\ExpressionCheck` in the relevant
    `src/Rules` area. Keep its constructor options, condition, violation metadata
    and any dedicated algorithm together.
-2. Add one flat entry to `resources/catalog.php` with its class, default arguments,
-   section, severity, default display value, label, advice and comparison direction.
+2. Add a `#[Rule(...)]` attribute from `Reporting\Rule` to the class with its label,
+   advice and any non-default severity, diagnostic default or comparison direction.
+   Concrete checks in `src/Rules` are discovered automatically; section names come
+   from their namespace (`Complexity`, `Naming`, `Laravel`, otherwise `structural`);
+   `section` on the attribute preserves historical exceptions.
+   To enable the rule by default, add its instance to `resources/standard.php`.
 3. Add a behavioral test: include a passing boundary, a failing boundary, actual
    measured values and locations. Use `Analysis\FactCollector` to prepare a real
    PHP fixture or construct `FileFacts`/`ProjectFacts` for an isolated check.
@@ -13,9 +17,10 @@ Internal array shapes are declared once in `Analysis\FileFacts`. Consult those
 annotations for collected data and `resources/facts.php` for expression fields,
 units, semantics and collectors.
 
-The executor does not change when adding an ordinary rule. Catalog entries feed
-standard rule sets, configuration generation and discovery. Optional rules can be registered
-directly without joining the standard catalog.
+The executor does not change when adding an ordinary rule. Discovery reads class
+attributes without constructing optional rules. Keep `id()` independent of constructor state. `resources/standard.php` is the explicit
+standard configuration and is copied verbatim by `soda init`. Optional checks stay
+out of that file and can be registered directly.
 
 Ensure `php soda list:rules` shows the rule id, section, severity, default, and label.
 Verify that `init` creates the intended named class and that JSON schema 4 retains
@@ -48,7 +53,7 @@ Changing either policy requires reading and changing that concrete rule.
 
 Add a page under `docs/rules/` and link it from the [rule reference](rules/README.md).
 Keep its identifier, default arguments, severity, and standard membership aligned
-with `resources/catalog.php`. Use this structure:
+with its `Rule` attribute and `resources/standard.php`. Use this structure:
 
 ````markdown
 # <rule-id>

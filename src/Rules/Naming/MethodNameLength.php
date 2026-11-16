@@ -7,10 +7,16 @@ namespace Cosmira\Soda\Rules\Naming;
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Analysis\LaravelMigrationConvention;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\NodeFinder;
 
+#[Rule(
+    label: 'Method name length:',
+    advice: 'Name one clear action; if the name needs several clauses, split the method’s responsibilities.',
+    default: 32,
+)]
 final class MethodNameLength extends Check
 {
     /**

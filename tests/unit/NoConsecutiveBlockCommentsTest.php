@@ -107,7 +107,7 @@ PHP);
 
     public function testStandardCatalogRunsTheRuleFromSource(): void
     {
-        $entry = RuleCatalog::standardDefinitions()['no_consecutive_block_comments'];
+        $entry = CheckFixture::standardDefinitions()['no_consecutive_block_comments'];
         self::assertSame(NoConsecutiveBlockComments::class, $entry['class']);
         $path = tempnam(sys_get_temp_dir(), 'soda-block-comments-');
         self::assertNotFalse($path);

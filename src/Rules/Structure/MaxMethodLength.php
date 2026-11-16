@@ -6,9 +6,16 @@ namespace Cosmira\Soda\Rules\Structure;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use Cosmira\Soda\Rules\ExpressionCheck;
 
+#[Rule(
+    label: 'Method length:',
+    advice: 'Name a distinct step with a private method when it clarifies the scenario; keep the operation with its owner.',
+    severity: 'error',
+    default: 100,
+)]
 final class MaxMethodLength extends ExpressionCheck
 {
     /**

@@ -6,12 +6,17 @@ namespace Cosmira\Soda\Rules\Architecture;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Name;
 use PhpParser\NodeFinder;
 
+#[Rule(
+    label: 'Dynamic invocations:',
+    advice: 'Replace runtime-selected callables with an explicit interface or named dispatch map.',
+)]
 final class NoDynamicInvocation extends Check
 {
     /**
@@ -46,7 +51,7 @@ final class NoDynamicInvocation extends Check
         return ($node instanceof Expr\MethodCall || $node instanceof Expr\NullsafeMethodCall || $node instanceof Expr\StaticCall)
             && ! $node->name instanceof Node\Identifier
             && ! $node->name instanceof Node\Scalar\String_
-            && (! $node->name instanceof Node\Scalar\MagicConst || $node->name instanceof Node\Scalar\MagicConst\Line);
+            && (! $node->name instanceof Node\Scalar\MagicConst || $node->name->getName() === '__LINE__');
     }
 
     /**

@@ -6,12 +6,17 @@ namespace Cosmira\Soda\Rules\Architecture;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Name;
 use PhpParser\NodeFinder;
 
+#[Rule(
+    label: 'Service locator calls:',
+    advice: 'Declare dependencies in the constructor instead of pulling them from a global container.',
+)]
 final class NoServiceLocatorCalls extends Check
 {
     /**

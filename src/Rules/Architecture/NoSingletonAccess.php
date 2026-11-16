@@ -7,8 +7,13 @@ namespace Cosmira\Soda\Rules\Architecture;
 use Cosmira\Soda\Analysis\Composition\BehaviorComposition;
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 
+#[Rule(
+    label: 'Singleton access:',
+    advice: 'Construct collaborators at the composition root and inject their explicit lifetime.',
+)]
 final class NoSingletonAccess extends Check
 {
     /**

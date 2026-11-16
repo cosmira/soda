@@ -6,6 +6,7 @@ namespace Cosmira\Soda\Rules\Documentation;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
@@ -16,6 +17,13 @@ use PhpParser\Node\Stmt\Property;
 use PhpParser\NodeFinder;
 use PhpToken;
 
+#[Rule(
+    label: 'Multiline property PHPDoc:',
+    advice: 'Describe each property in a multiline PHPDoc block before any tags; tags alone do not explain its purpose.',
+    severity: 'error',
+    default: 1,
+    comparison: 'min',
+)]
 final class MultilinePropertyPhpDoc extends Check
 {
     /**

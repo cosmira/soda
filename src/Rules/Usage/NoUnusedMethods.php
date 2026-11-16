@@ -6,6 +6,7 @@ namespace Cosmira\Soda\Rules\Usage;
 
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 
 /**
@@ -20,6 +21,10 @@ use Cosmira\Soda\Reporting\Violation;
  *
  *   new NoUnusedMethods(ignore: ['seedDatabase', 'actingAs'])
  */
+#[Rule(
+    label: 'Unused methods:',
+    advice: 'Delete the method; if it is an intended extension point, express that contract explicitly.',
+)]
 final class NoUnusedMethods extends Check
 {
     /**

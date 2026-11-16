@@ -7,11 +7,17 @@ namespace Cosmira\Soda\Rules\Usage;
 use Cosmira\Soda\Analysis\Composition\BehaviorComposition;
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 
 /**
  * A private declaration or a write does not establish a useful state responsibility.
  */
+#[Rule(
+    label: 'Unread private state:',
+    advice: 'Remove private properties and constants that are never read, including composed trait state.',
+    severity: 'error',
+)]
 final class NoUnusedPrivateState extends Check
 {
     /**

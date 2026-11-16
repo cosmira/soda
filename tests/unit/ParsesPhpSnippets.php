@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Cosmira\Soda\Tests;
 
 use Cosmira\Soda\Analysis\Runner;
-use Cosmira\Soda\Config\RuleCatalog;
 use Cosmira\Soda\Config\Soda;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
@@ -97,13 +96,13 @@ trait ParsesPhpSnippets
 
     private function assertRulePipeline(string $rule, string $valid, string $invalid): void
     {
-        self::assertArrayHasKey($rule, RuleCatalog::definitions());
+        self::assertArrayHasKey($rule, CheckFixture::definitions());
         foreach ([[$valid, false], [$invalid, true]] as [$source, $expected]) {
             $path = tempnam(sys_get_temp_dir(), 'soda-rule-pipeline-');
             file_put_contents($path, '<?php '.$source);
 
             try {
-                $entry = RuleCatalog::definitions()[$rule];
+                $entry = CheckFixture::definitions()[$rule];
                 $class = $entry['class'];
                 $checks = [new $class(...$entry['arguments'])];
                 $result = (new Runner)->check([$path], Soda::configure()->with($checks)->checks());

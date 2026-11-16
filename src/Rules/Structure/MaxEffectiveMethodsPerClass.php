@@ -7,11 +7,18 @@ namespace Cosmira\Soda\Rules\Structure;
 use Cosmira\Soda\Analysis\Composition\ComposedClassMetrics;
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 
 /**
  * Limits class composition without rewarding movement into traits.
  */
+#[Rule(
+    label: 'Methods including traits:',
+    advice: 'Keep the complete owning class within its method limit; trait extraction does not reduce this measurement.',
+    severity: 'error',
+    default: 40,
+)]
 final class MaxEffectiveMethodsPerClass extends Check
 {
     /**

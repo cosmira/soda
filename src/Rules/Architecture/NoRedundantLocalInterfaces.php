@@ -6,11 +6,17 @@ namespace Cosmira\Soda\Rules\Architecture;
 
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 
 /**
  * Implements clauses alone do not constitute a consumer of a local abstraction.
  */
+#[Rule(
+    label: 'Unconsumed local interfaces:',
+    advice: 'List externally consumed interfaces in contracts. Remove only unused interfaces; an implements clause alone is not a type consumer for this policy.',
+    severity: 'error',
+)]
 final class NoRedundantLocalInterfaces extends Check
 {
     /**

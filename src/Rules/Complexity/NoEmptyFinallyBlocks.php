@@ -6,6 +6,7 @@ namespace Cosmira\Soda\Rules\Complexity;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
@@ -14,6 +15,10 @@ use PhpParser\NodeFinder;
 /**
  * Reports finally blocks with no executable statements, including comment-only blocks.
  */
+#[Rule(
+    label: 'Empty finally blocks:',
+    advice: 'Remove empty cleanup syntax carefully; a try without catch cannot remain alone. Preserve meaningful explanations.',
+)]
 final class NoEmptyFinallyBlocks extends Check
 {
     /**

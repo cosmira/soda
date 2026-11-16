@@ -6,10 +6,16 @@ namespace Cosmira\Soda\Rules\Naming;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\NodeFinder;
 
+#[Rule(
+    label: 'Variable name length:',
+    advice: 'Choose a concise domain name: avoid both cryptic abbreviations and sentence-like identifiers.',
+    default: 16,
+)]
 final class VariableNameLength extends Check
 {
     /**

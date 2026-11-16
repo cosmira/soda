@@ -6,9 +6,15 @@ namespace Cosmira\Soda\Rules\Structure;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use Cosmira\Soda\Rules\ExpressionCheck;
 
+#[Rule(
+    label: 'Interfaces per class:',
+    advice: 'Split unrelated roles into focused objects rather than making one class satisfy every contract.',
+    default: 5,
+)]
 final class MaxInterfacesPerClass extends ExpressionCheck
 {
     /**

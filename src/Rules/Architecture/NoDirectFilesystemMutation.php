@@ -6,12 +6,17 @@ namespace Cosmira\Soda\Rules\Architecture;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Name;
 use PhpParser\NodeFinder;
 
+#[Rule(
+    label: 'Direct filesystem mutation:',
+    advice: 'Move writes, deletes, moves, and provisioning behind an injected storage port.',
+)]
 final class NoDirectFilesystemMutation extends Check
 {
     /**

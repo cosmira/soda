@@ -76,7 +76,7 @@ These were removed once; do not reintroduce them.
 
 - Duplicate entry points (`QualityAnalyser` next to `Analyzer`).
 - A static factory that mutates properties instead of constructing
-  (`BooleanMethodPrefix::standard()`); the catalog `arguments` drive variants.
+  (`BooleanMethodPrefix::standard()`); explicit constructors in the standard configuration define variants.
 - Framework `Collection` inside domain results; domain returns plain arrays.
 - Special-case `match` arms for a single rule inside generic catalogs.
 - Dead container wiring: never register a binding that nothing resolves.
@@ -85,8 +85,8 @@ These were removed once; do not reintroduce them.
 
 - `src/Contracts/Check.php` — the rule contract: `id()`, `checkFile()`,
   `checkProject()`, `requiredAnalyses()`.
-- `src/Rules/<Section>/` — one class per rule; `resources/catalog.php`
-  registers it; `docs/rules/<id>.md` documents it;
+- `src/Rules/<Section>/` — concrete rules are discovered automatically;
+  `Reporting\Rule` supplies metadata and `resources/standard.php` selects defaults; `docs/rules/<id>.md` documents it;
   `docs/STRUCTURAL_METRICS.md` or `docs/NAMING_RULES.md` lists it.
 - `src/Analysis/` — fact collectors; facts are scalars, never live ASTs.
 - `tests/unit/` — one test class per rule, built on `CheckFixture` and real

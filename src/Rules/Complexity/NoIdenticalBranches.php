@@ -6,6 +6,7 @@ namespace Cosmira\Soda\Rules\Complexity;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
@@ -15,6 +16,10 @@ use PhpParser\PrettyPrinter\Standard;
 /**
  * Reports identical expression branches without claiming their conditions are disposable.
  */
+#[Rule(
+    label: 'Identical expression branches:',
+    advice: 'Consolidate identical results when useful; preserve condition effects, match selection and unmatched-value behavior.',
+)]
 final class NoIdenticalBranches extends Check
 {
     /**

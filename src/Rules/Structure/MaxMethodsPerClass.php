@@ -6,9 +6,15 @@ namespace Cosmira\Soda\Rules\Structure;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use Cosmira\Soda\Rules\ExpressionCheck;
 
+#[Rule(
+    label: 'Methods per class:',
+    advice: 'Review the public scenario and unrelated responsibilities. A cohesive concern may stay on the owner as a trait; a new object needs a distinct purpose.',
+    default: 40,
+)]
 final class MaxMethodsPerClass extends ExpressionCheck
 {
     /**

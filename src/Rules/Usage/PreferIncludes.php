@@ -6,6 +6,7 @@ namespace Cosmira\Soda\Rules\Usage;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp;
@@ -17,6 +18,10 @@ use PhpParser\NodeFinder;
 /**
  * Reports strpos comparisons that ask the substring question.
  */
+#[Rule(
+    label: 'Position checks for substrings:',
+    advice: 'Ask str_contains() or mb_str_contains() instead of comparing strpos() with false.',
+)]
 final class PreferIncludes extends Check
 {
     /**

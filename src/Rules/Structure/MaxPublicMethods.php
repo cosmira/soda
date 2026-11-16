@@ -6,9 +6,15 @@ namespace Cosmira\Soda\Rules\Structure;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use Cosmira\Soda\Rules\ExpressionCheck;
 
+#[Rule(
+    label: 'Public methods:',
+    advice: 'Review which operations callers need. Supporting behavior can remain private on its owner; preserve useful fluent operations and framework contracts.',
+    default: 20,
+)]
 final class MaxPublicMethods extends ExpressionCheck
 {
     /**

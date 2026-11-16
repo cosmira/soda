@@ -6,11 +6,17 @@ namespace Cosmira\Soda\Rules\Naming;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeFinder;
 
+#[Rule(
+    label: 'Namespace name length:',
+    advice: 'Use a short domain term for the capability and remove organizational words that add no distinction.',
+    default: 32,
+)]
 final class NamespaceNameLength extends Check
 {
     /**

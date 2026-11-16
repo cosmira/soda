@@ -6,6 +6,7 @@ namespace Cosmira\Soda\Rules\Complexity;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 
 /**
@@ -13,6 +14,11 @@ use Cosmira\Soda\Reporting\Violation;
  *
  * @example soda.php: `new NoElseBranches()`
  */
+#[Rule(
+    label: 'Else/elseif branches:',
+    advice: 'Remove alternatives only after a proven unconditional exit; preserve meaningful mutually exclusive branches.',
+    section: 'structural',
+)]
 final class NoElseBranches extends Check
 {
     /**

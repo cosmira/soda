@@ -43,7 +43,7 @@ SOURCE);
             self::assertSame(['no_dependency_cycles'], array_values(array_intersect($policies, $standard->violations->pluck('rule')->all())));
             $checks = [];
             foreach ($policies as $id) {
-                $entry = RuleCatalog::definitions()[$id];
+                $entry = CheckFixture::definitions()[$id];
                 $class = $entry['class'];
                 $checks[] = new $class(...$entry['arguments']);
             }

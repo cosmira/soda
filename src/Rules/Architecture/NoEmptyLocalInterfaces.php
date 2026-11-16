@@ -7,11 +7,17 @@ namespace Cosmira\Soda\Rules\Architecture;
 use Cosmira\Soda\Analysis\Dependencies\ExternalParameterContracts;
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 
 /**
  * Rejects local marker interfaces unless an explicit external protocol requires them.
  */
+#[Rule(
+    label: 'Empty local interfaces:',
+    advice: 'Remove decorative marker interfaces; list required external protocols explicitly.',
+    severity: 'error',
+)]
 final class NoEmptyLocalInterfaces extends Check
 {
     /**

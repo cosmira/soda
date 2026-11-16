@@ -7,6 +7,7 @@ namespace Cosmira\Soda\Rules\Complexity;
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Analysis\Usage\AssignmentSyntax;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
@@ -15,6 +16,10 @@ use PhpParser\NodeFinder;
 /**
  * Rejects direct chains of ordinary, reference or compound assignment expressions.
  */
+#[Rule(
+    label: 'Chained assignments:',
+    advice: 'Use separate assignments without duplicating evaluation or changing reference semantics.',
+)]
 final class NoChainedAssignments extends Check
 {
     /**

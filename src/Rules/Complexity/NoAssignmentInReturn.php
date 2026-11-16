@@ -7,6 +7,7 @@ namespace Cosmira\Soda\Rules\Complexity;
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Analysis\Usage\AssignmentSyntax;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrowFunction;
@@ -16,6 +17,10 @@ use PhpParser\NodeFinder;
 /**
  * Reports hidden assignments in returns while preserving direct owner updates and lazy initialization.
  */
+#[Rule(
+    label: 'Assignments inside returns:',
+    advice: 'Keep hidden local and nested writes out of returns; direct named owner updates and lazy initialization are accepted. Preserve evaluation order and reference semantics.',
+)]
 final class NoAssignmentInReturn extends Check
 {
     /**

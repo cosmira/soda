@@ -6,8 +6,14 @@ namespace Cosmira\Soda\Rules\Complexity;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 
+#[Rule(
+    label: 'Boolean conditions:',
+    advice: 'Give a repeated or complex decision a useful name, usually with a local value or private predicate. A policy object needs an independent responsibility.',
+    default: 4,
+)]
 final class MaxBooleanConditions extends Check
 {
     /**

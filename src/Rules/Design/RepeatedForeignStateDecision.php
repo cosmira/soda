@@ -7,12 +7,17 @@ namespace Cosmira\Soda\Rules\Design;
 use Cosmira\Soda\Analysis\Design\DesignEvidence;
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use InvalidArgumentException;
 
 /**
  * Finds copied questions about a local owner's state in distinct consumers.
  */
+#[Rule(
+    label: 'Repeated foreign state decisions:',
+    advice: 'Give a repeated domain question a name on its owner; a concern can organize related owner behavior.',
+)]
 final class RepeatedForeignStateDecision extends Check
 {
     /**

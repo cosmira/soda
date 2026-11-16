@@ -75,6 +75,7 @@ use Cosmira\Soda\Rules\Structure\NoTrivialDelegatingClasses;
 use Cosmira\Soda\Rules\Structure\NoTrivialFactories;
 use Cosmira\Soda\Rules\Usage\NoNumericArrayIndex;
 use Cosmira\Soda\Rules\Usage\NoReassignedParameters;
+use Cosmira\Soda\Rules\Usage\NoRedundantArrayKeys;
 use Cosmira\Soda\Rules\Usage\NoUnusedMethods;
 use Cosmira\Soda\Rules\Usage\OnlyListArraysAllowed;
 use Cosmira\Soda\Rules\Usage\UselessVariableRule;
@@ -105,6 +106,7 @@ return Soda::configure()
         new NoCommentedOutCode(),
         new OnlyListArraysAllowed(),
         new NoNumericArrayIndex(),
+        new NoRedundantArrayKeys(),
         new NoAssignmentInCondition(),
         new NoComplexControlConditions(),
         new NoElseBranches(),

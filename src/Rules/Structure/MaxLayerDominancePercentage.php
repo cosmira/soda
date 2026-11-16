@@ -6,8 +6,15 @@ namespace Cosmira\Soda\Rules\Structure;
 
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 
+#[Rule(
+    label: 'Layer mixing:',
+    advice: 'This is a naming and directory convention, not a dependency analysis. Inspect actual responsibilities and call paths; renaming a folder alone does not improve architecture.',
+    severity: 'error',
+    default: 50,
+)]
 final class MaxLayerDominancePercentage extends Check
 {
     /**

@@ -6,8 +6,15 @@ namespace Cosmira\Soda\Rules\Structure;
 
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 
+#[Rule(
+    label: 'Classes per project:',
+    advice: 'Look for fragmented abstractions and merge types that do not own distinct behavior or policy.',
+    severity: 'error',
+    default: 300,
+)]
 final class MaxClassesPerProject extends Check
 {
     /**

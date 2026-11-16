@@ -6,9 +6,15 @@ namespace Cosmira\Soda\Rules\Structure;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use Cosmira\Soda\Rules\ExpressionCheck;
 
+#[Rule(
+    label: 'Classes per file:',
+    advice: 'Move each class to its own file unless the smaller types are inseparable implementation details.',
+    default: 1,
+)]
 final class MaxClassesPerFile extends ExpressionCheck
 {
     /**

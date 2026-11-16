@@ -9,6 +9,7 @@ use Cosmira\Soda\Analysis\Control\TypeDispatchAnalysis;
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeFinder;
@@ -16,6 +17,12 @@ use PhpParser\NodeFinder;
 /**
  * Repeated resolution of the same type family belongs behind one operation boundary.
  */
+#[Rule(
+    label: 'Repeated type dispatch:',
+    advice: 'Centralize repeated dispatch of the same type or discriminator family.',
+    severity: 'error',
+    default: 1,
+)]
 final class NoRepeatedTypeDispatch extends Check
 {
     /**

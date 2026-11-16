@@ -7,11 +7,16 @@ namespace Cosmira\Soda\Rules\Complexity;
 use Cosmira\Soda\Analysis\Complexity\ConditionValueGrammar;
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeFinder;
 
+#[Rule(
+    label: 'Combinable nested conditions:',
+    advice: 'Use (outer) && (inner) for two simple conditions guarding one block; preserve short-circuiting, comments and domain distinctions.',
+)]
 final class PreferCombinedConditions extends Check
 {
     /**

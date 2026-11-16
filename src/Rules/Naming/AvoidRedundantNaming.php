@@ -7,8 +7,14 @@ namespace Cosmira\Soda\Rules\Naming;
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 
+#[Rule(
+    label: 'Redundant naming:',
+    advice: 'Remove words already supplied by the class or namespace; let the local context carry that meaning.',
+    default: 80,
+)]
 final class AvoidRedundantNaming extends Check
 {
     /**

@@ -6,6 +6,7 @@ namespace Cosmira\Soda\Rules\Usage;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
@@ -14,6 +15,10 @@ use PhpParser\Node\Scalar\Int_;
 use PhpParser\NodeFinder;
 
 /** Review repeated positional fields only when an explicit tuple contract establishes them. */
+#[Rule(
+    label: 'Numeric array index:',
+    advice: 'Review repeated fixed fields of an explicitly documented tuple. Named fields may clarify their meaning; ordinary list access and unknown array shapes are accepted.',
+)]
 final class NoNumericArrayIndex extends Check
 {
     /**

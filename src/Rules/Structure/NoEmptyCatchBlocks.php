@@ -6,8 +6,13 @@ namespace Cosmira\Soda\Rules\Structure;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 
+#[Rule(
+    label: 'Empty catch blocks:',
+    advice: 'Handle the failure, translate it to a domain outcome, or document explicitly why ignoring it is safe.',
+)]
 final class NoEmptyCatchBlocks extends Check
 {
     /**

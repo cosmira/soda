@@ -190,6 +190,9 @@ for `RuleCatalog::checks()`. Its sections are `structural`, `complexity`, and
 | Rule | Description | Enabled by default | Affects quality result when enabled |
 | --- | --- | --- | --- |
 | [no_numeric_array_index](no_numeric_array_index.md) | Numeric array index | yes | yes |
+| [no_redundant_array_keys](no_redundant_array_keys.md) | Explicit keys repeating implicit list positions | yes | yes |
+| [max_variable_name_words](max_variable_name_words.md) | Limits words in local variable names | no | yes |
+| [no_nested_array_access](no_nested_array_access.md) | Reports array access deeper than the selected limit | no | yes |
 | [no_reassigned_parameters](no_reassigned_parameters.md) | Rebound input parameters | yes | yes |
 | [no_temporary_return_variable](no_temporary_return_variable.md) | Temporary return variables | yes | yes |
 | [no_unused_parameters](no_unused_parameters.md) | Unused parameters | yes | yes |
@@ -202,8 +205,7 @@ for `RuleCatalog::checks()`. Its sections are `structural`, `complexity`, and
 
 ## Additional opt-in rules
 
-Some checks are configured directly rather than registered in the built-in
-catalog. They do not appear in `list:rules`.
+All concrete checks are discovered automatically. Additional opt-in policies include:
 
 - [max_variable_name_words](max_variable_name_words.md) limits words in local
   variable and parameter names when a team chooses that naming policy.

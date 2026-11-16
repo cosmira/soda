@@ -67,9 +67,10 @@ receive no source or AST. Parse errors become `parse_error` violations and remai
 files are still analyzed. Do not retain AST nodes in a custom check.
 
 `resources/facts.php` documents expression fields and collector requirements.
-`resources/catalog.php` records classes, default arguments and report metadata.
-The `default` catalog field describes defaults for discovery and `init`; execution
-reads the configured rule instances, not a global table of thresholds.
+`RuleCatalog` discovers concrete checks under `src/Rules` and reads report metadata
+from their `Reporting\Rule` attributes. `resources/standard.php` contains the
+explicit standard instances and is copied by `soda init`. The attribute's `default`
+is a diagnostic display value, not an execution setting.
 
 `RuleCatalog::standard()` preserves two historical policies explicitly: the readonly data
 constructor exemption associated with its property limit, and its original

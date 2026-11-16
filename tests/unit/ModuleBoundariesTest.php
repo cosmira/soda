@@ -7,7 +7,6 @@ namespace Cosmira\Soda\Tests;
 use ArgumentCountError;
 use Cosmira\Soda\Analysis\FactCollector;
 use Cosmira\Soda\Analysis\Runner;
-use Cosmira\Soda\Config\RuleCatalog;
 use Cosmira\Soda\Config\Soda;
 use Cosmira\Soda\Rules\Architecture\ModuleBoundaries;
 use Cosmira\Soda\Rules\Architecture\NoEnvironmentReads;
@@ -231,10 +230,10 @@ PHP;
 
     public function testCatalogKeepsRuleOptIn(): void
     {
-        $entry = RuleCatalog::definitions()['module_boundaries'];
+        $entry = CheckFixture::definitions()['module_boundaries'];
         $rule = new $entry['class'](...$entry['arguments']);
         self::assertSame('module_boundaries', $rule->id());
-        self::assertArrayNotHasKey('module_boundaries', RuleCatalog::standardDefinitions());
+        self::assertArrayNotHasKey('module_boundaries', CheckFixture::standardDefinitions());
     }
 
     private function findings(ModuleBoundaries $rule, string $source): array

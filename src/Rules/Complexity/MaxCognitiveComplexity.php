@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Cosmira\Soda\Rules\Complexity;
 
 use Cosmira\Soda\Analysis\FileFacts;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use Cosmira\Soda\Rules\ExpressionCheck;
 use InvalidArgumentException;
@@ -12,6 +13,11 @@ use InvalidArgumentException;
 /**
  * Optional threshold for Soda's documented PHP cognitive variant, with per-point evidence.
  */
+#[Rule(
+    label: 'Cognitive complexity (research):',
+    advice: 'Inspect the reported evidence in the calling scenario. This experimental measurement does not mandate more classes, traits or value objects.',
+    default: 15,
+)]
 final class MaxCognitiveComplexity extends ExpressionCheck
 {
     /**

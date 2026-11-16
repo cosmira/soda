@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Cosmira\Soda\Rules\Complexity;
 
-use Cosmira\Soda\Analysis\Complexity\ControlBodies;
 use Cosmira\Soda\Analysis\Complexity\StatementLists;
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
@@ -17,6 +17,10 @@ use PhpParser\NodeFinder;
 /**
  * Reports trailing loop conditions that add a level around nested control flow.
  */
+#[Rule(
+    label: 'Loops ending in a wrapped remainder:',
+    advice: 'Flatten nested control flow behind a trailing condition; preserve preceding work and accept flat positive branches.',
+)]
 final class PreferContinue extends Check
 {
     /**
@@ -51,7 +55,7 @@ final class PreferContinue extends Check
             'Stmt_For', 'Stmt_Foreach', 'Stmt_While', 'Stmt_Do',
         ], true));
         foreach ($loops as $loop) {
-            $statements = ControlBodies::statements($loop);
+            $statements = get_object_vars($loop)['stmts'];
             $last = $statements === [] ? null : $statements[count($statements) - 1];
             if (! $last instanceof Stmt\If_) {
                 continue;

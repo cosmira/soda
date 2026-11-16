@@ -6,9 +6,16 @@ namespace Cosmira\Soda\Rules\Structure;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use Cosmira\Soda\Rules\ExpressionCheck;
 
+#[Rule(
+    label: 'Class length:',
+    advice: 'Review the responsibilities together. Keep related behavior local, organize a cohesive concern in a trait, or extract an object with its own state or boundary.',
+    severity: 'error',
+    default: 500,
+)]
 final class MaxClassLength extends ExpressionCheck
 {
     /**

@@ -7,12 +7,17 @@ namespace Cosmira\Soda\Rules\Design;
 use Cosmira\Soda\Analysis\Design\DesignEvidence;
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use InvalidArgumentException;
 
 /**
  * Finds copied arithmetic updates of one owner's numeric state in independent consumers.
  */
+#[Rule(
+    label: 'Repeated foreign state updates:',
+    advice: 'Give repeated arithmetic over owner state a named owner operation; preserve deliberate record APIs and do not infer atomicity.',
+)]
 final class RepeatedForeignStateUpdate extends Check
 {
     /**

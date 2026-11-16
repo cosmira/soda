@@ -51,6 +51,10 @@ return [
     'methods_follow_call_order'          => ['iteration' => 3, 'attack' => 'Dispatch helpers indirectly through callable variables.'],
     'only_list_arrays'                   => ['iteration' => 4, 'attack' => 'Build associative shape incrementally instead of as an array literal.'],
     'no_numeric_array_index'             => ['iteration' => 4, 'attack' => 'Hide numeric positions behind constants and arithmetic expressions.'],
+    'no_redundant_array_keys'            => [
+        'iteration' => 100,
+        'attack'    => 'Mix implicit and explicit keys; nest the list or use array() syntax.',
+    ],
     'unused_methods'                     => ['iteration' => 4, 'attack' => 'Invoke dead-looking methods dynamically or only through framework convention.'],
     'no_temporary_return_variable'       => ['iteration' => 4, 'attack' => 'Annotate a temporary call result with @var before immediately returning it.'],
     'useless_variable'                   => ['iteration' => 4, 'attack' => 'Pass an alias through closure capture before returning it unchanged.'],

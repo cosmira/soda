@@ -6,11 +6,16 @@ namespace Cosmira\Soda\Rules\Architecture;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\NodeFinder;
 
+#[Rule(
+    label: 'Boolean parameters:',
+    advice: 'Separate behavior selected by a mode flag with named methods when useful. Boolean state is data; the rule recognizes direct readonly initialization, not every valid data flow.',
+)]
 final class NoBooleanParameters extends Check
 {
     use ReadonlyConstructorState;

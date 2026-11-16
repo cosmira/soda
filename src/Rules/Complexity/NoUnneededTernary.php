@@ -6,6 +6,7 @@ namespace Cosmira\Soda\Rules\Complexity;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node\Expr;
 use PhpParser\NodeFinder;
@@ -13,6 +14,10 @@ use PhpParser\NodeFinder;
 /**
  * Reports boolean ternaries whose result is expressible by conversion, negation or short-circuiting.
  */
+#[Rule(
+    label: 'Unneeded boolean ternaries:',
+    advice: 'Preserve boolean conversion and evaluate the condition once when removing literal boolean branches; preserve short-circuit branch effects.',
+)]
 final class NoUnneededTernary extends Check
 {
     /**

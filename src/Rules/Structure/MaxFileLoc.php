@@ -6,9 +6,15 @@ namespace Cosmira\Soda\Rules\Structure;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use Cosmira\Soda\Rules\ExpressionCheck;
 
+#[Rule(
+    label: 'File LOC:',
+    advice: 'Split the file by responsibility; keep one primary type or cohesive concern per file.',
+    default: 700,
+)]
 final class MaxFileLoc extends ExpressionCheck
 {
     /**

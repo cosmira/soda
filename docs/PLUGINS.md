@@ -65,12 +65,12 @@ return Soda::configure()
 
 `RuleCatalog::standard()` preserves the standard readonly-data and boolean-prefix
 policies. `RuleCatalog::checks('complexity')` selects the standard rules in that section
-using their catalog arguments. Section names match `list:rules`.
+using the explicit standard instances. Section names match `list:rules`.
 For a reusable custom set, return an array from a PHP file and pass it directly
 to `with(require __DIR__.'/team-rules.php')`. Multiple `with()` calls append rules
 in order and keep the exact instances supplied; they do not replace rules by ID.
 
-Standard rules and their constructor arguments come from `resources/catalog.php`. Built-in constructor options and metric thresholds remain on the rule
+Standard rules and their constructor arguments come from `resources/standard.php`. Built-in constructor options and metric thresholds remain on the rule
 instances. Numeric violation allowances are not supported.
 
 For expression-based checks, see [Rule expressions](RULE_EXPRESSIONS.md).

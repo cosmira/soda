@@ -7,11 +7,18 @@ namespace Cosmira\Soda\Rules\Structure;
 use Cosmira\Soda\Analysis\Composition\BehaviorComposition;
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 
 /**
  * Limits consecutive transparent calls, rather than the size of each individual method.
  */
+#[Rule(
+    label: 'Delegation depth:',
+    advice: 'Remove transparent forwarding chains; moving each call into another method does not simplify the operation.',
+    severity: 'error',
+    default: 3,
+)]
 final class MaxDelegationDepth extends Check
 {
     /**

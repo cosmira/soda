@@ -7,11 +7,16 @@ namespace Cosmira\Soda\Rules\Design;
 use Cosmira\Soda\Analysis\ProjectFacts;
 use Cosmira\Soda\Analysis\Representation\RepresentationFlow;
 use Cosmira\Soda\Contracts\ResearchCheck;
+use Cosmira\Soda\Reporting\Rule;
 use InvalidArgumentException;
 
 /**
  * Investigates application value paths without turning representation changes into violations.
  */
+#[Rule(
+    label: 'Representation research candidates:',
+    advice: 'Inspect the actual data path, contracts and boundary purpose before changing its representation.',
+)]
 final class RepresentationChurn extends ResearchCheck
 {
     /**

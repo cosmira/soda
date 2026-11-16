@@ -6,6 +6,7 @@ namespace Cosmira\Soda\Rules\Complexity;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use InvalidArgumentException;
 use PhpParser\Node;
@@ -16,6 +17,11 @@ use PhpParser\NodeFinder;
 /**
  * Limits executable statements per lexical callable independently of source formatting.
  */
+#[Rule(
+    label: 'Executable statements per callable:',
+    advice: 'Name a cohesive step when it clarifies the operation; do not extract forwarding methods solely to lower the count.',
+    default: 20,
+)]
 final class MaxStatementsPerCallable extends Check
 {
     /**

@@ -6,6 +6,7 @@ namespace Cosmira\Soda\Rules\Structure;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
@@ -17,6 +18,10 @@ use PhpParser\NodeFinder;
 /**
  * Reports classes whose declared surface is entirely static.
  */
+#[Rule(
+    label: 'Static-only classes:',
+    advice: 'Name the operations as functions or constants, or keep instance state on the class; inherited and trait surfaces are not judged.',
+)]
 final class NoStaticOnlyClass extends Check
 {
     /**

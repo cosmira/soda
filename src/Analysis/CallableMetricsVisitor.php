@@ -15,6 +15,14 @@ use PhpParser\Node\Stmt\TryCatch;
 /** Collects flow facts with one shared stack of named and anonymous callables. */
 final class CallableMetricsVisitor extends FactVisitor
 {
+    /**
+     * Node kinds whose entry and exit change callable nesting depth.
+     */
+    private const CONTROL_STRUCTURE_NODE_KINDS = [
+        'Stmt_If'    => true, 'Stmt_For' => true, 'Stmt_Foreach' => true,
+        'Stmt_While' => true, 'Stmt_Do' => true, 'Stmt_Switch' => true, 'Stmt_TryCatch' => true,
+    ];
+
     use CallableScopes;
 
     /**
@@ -65,7 +73,7 @@ final class CallableMetricsVisitor extends FactVisitor
             return;
         }
 
-        if (ControlStructureMatcher::isControlStructure($node)) {
+        if (isset(self::CONTROL_STRUCTURE_NODE_KINDS[$node->getType()])) {
             $this->tracker->pushControl($node->getStartLine());
         }
 
@@ -155,7 +163,7 @@ final class CallableMetricsVisitor extends FactVisitor
             return;
         }
 
-        if (ControlStructureMatcher::isControlStructure($node)) {
+        if (isset(self::CONTROL_STRUCTURE_NODE_KINDS[$node->getType()])) {
             $this->tracker->popControl();
         }
     }

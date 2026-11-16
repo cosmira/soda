@@ -6,6 +6,7 @@ namespace Cosmira\Soda\Rules\Usage;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
@@ -19,6 +20,10 @@ use PhpParser\NodeFinder;
 use PhpToken;
 
 /** Forbids a local variable created only to return its value immediately. */
+#[Rule(
+    label: 'Temporary return variables:',
+    advice: 'Return the expression directly instead of assigning a temporary variable.',
+)]
 final class NoTemporaryReturnVariable extends Check
 {
     /**

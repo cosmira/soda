@@ -6,11 +6,16 @@ namespace Cosmira\Soda\Rules\Architecture;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeFinder;
 
+#[Rule(
+    label: 'Behavior magic methods:',
+    advice: 'Expose explicit methods so callers and tools can see the supported contract.',
+)]
 final class NoBehaviorMagicMethods extends Check
 {
     /**

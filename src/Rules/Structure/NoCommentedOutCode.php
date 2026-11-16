@@ -6,8 +6,13 @@ namespace Cosmira\Soda\Rules\Structure;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 
+#[Rule(
+    label: 'Commented-out code lines:',
+    advice: 'Delete dead code and trust version control; preserve an explanation only when it documents why.',
+)]
 final class NoCommentedOutCode extends Check
 {
     /**

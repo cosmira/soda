@@ -6,9 +6,15 @@ namespace Cosmira\Soda\Rules\Structure;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use Cosmira\Soda\Rules\ExpressionCheck;
 
+#[Rule(
+    label: 'Properties per class:',
+    advice: 'Keep state with its behavior. Group values when they share meaning or invariants; a property count alone does not justify another object.',
+    default: 5,
+)]
 final class MaxPropertiesPerClass extends ExpressionCheck
 {
     /**

@@ -7,6 +7,7 @@ namespace Cosmira\Soda\Rules\Structure;
 use Cosmira\Soda\Analysis\CallableIdentity;
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use Cosmira\Soda\Support\FnmatchPathExclusion;
 use InvalidArgumentException;
@@ -14,6 +15,10 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\NodeFinder;
 
+#[Rule(
+    label: 'Forbidden method visibility:',
+    advice: 'Change the method visibility or move the behavior outside the selected classes.',
+)]
 final class ForbiddenMethodVisibility extends Check
 {
     /**

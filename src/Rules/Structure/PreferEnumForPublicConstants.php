@@ -6,10 +6,17 @@ namespace Cosmira\Soda\Rules\Structure;
 
 use Cosmira\Soda\Analysis\FileFacts;
 use Cosmira\Soda\Contracts\Check;
+use Cosmira\Soda\Reporting\Rule;
 use Cosmira\Soda\Reporting\Violation;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\NodeFinder;
 
+#[Rule(
+    label: 'Public constants:',
+    advice: 'Use an enum instead of a class declaring more than two public constants.',
+    default: 2,
+    comparison: 'max',
+)]
 final class PreferEnumForPublicConstants extends Check
 {
     /**
