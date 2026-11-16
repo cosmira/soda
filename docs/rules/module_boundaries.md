@@ -3,7 +3,7 @@
 Keep module internals private. Sibling modules communicate through exported namespaces.
 
 This rule is **opt-in**. Its root namespace is required. Modules are the immediate
-children of that root. `Events` and `Facades` are public; everything else belongs
+children of that root. `Events`, `Facades`, and `Attributes` are public; everything else belongs
 to its module.
 New modules follow the same policy without another configuration entry.
 
@@ -25,13 +25,25 @@ new ModuleBoundaries(namespace: 'Domain', exports: ['Contracts']);
 | Argument | Default | Meaning |
 | --- | --- | --- |
 | `namespace` | Required | Namespace whose immediate children are modules. |
-| `exports` | `['Events', 'Facades']` | Public namespace prefixes relative to each module. An empty list exports nothing. |
+| `exports` | `['Events', 'Facades', 'Attributes']` | Public namespace prefixes relative to each module. An empty list exports nothing. |
 | `except` | `[]` | Module names whose types remain accessible from every sibling module. |
 
 Names match case-insensitively at namespace boundaries. Leading and trailing
 backslashes are accepted; empty prefixes throw `InvalidArgumentException`.
 Exceptions apply to the **target**, not the caller. They do not exempt a module
 from respecting its neighbors.
+
+Attribute arguments still obey module boundaries. Exporting `Attributes` does not
+expose other types passed to an attribute constructor.
+
+Exclude test-data factories from this rule when they need models from several
+modules. Other checks still analyze these files:
+
+```php
+(new ModuleBoundaries('App\\Modules'))->exclude([
+    __DIR__.'/app/Modules/*/Database/Factories/*',
+]);
+```
 
 ## Monorepositories
 
